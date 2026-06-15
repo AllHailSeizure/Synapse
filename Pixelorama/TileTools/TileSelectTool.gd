@@ -1,5 +1,9 @@
 extends Node
 
+signal selection_changed(cells: Array[Vector2i])
+signal tool_activated()
+signal tool_deactivated()
+
 var grid_size := Vector2i(20, 20)
 
 var _selected_cells: Array[Vector2i] = []
@@ -10,6 +14,15 @@ var _shift_drag_cells: Array[Vector2i] = []
 var _pre_shift_cells: Array[Vector2i] = []
 var _is_moving := false
 var _move_start_pos: Vector2i
+var _hover_cell: Vector2i
+
+
+func _enter_tree() -> void:
+	tool_activated.emit()
+
+
+func _exit_tree() -> void:
+	tool_deactivated.emit()
 
 
 func pos_to_cell(pos: Vector2i) -> Vector2i:
@@ -127,15 +140,31 @@ func draw_end(pos: Vector2i) -> void:
 
 
 func cursor_move(pos: Vector2i) -> void:
-	pass
+	_hover_cell = pos_to_cell(pos)
 
 
 func draw_indicator(left: bool) -> void:
-	pass
+	var ext_api := get_node_or_null("/root/ExtensionsApi")
+	if ext_api == null:
+		return
+	var canvas := ext_api.general.get_canvas()
+	if canvas == null:
+		return
+	var rect := cell_to_rect(_hover_cell)
+	canvas.draw_rect(Rect2(rect), Color(1.0, 1.0, 1.0, 0.3), false, 2.0)
 
 
 func draw_preview() -> void:
 	pass
+
+
+func get_config() -> Dictionary:
+	return {"grid_width": grid_size.x, "grid_height": grid_size.y}
+
+
+func set_config(config: Dictionary) -> void:
+	grid_size.x = config.get("grid_width", 20)
+	grid_size.y = config.get("grid_height", 20)
 
 
 func _apply_selection() -> void:
@@ -145,7 +174,8 @@ func _apply_selection() -> void:
 	ext_api.selection.clear_selection()
 	for cell in _selected_cells:
 		var rect := cell_to_rect(cell)
-		ext_api.selection.select_rect(rect, 0)  # 0 = add
+		ext_api.selection.select_rect(rect, 0)
+	selection_changed.emit(_selected_cells.duplicate())
 
 
 func _clear_selection() -> void:

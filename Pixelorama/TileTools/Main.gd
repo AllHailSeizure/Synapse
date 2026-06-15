@@ -28,6 +28,8 @@ func _enter_tree() -> void:
 	extension_api.panel.add_node_as_tab(settings_panel, "Tile Settings")
 	tile_tiling = preload("res://TileTiling.gd").new()
 	add_child(tile_tiling)
+	# Defer signal connections to next frame so tool node is instantiated
+	call_deferred("_connect_tool_signals")
 
 
 func _exit_tree() -> void:
@@ -69,6 +71,51 @@ func deactivate_tiling() -> void:
 		tile_tiling.deactivate()
 
 
+func _connect_tool_signals() -> void:
+	var tool_nodes := extension_api.general.get_main_nodes("TileTools")
+	if tool_nodes.is_empty():
+		return
+	for node in tool_nodes:
+		var tool_node := node.get_node_or_null("TileSelectTool")
+		if tool_node == null:
+			continue
+		if tool_node.has_signal("selection_changed"):
+			tool_node.selection_changed.connect(_on_selection_changed)
+		if tool_node.has_signal("tool_activated"):
+			tool_node.tool_activated.connect(show_grid_overlay)
+		if tool_node.has_signal("tool_deactivated"):
+			tool_node.tool_deactivated.connect(func():
+				hide_grid_overlay()
+				deactivate_tiling()
+			)
+		break
+
+
+func _on_selection_changed(cells: Array[Vector2i]) -> void:
+	if cells.is_empty():
+		deactivate_tiling()
+		return
+	# Calculate bounding box and activate tiling
+	var tool_nodes := extension_api.general.get_main_nodes("TileTools")
+	if tool_nodes.is_empty():
+		return
+	for node in tool_nodes:
+		var tool_node := node.get_node_or_null("TileSelectTool")
+		if tool_node == null:
+			continue
+		var bounds := tool_node.cells_bounding_box(cells)
+		activate_tiling(bounds)
+		break
+
+
 func _on_grid_size_changed(new_size: Vector2i) -> void:
 	if grid_overlay != null:
 		grid_overlay.grid_size = new_size
+	# Update tool's grid size
+	var tool_nodes := extension_api.general.get_main_nodes("TileTools")
+	if not tool_nodes.is_empty():
+		for node in tool_nodes:
+			var tool_node := node.get_node_or_null("TileSelectTool")
+			if tool_node != null:
+				tool_node.grid_size = new_size
+				break
