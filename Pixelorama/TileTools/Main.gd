@@ -2,6 +2,7 @@ extends Node
 
 var extension_api: Node
 var grid_overlay: Node2D
+var settings_panel: Node
 const TOOL_NAME := "TileSelect"
 
 
@@ -21,11 +22,18 @@ func _enter_tree() -> void:
 		[],
 		-1
 	)
+	settings_panel = preload("res://TileSelectSettings.gd").new()
+	settings_panel.grid_size_changed.connect(_on_grid_size_changed)
+	extension_api.panel.add_node_as_tab(settings_panel, "Tile Settings")
 
 
 func _exit_tree() -> void:
 	if extension_api == null:
 		return
+	if settings_panel != null:
+		extension_api.panel.remove_node_from_tab(settings_panel)
+		settings_panel.queue_free()
+		settings_panel = null
 	extension_api.remove_tool(TOOL_NAME)
 
 
@@ -43,3 +51,8 @@ func hide_grid_overlay() -> void:
 	if grid_overlay != null:
 		grid_overlay.queue_free()
 		grid_overlay = null
+
+
+func _on_grid_size_changed(new_size: Vector2i) -> void:
+	if grid_overlay != null:
+		grid_overlay.grid_size = new_size
