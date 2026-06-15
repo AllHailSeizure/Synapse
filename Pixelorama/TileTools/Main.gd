@@ -3,6 +3,7 @@ extends Node
 var extension_api: Node
 var grid_overlay: Node2D
 var settings_panel: Node
+var tile_tiling: Node
 const TOOL_NAME := "TileSelect"
 
 
@@ -25,11 +26,16 @@ func _enter_tree() -> void:
 	settings_panel = preload("res://TileSelectSettings.gd").new()
 	settings_panel.grid_size_changed.connect(_on_grid_size_changed)
 	extension_api.panel.add_node_as_tab(settings_panel, "Tile Settings")
+	tile_tiling = preload("res://TileTiling.gd").new()
+	add_child(tile_tiling)
 
 
 func _exit_tree() -> void:
 	if extension_api == null:
 		return
+	if tile_tiling != null:
+		tile_tiling.queue_free()
+		tile_tiling = null
 	if settings_panel != null:
 		extension_api.panel.remove_node_from_tab(settings_panel)
 		settings_panel.queue_free()
@@ -51,6 +57,16 @@ func hide_grid_overlay() -> void:
 	if grid_overlay != null:
 		grid_overlay.queue_free()
 		grid_overlay = null
+
+
+func activate_tiling(bounds: Rect2i) -> void:
+	if tile_tiling != null:
+		tile_tiling.activate(bounds)
+
+
+func deactivate_tiling() -> void:
+	if tile_tiling != null:
+		tile_tiling.deactivate()
 
 
 func _on_grid_size_changed(new_size: Vector2i) -> void:
