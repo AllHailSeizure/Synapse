@@ -86,6 +86,20 @@ Short subject line, blank line, optional body with detail.
 3. **Claude implements.** Writes spec-compliant code, runs tests, commits frequently.
 4. **You review and direct.** Approve or ask for changes. You're always in control.
 
+### Session Structure
+
+Start every session by defining end goals and breaking into tasks before implementing anything. If the session starts with a loose direction, scoping it IS the first task. Don't discover the work incrementally through conversation drift.
+
+### Goal-Oriented Before Implementing
+
+Don't implement the first option that comes to mind or appears in a doc. Before building anything, ask: what is the actual goal, and what are the candidate approaches? Compare them, then implement the best one.
+
+Apply friction deliberately — raise redundancy, flag better methods, push back on reactive decisions. The user wants this. "I notice X might be redundant with Y — want to compare approaches before we build?" is the right move, not silent compliance.
+
+### Memory Scope
+
+Before saving anything to memory, ask: should this apply to this project only, or everywhere? Project-specific context goes in memory files. Universal behavioral instructions go in CLAUDE.md. That's a design decision — don't make it unilaterally.
+
 ---
 
 ## Autonomy Model
