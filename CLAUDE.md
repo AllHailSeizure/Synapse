@@ -118,13 +118,17 @@ Synapse skills are hard directives. Each one defines what Claude must visibly co
 
 - `speccing-first` — Two mandatory gates before any code: agree on the implementation approach, then confirm exact behavior via playback. Collaborative sessions only.
 - `over-engineering-guard` — Classifies anything outside the current spec during implementation: handle in session, flag and ask, or log to milestone. Collaborative sessions only.
-- `goal-tracking` — Structures project work as GitHub milestones and issues. Locks the current goal to one open issue; queues new ideas as separate issues rather than acting on them.
+- `goal-oriented-development` — Structures project work as GitHub milestones and issues. Uses three specialized agents (explorer, goal-writer, goal-fulfiller) to research, write, and execute goals. Replaces `goal-tracking`.
 - `testing-preferences` — Testing strategy and expectations for this codebase.
 - `code-review-standards` — How feedback and review work.
 - `autonomous-work-boundaries` — Decision autonomy and approval points for agent sessions.
 - `systematic-debugging` — Structured debugging with a mandatory ruled-out list.
 
 See `.claude/skills/synapse/` for each skill's full documentation.
+
+### Tooling
+
+- `/skill-creator` is an official Anthropic plugin for Claude Code. Use it (via the Skill tool) when creating or refining skills — not `superpowers:writing-skills`.
 
 ---
 
@@ -136,4 +140,4 @@ Install Synapse skills into a project using the `synapse-init` skill.
 
 ---
 
-**Last updated:** 2026-06-25
+**Last updated:** 2026-06-28
