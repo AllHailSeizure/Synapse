@@ -80,8 +80,7 @@ Every collaborative session follows this structure:
 
 1. **Spec before code.** Run `speccing-first` — approach selection and behavioral playback gates must both pass before any implementation begins.
 2. **Goals before session.** If the project has a milestone, surface open issues and confirm which goal is next before starting.
-3. **Hold the line.** During implementation, `over-engineering-guard` classifies anything outside the spec. Out-of-scope ideas get logged as GitHub issues, not built.
-4. **Reflect between goals.** When a goal closes, explicitly ask whether the next one still makes sense before starting it.
+3. **Reflect between goals.** When a goal closes, explicitly ask whether the next one still makes sense before starting it.
 
 ### Memory Scope
 
@@ -117,7 +116,6 @@ See `docs/EVOLUTION.md` for detailed reflection checklist.
 Synapse skills are hard directives. Each one defines what Claude must visibly complete before moving to the next step.
 
 - `speccing-first` — Two mandatory gates before any code: agree on the implementation approach, then confirm exact behavior via playback. Collaborative sessions only.
-- `over-engineering-guard` — Classifies anything outside the current spec during implementation: handle in session, flag and ask, or log to milestone. Collaborative sessions only.
 - `goal-oriented-development` — Structures project work as GitHub milestones and issues. Uses three specialized agents (explorer, goal-writer, goal-fulfiller) to research, write, and execute goals. Replaces `goal-tracking`.
 - `testing-preferences` — Testing strategy and expectations for this codebase.
 - `code-review-standards` — How feedback and review work.
