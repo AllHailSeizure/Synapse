@@ -1,0 +1,78 @@
+{
+  "name": "goal-dashboard",
+  "displayName": "Goal Dashboard",
+  "description": "View and edit goal-oriented-development milestones/issues without leaving the editor.",
+  "version": "0.1.0",
+  "private": true,
+  "publisher": "synapse",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "goalDashboard",
+          "title": "Goal Dashboard",
+          "icon": "media/icon.svg"
+        }
+      ]
+    },
+    "views": {
+      "goalDashboard": [
+        {
+          "id": "goalDashboard.milestones",
+          "name": "Milestones"
+        }
+      ]
+    },
+    "commands": [
+      {
+        "command": "goalDashboard.refresh",
+        "title": "Refresh",
+        "icon": "$(refresh)"
+      },
+      {
+        "command": "goalDashboard.openIssue",
+        "title": "Open Goal"
+      }
+    ],
+    "menus": {
+      "view/title": [
+        {
+          "command": "goalDashboard.refresh",
+          "when": "view == goalDashboard.milestones",
+          "group": "navigation"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "Goal Dashboard",
+      "properties": {
+        "goalDashboard.repository": {
+          "type": "string",
+          "default": "",
+          "description": "Override owner/repo (e.g. \"AllHailSeizure/Synapse\") if it can't be auto-detected from the workspace git remote."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "compile": "tsc -p ./",
+    "watch": "tsc -w -p ./",
+    "test": "vitest run"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@types/vscode": "^1.85.0",
+    "typescript": "^5.4.0",
+    "vitest": "^1.4.0"
+  },
+  "dependencies": {
+    "@octokit/rest": "^20.1.0"
+  }
+}
