@@ -57,7 +57,7 @@ The distinction: exploring an idea is fine. Starting to implement it without ack
 
 ## Writing Goals
 
-When it's time to create a new issue (after the user has committed to it), spawn the **goal-writer agent** (`agents/goal-writer.md`) with:
+When it's time to create a new issue (after the user has committed to it), spawn the **`goal-writer`** subagent with:
 - The idea description
 - The repo path
 
@@ -73,7 +73,7 @@ A goal is executable when a future session can begin work without needing to ask
 
 ## Fulfilling Goals
 
-When it's time to execute a goal, spawn the **goal-fulfiller agent** (`agents/goal-fulfiller.md`) with:
+When it's time to execute a goal, spawn the **`goal-fulfiller`** subagent with:
 - The full issue content
 - The repo path
 
@@ -97,8 +97,8 @@ Do not start the next goal until confirmed.
 
 When starting a new project or feature:
 
-1. Work from goals already described or ask for them
+1. Work from goals already described, or if given a high-level direction (e.g. "wrap up level one, finish level two"), spawn **one** `goal-surveyor` subagent with the repo path and the direction. It's the only agent that does a full, project-wide pass — it returns both the shared repo-level survey (tech stack, patterns, conventions, structure) and a candidate list of concrete goals with reasoning. This is the only full codebase survey for the milestone — it does not get repeated per goal, and `goal-writer`/`codebase-explorer` never do this broad a pass on their own.
 2. Propose a milestone title and one-sentence description — confirm before creating
-3. Spawn goal-writer for each goal to produce executable issues
+3. Spawn goal-writer for each goal to produce executable issues, passing it the shared survey from step 1 as context. This is the point of doing the survey once: with 5 goals or 25, every goal-writer call skips re-deriving tech stack/patterns/conventions and only researches what's specific to its own goal.
 4. Present the ordered list to the user — confirm before creating anything
 5. Flag uncertain goals; ask whether they belong before including them
