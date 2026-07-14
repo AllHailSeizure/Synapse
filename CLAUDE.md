@@ -122,7 +122,7 @@ Synapse skills are hard directives. Each one defines what Claude must visibly co
 - `autonomous-work-boundaries` — Decision autonomy and approval points for agent sessions.
 - `systematic-debugging` — Structured debugging with a mandatory ruled-out list.
 
-See `.claude/skills/synapse/` for each skill's full documentation.
+See `skills/` for each skill's full documentation.
 
 ### Tooling
 
@@ -134,7 +134,7 @@ See `.claude/skills/synapse/` for each skill's full documentation.
 
 Each project gets its own `CLAUDE.md` that inherits from this root and specifies local boundaries. See `docs/TEMPLATES/project-claude-template.md` for the template.
 
-Install Synapse skills into a project using the `synapse-init` skill.
+Install Synapse into a project as a Claude Code plugin: `/plugin marketplace add AllHailSeizure/synapse#release` then `/plugin install synapse@synapse`. See the root README for the `main`/`release` publish gate this tracks.
 
 ---
 

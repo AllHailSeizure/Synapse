@@ -1,8 +1,6 @@
 ---
-name: synapse:speccing-first
+name: speccing-first
 description: Two mandatory gates before any implementation in collaborative sessions. Ensures approach is chosen deliberately and behavior is agreed on before any code is written.
-type: behavior
-applies_to: [collaborative coding sessions]
 ---
 
 # Speccing-First

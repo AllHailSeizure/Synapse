@@ -1,0 +1,15 @@
+{
+  "name": "synapse",
+  "owner": {
+    "name": "AllHailSeizure",
+    "email": "natebosma@gmail.com"
+  },
+  "description": "Synapse personal workflow system",
+  "plugins": [
+    {
+      "name": "synapse",
+      "source": "./",
+      "description": "Personal workflow system: spec-before-code gates, goal-oriented development, testing and debugging conventions."
+    }
+  ]
+}

@@ -4,7 +4,7 @@ Synapse is a personal skill system for Claude. It installs into any project and 
 
 ## What it is
 
-Synapse is a collection of skills that live in `.claude/skills/synapse/` and are installed into projects via a directory junction (see `synapse-init`). Once installed, Claude reads and follows the skills automatically based on context.
+Synapse is a Claude Code plugin. Its skills and agents live in `skills/` and `agents/` at the repo root and are installed into any project via Claude Code's native plugin system — no scripts, no symlinks, no junctions. Once installed, Claude reads and follows the skills automatically based on context.
 
 The core principle: every skill defines what Claude must visibly complete before moving to the next step. If a step has no required output, it isn't hard enough.
 
@@ -46,15 +46,31 @@ These three work together in a collaborative session. Autonomous agent behavior 
 
 ## Installing into a project
 
-Use the `synapse-init` skill. It clones this repo to `~/.claude/synapse` (or pulls if already present) and creates a junction at `.claude/skills/synapse` in the target project. All skills become immediately available.
+Add the marketplace once, then install the plugin:
+
+```
+/plugin marketplace add AllHailSeizure/synapse#release
+/plugin install synapse@synapse
+```
+
+`main` is the working branch — skills get changed and tested here first. `release` only moves forward once a change has been tried in a real project; that's the deliberate publish step, and it's what the marketplace pointer above tracks. `/plugin marketplace update` picks up whatever is currently on `release` — nothing changes for an installed project until that branch moves.
+
+To update: `/plugin marketplace update synapse`. To disable: `/plugin disable synapse@synapse`. To remove: `/plugin uninstall synapse@synapse`.
 
 ## Repository structure
 
 ```
-.claude/
-  skills/
-    synapse/          # skill files
-    synapse-init.md   # install/uninstall skill
-CLAUDE.md             # root configuration (also read by Claude)
-docs/                 # templates and evolution docs
+.claude-plugin/
+  plugin.json       # plugin manifest
+  marketplace.json  # self-hosted marketplace listing this plugin
+skills/
+  speccing-first/SKILL.md
+  testing-preferences/SKILL.md
+  goal-oriented-development/SKILL.md
+agents/
+  codebase-explorer.md, goal-writer.md, goal-surveyor.md, goal-fulfiller.md
+CLAUDE.md           # root configuration (also read by Claude)
+docs/                # templates and evolution docs
 ```
+
+Codex CLI support (`.codex/agents/synapse/`) is maintained separately and isn't part of the plugin — Codex's own agent migration system can import directly from this repo's Claude Code layout instead.

@@ -1,8 +1,6 @@
 ---
-name: synapse:goal-oriented-development
+name: goal-oriented-development
 description: Goal-oriented development workflow using GitHub milestones and issues. Trigger at the START of every session, when asked "what's next", when you or the user is about to implement something outside the current goal, when starting a new project, or when it's time to write or execute a goal. Use this any time work needs to be oriented, planned, tracked, or executed — even if the user doesn't explicitly say "goals."
-type: behavior
-applies_to: [all projects with GitHub repositories]
 ---
 
 # Goal-Oriented Development

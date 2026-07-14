@@ -180,7 +180,7 @@ ruled-out list as a record of what was checked.
 Mirrors goal-oriented-development's layout:
 
 ```
-.claude/skills/synapse/systematic-debugging/
+skills/systematic-debugging/
 ├── SKILL.md
 └── agents/
     ├── investigator.md

@@ -1,8 +1,6 @@
 ---
-name: synapse:testing-preferences
+name: testing-preferences
 description: Testing process for Synapse projects. Defines verification documents, test script requirements, and the publish gate.
-type: behavior
-applies_to: [all coding projects]
 ---
 
 # Testing Preferences
