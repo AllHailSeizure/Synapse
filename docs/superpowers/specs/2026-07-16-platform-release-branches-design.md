@@ -29,7 +29,15 @@ GitHub branch protection requires the policy workflow to pass and requires pull 
 
 The existing remote `release` branch is renamed to `claude-release`; the Claude Code marketplace and installation documentation change to point to the new name.
 
-`codex-release` starts with the Codex manifest, the existing Codex agents under `.codex/agents/synapse/`, `AGENTS.md`, and only skills confirmed to work in Codex. The README documents the two installation targets.
+`codex-release` starts with the Codex manifest, the existing Codex agents under `.codex/agents/synapse/`, `AGENTS.md`, and `goal-oriented-development` as its first validated skill. The README documents the two installation targets.
+
+The Codex plugin is installed privately through the user's personal Codex marketplace from a local checkout of `codex-release`. No public marketplace listing is created.
+
+## Cross-Platform Skill Parity
+
+Shared skills have one behavioral intent across Claude Code and Codex. A change to such a skill must assess both platform implementations before it is promoted. When both platforms support the change, update their skill and agent adapters together. When they intentionally differ, document the platform-specific behavior and its reason in the changed skill or its release pull request.
+
+This is a review and promotion requirement rather than a CI path rule: automated checks can enforce platform file boundaries, but cannot determine whether two implementations remain behaviorally equivalent.
 
 ## Verification
 
