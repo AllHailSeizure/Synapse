@@ -1,0 +1,22 @@
+name: Release branch policy
+
+on:
+  pull_request:
+    branches: [claude-release, codex-release]
+
+jobs:
+  release-branch-policy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Check changed paths
+        shell: pwsh
+        run: |
+          $paths = git diff --name-only "origin/${{ github.base_ref }}...${{ github.sha }}"
+          ./.github/scripts/Test-ReleaseBranchPolicy.ps1 -TargetBranch "${{ github.base_ref }}" -ChangedPath $paths
+      - name: Validate Codex manifest
+        if: github.base_ref == 'codex-release'
+        shell: pwsh
+        run: ./.github/scripts/Validate-CodexPlugin.ps1
