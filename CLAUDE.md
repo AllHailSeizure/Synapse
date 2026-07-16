@@ -134,7 +134,7 @@ See `skills/` for each skill's full documentation.
 
 Each project gets its own `CLAUDE.md` that inherits from this root and specifies local boundaries. See `docs/TEMPLATES/project-claude-template.md` for the template.
 
-Install Synapse into a project as a Claude Code plugin: `/plugin marketplace add AllHailSeizure/synapse#release` then `/plugin install synapse@synapse`. See the root README for the `main`/`release` publish gate this tracks.
+Install Synapse into a project as a Claude Code plugin: `/plugin marketplace add AllHailSeizure/synapse#claude-release` then `/plugin install synapse@synapse`. See the root README for the `master`/`claude-release` publish gate this tracks.
 
 ---
 

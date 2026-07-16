@@ -49,7 +49,7 @@ These three work together in a collaborative session. Autonomous agent behavior 
 Add the marketplace once, then install the plugin:
 
 ```
-/plugin marketplace add AllHailSeizure/synapse#release
+/plugin marketplace add AllHailSeizure/synapse#claude-release
 /plugin install synapse@synapse
 ```
 
