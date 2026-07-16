@@ -1,0 +1,24 @@
+{
+  "name": "synapse",
+  "version": "0.1.0",
+  "description": "Personal workflow skills for deliberate, goal-oriented Codex development.",
+  "author": {
+    "name": "AllHailSeizure",
+    "email": "natebosma@gmail.com",
+    "url": "https://github.com/AllHailSeizure"
+  },
+  "homepage": "https://github.com/AllHailSeizure/synapse",
+  "repository": "https://github.com/AllHailSeizure/synapse",
+  "license": "MIT",
+  "keywords": ["codex", "skills", "workflow", "goal-oriented-development"],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Synapse",
+    "shortDescription": "Goal-oriented development workflows for Codex.",
+    "longDescription": "Personal Codex workflows for scoping, tracking, and fulfilling one goal at a time.",
+    "developerName": "AllHailSeizure",
+    "category": "Productivity",
+    "capabilities": ["Interactive", "Write"],
+    "defaultPrompt": ["Orient this repository around its next GitHub goal."]
+  }
+}

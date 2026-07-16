@@ -5,6 +5,10 @@ description: Goal-oriented development workflow using GitHub milestones and issu
 
 # Goal-Oriented Development
 
+## Codex Dispatch
+
+Use Codex's `spawn_agent` capability for the named agents in `.codex/agents/synapse/`: `codebase-explorer`, `goal-writer`, `goal-surveyor`, and `goal-fulfiller`. Dispatch them only at the steps named below; the main agent remains responsible for user confirmation and GitHub mutations.
+
 ## Purpose
 
 Keep coding focused by maintaining one active goal at a time. Ideas are welcome and should be explored freely. The protection is against *implementation drift* — pivoting to code something new while the current goal is incomplete.
