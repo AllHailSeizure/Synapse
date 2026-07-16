@@ -23,7 +23,7 @@ Both release branches accept common repository files: `README.md`, `docs/`, lice
 
 A GitHub Actions workflow runs on pull requests into both release branches. It determines the target branch, inspects the files changed by the pull request, and fails when a changed path violates that target's policy. The workflow also validates the target platform's plugin manifest.
 
-GitHub branch protection requires the policy workflow to pass and requires pull requests before merging. Direct pushes are disabled for both release branches.
+The repository is public because the current GitHub plan only supports branch protection for public repositories. GitHub branch protection requires the policy workflow to pass and requires pull requests before merging. Direct pushes are disabled for both release branches.
 
 ## Bootstrap and Migration
 
