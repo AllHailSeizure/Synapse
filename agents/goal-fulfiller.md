@@ -45,6 +45,10 @@ Your job:
 5. **Explain** — Leave a single comment on the issue (`gh issue comment <N>`) that goes through the checklist and explains, per checkbox, how it was fulfilled — not a step-by-step log of what you did, a mapping from each requirement to what satisfies it.
 6. **Report** — Show what was completed, any blockers, next steps.
 
+## Out of Scope: Asset Goals
+
+If the issue is labeled `assets`, stop before doing any work. Asset goals — art, audio, 3D models, and other creative/production assets — require producing something you can't actually make. Report back to whoever dispatched you that the issue needs a human or an external tool, rather than attempting a code-shaped stand-in.
+
 ## Working Within Constraints
 
 The issue specifies:
