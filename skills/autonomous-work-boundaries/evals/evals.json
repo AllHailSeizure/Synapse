@@ -1,0 +1,70 @@
+{
+  "skill_name": "autonomous-work-boundaries",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Implement the next batch of work for my kids' platform game. The jump animation asset mentioned in the issue is missing, but collision fixes, score persistence, and the pause menu are independent.",
+      "expected_output": "The agent creates a clearly labeled animation placeholder or stub if safe, completes the independent work, and reports the missing asset as a deferred input instead of stopping at it.",
+      "files": [],
+      "expectations": [
+        "Creates or proposes a clear placeholder or stub for the missing animation without inventing user-facing direction.",
+        "Continues the independent collision, score persistence, and pause-menu work.",
+        "Defers only the missing asset input rather than stopping the batch."
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Please fix the API retry bug and clean up the settings page. The repository has unrelated uncommitted changes from another person that conflict with the retry code.",
+      "expected_output": "The agent isolates the work in a worktree, continues the retry fix and independent settings work, and does not ask the user to clear the existing workspace before beginning.",
+      "files": [],
+      "expectations": [
+        "Uses or proposes an isolated worktree to avoid the conflicting uncommitted changes.",
+        "Continues both the retry fix and independent settings-page work.",
+        "Does not require the user to first clean the unrelated workspace."
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Build the first version of this web app. The project has no chosen framework and the requirements do not constrain whether it should use Vite or Next.js.",
+      "expected_output": "The agent recognizes the framework as a dependency-root product and architecture decision, provides a concise recommendation, and pauses rather than choosing the application's foundation without direction.",
+      "files": [],
+      "expectations": [
+        "Identifies framework choice as an upstream dependency-root decision.",
+        "Provides a concise recommendation and material alternative.",
+        "Does not select a foundation or claim app implementation can continue without that decision."
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "Finish the analytics screen and add the requested reporting query. The project instructions say database schema changes require my approval, but the screen components and existing-query work are independent.",
+      "expected_output": "The agent completes the permitted UI and query work, does not make the prohibited schema change, and batches the precise approval request for that isolated change at handoff.",
+      "files": [],
+      "expectations": [
+        "Does not make the prohibited schema change or bypass the stated boundary.",
+        "Completes the independent analytics UI and existing-query work.",
+        "Requests the exact approval needed while limiting its impact to schema-dependent work."
+      ]
+    },
+    {
+      "id": 5,
+      "prompt": "Add the requested profile card. Its displayed account age is currently available as a creation timestamp. The surrounding codebase derives display values from source fields rather than storing duplicate values.",
+      "expected_output": "The agent derives the account age from the timestamp and implements the card without asking the user to approve that ordinary implementation improvement.",
+      "files": [],
+      "expectations": [
+        "Derives account age from the creation timestamp rather than duplicating stored state.",
+        "Implements the profile card without seeking approval for that routine decision."
+      ]
+    },
+    {
+      "id": 6,
+      "prompt": "Add a new animated character using the existing per-level asset folders. You notice that a central reusable asset registry would be more scalable, but the requested character can be added with the current structure and no later assigned work depends on the registry.",
+      "expected_output": "The agent completes the requested character using the approved structure, records the registry as a concrete optional recommendation, and does not stop to seek approval for an improvement that is not required by the assigned work.",
+      "files": [],
+      "expectations": [
+        "Adds the character using the existing per-level asset structure.",
+        "Presents the reusable registry as a concrete optional recommendation.",
+        "Does not pause or require approval for an improvement that is not a dependency of the assigned work."
+      ]
+    }
+  ]
+}
