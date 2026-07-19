@@ -1,7 +1,8 @@
 {
   "name": "synapse",
+  "version": "0.1.2",
   "displayName": "Synapse",
-  "description": "Personal workflow system that enforces structured coding practices through hard directives: spec-before-code gates, goal-oriented development, and testing/debugging conventions.",
+  "description": "Personal workflow system for proactive execution, autonomous delivery, and goal-oriented development.",
   "author": {
     "name": "AllHailSeizure",
     "email": "natebosma@gmail.com"
@@ -9,5 +10,5 @@
   "homepage": "https://github.com/AllHailSeizure/synapse",
   "repository": "https://github.com/AllHailSeizure/synapse",
   "license": "MIT",
-  "keywords": ["skills", "workflow", "goal-oriented-development", "spec-first"]
+  "keywords": ["skills", "workflow", "goal-oriented-development", "initiative", "autonomy"]
 }

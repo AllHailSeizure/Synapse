@@ -1,9 +1,13 @@
 ---
-name: goal-oriented-development
+name: goals
 description: Goal-oriented development workflow using GitHub milestones and issues. Trigger at the START of every session, when asked "what's next", when you or the user is about to implement something outside the current goal, when starting a new project, or when it's time to write or execute a goal. Use this any time work needs to be oriented, planned, tracked, or executed — even if the user doesn't explicitly say "goals."
 ---
 
 # Goal-Oriented Development
+
+## Claude Dispatch
+
+Use Claude Code's available subagent capability for the named agents in `agents/`: `codebase-explorer`, `goal-writer`, `goal-surveyor`, and `goal-fulfiller`. Dispatch them only at the steps named below; the main agent remains responsible for user confirmation and GitHub mutations.
 
 ## Purpose
 
@@ -22,6 +26,12 @@ At the start of every session, before doing anything else:
 5. Wait for confirmation before starting
 
 No open milestones → prompt to create one before proceeding.
+
+## Goal Continuation
+
+Once the user has selected or otherwise authorized an active goal, continue it directly. The session-start confirmation gate is for choosing a new goal; it is not permission to repeatedly pause an already-authorized goal.
+
+Do not answer that a goal is being continued unless this turn also performs a concrete step toward it. When a localized user-owned decision is unresolved, use `initiative` and `autonomy`: defer only the affected branch, continue every independent runnable task, and hand the decision back only after that work is exhausted.
 
 ---
 

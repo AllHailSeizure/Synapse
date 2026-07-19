@@ -1,0 +1,11 @@
+{
+  "skill_name": "synapse",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "An active, authorized issue requires wiring already-supplied dialogue recordings into runtime configuration. The recording script and the mapped Bo and Flo audio files are now present in the repository. The user says: 'The last Bo and Flo recordings are in their character folders now.'",
+      "expected_output": "The agent treats the update as actionable continuation of the authorized issue, inspects the repository, and begins the unambiguous integration rather than only acknowledging that the blocker is cleared.",
+      "files": []
+    }
+  ]
+}
