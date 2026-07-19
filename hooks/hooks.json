@@ -1,0 +1,16 @@
+{
+  "description": "Load Synapse's bootstrap at the beginning of each Claude Code session lifecycle.",
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "startup|resume|clear|compact",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"${CLAUDE_PLUGIN_ROOT}/hooks/load_synapse.sh\""
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -116,10 +116,12 @@ See `docs/EVOLUTION.md` for detailed reflection checklist.
 Synapse skills are hard directives. Each one defines what Claude must visibly complete before moving to the next step.
 
 - `speccing-first` — Two mandatory gates before any code: agree on the implementation approach, then confirm exact behavior via playback. Collaborative sessions only.
-- `goal-oriented-development` — Structures project work as GitHub milestones and issues. Uses three specialized agents (explorer, goal-writer, goal-fulfiller) to research, write, and execute goals. Replaces `goal-tracking`.
+- `goals` — Structures project work as GitHub milestones and issues. Uses specialized agents to research, write, and execute goals. Replaces `goal-tracking`.
 - `testing-preferences` — Testing strategy and expectations for this codebase.
 - `code-review-standards` — How feedback and review work.
-- `autonomous-work-boundaries` — Decision autonomy and approval points for agent sessions.
+- `autonomy` — Decision autonomy and approval points for agent sessions.
+- `initiative` — Continues active workstreams by executing clearly authorized next actions.
+- `synapse` — Session bootstrap for Synapse's initiative and workflow routing.
 - `systematic-debugging` — Structured debugging with a mandatory ruled-out list.
 
 See `skills/` for each skill's full documentation.

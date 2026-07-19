@@ -9,7 +9,7 @@
     {
       "name": "synapse",
       "source": "./",
-      "description": "Personal workflow system: spec-before-code gates, goal-oriented development, testing and debugging conventions."
+      "description": "Personal workflow system for initiative, autonomous delivery, and goal-oriented development."
     }
   ]
 }
