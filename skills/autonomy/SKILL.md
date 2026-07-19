@@ -1,5 +1,5 @@
 ---
-name: autonomous-work-boundaries
+name: autonomy
 description: Use this skill whenever the user delegates implementation, debugging, refactoring, research, or a batch of engineering tasks and expects autonomous progress. It defines the boundary between user-owned creative direction and agent-owned execution, especially when a task is ambiguous or blocked. Apply it before pausing to ask for direction; do not use it for informal exploration or questions that have not been authorized for execution.
 ---
 
