@@ -1,0 +1,18 @@
+{
+  "description": "Load Synapse's bootstrap at the beginning of each session lifecycle.",
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "startup|resume|clear|compact",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "printf 'Load and apply the Synapse bootstrap at %s/skills/synapse/SKILL.md before responding. Initiative is the baseline for established workstreams: execute clearly authorized work from context; offer concrete work whose authority is unclear.\n' \"$PLUGIN_ROOT\"",
+            "commandWindows": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File \"$env:PLUGIN_ROOT\\hooks\\load_using_synapse.ps1\"",
+            "statusMessage": "Loading Synapse bootstrap"
+          }
+        ]
+      }
+    ]
+  }
+}
