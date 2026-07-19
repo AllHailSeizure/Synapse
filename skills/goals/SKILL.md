@@ -27,6 +27,12 @@ At the start of every session, before doing anything else:
 
 No open milestones → prompt to create one before proceeding.
 
+## Goal Continuation
+
+Once the user has selected or otherwise authorized an active goal, continue it directly. The session-start confirmation gate is for choosing a new goal; it is not permission to repeatedly pause an already-authorized goal.
+
+Do not answer that a goal is being continued unless this turn also performs a concrete step toward it. When a localized user-owned decision is unresolved, use `initiative` and `autonomy`: defer only the affected branch, continue every independent runnable task, and hand the decision back only after that work is exhausted.
+
 ---
 
 ## Exploring Ideas
