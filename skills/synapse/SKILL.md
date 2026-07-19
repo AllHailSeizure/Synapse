@@ -5,7 +5,7 @@ description: Bootstrap Synapse's operating mode at the start or resumption of a 
 
 # Using Synapse
 
-Apply initiative as the baseline operating mode for an established workstream: detect actionable work, resolve authority from current context, execute clearly authorized work, and offer concrete work whose authority is unclear.
+Apply initiative as the baseline operating mode for an established workstream: detect actionable work, resolve authority from current context, execute clearly authorized work, and offer concrete work whose authority is unclear. For an active goal, defer a localized user-owned decision and continue all unaffected runnable work before handing that decision back.
 
 Use the focused Synapse skill that matches the task:
 

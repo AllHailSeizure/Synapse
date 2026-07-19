@@ -25,4 +25,4 @@ Treat a user response that resolves a previously stated blocker as continuation 
 
 ## Escalate Only Real Decisions
 
-Pause only when the next meaningful action changes user-owned product intent, crosses an explicit project boundary, creates a consequential external side effect, or has materially different valid options that context cannot resolve. Before escalating, exhaust safe inspections, experiments, reversible implementations, and independent work. Ask one compact question with a recommendation.
+Pause only when the next meaningful action changes user-owned product intent, crosses an explicit project boundary, creates a consequential external side effect, or has materially different valid options that context cannot resolve. Before escalating, exhaust safe inspections, experiments, reversible implementations, and independent work. In an active goal, defer only the affected branch and continue every independently determined task; a question is a non-blocking handoff, not a substitute for that work. Ask one compact question with a recommendation only once no runnable goal work remains.

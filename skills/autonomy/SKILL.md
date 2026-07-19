@@ -71,6 +71,8 @@ When an item is blocked:
 
 A blocker is global only when the remaining useful work depends on the user's decision. For example, choosing Vite or Next.js before an app foundation exists can block the application; a missing animation file should not block unrelated game systems.
 
+For an active goal, treat a localized creative ambiguity as a deferred branch of the goal, not a reason to end the turn. Record the exact decision and its dependent tasks, then execute every remaining task whose behavior is already determined. A question about that decision is a non-blocking handoff: do not make it the final response while runnable goal work remains.
+
 Replace "when in doubt, ask" with: classify the decision, seek evidence, make reversible execution choices, and defer only genuine user-owned decisions.
 
 ## Asking for Direction
@@ -83,6 +85,8 @@ When a user decision is necessary, ask one compact, actionable question. Include
 - A recommended default and any materially different option
 
 Batch independent unresolved decisions into one handoff. Do not repeatedly interrupt the user as each is discovered.
+
+Before sending that handoff, verify that no independent goal work remains. If work remains, continue it first and include the deferred decisions only in the eventual handoff or progress report.
 
 After the user answers, resume the affected work directly. Do not ask them to reconfirm the broader task.
 

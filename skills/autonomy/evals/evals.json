@@ -65,6 +65,17 @@
         "Presents the reusable registry as a concrete optional recommendation.",
         "Does not pause or require approval for an improvement that is not a dependency of the assigned work."
       ]
+    },
+    {
+      "id": 7,
+      "prompt": "Continue the active Chapter 3 implementation goal. Two authored details are unresolved: the exact route-home location for an assisted collectible and whether the next day begins automatically. Dialogue wiring, scene validation, existing quest-state logic, and unrelated Chapter 3 polish tasks are already specified and runnable.",
+      "expected_output": "The agent defers the two creative decisions and continues every specified, independent Chapter 3 task. It asks for the decisions only in a later compact handoff after runnable work is exhausted.",
+      "files": [],
+      "expectations": [
+        "Classifies both authored details as localized user-owned decisions.",
+        "Continues the independent dialogue, validation, quest-state, and polish work.",
+        "Does not make a creative-decision question its final response while those tasks remain runnable."
+      ]
     }
   ]
 }
