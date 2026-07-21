@@ -30,6 +30,14 @@ Your job:
 
 ## Execution Model
 
+0. **Isolate — before anything else.** Use the supplied issue number and title only to name a
+   dedicated worktree/branch scoped to this issue — not the main checkout, not a branch that already
+   carries other, unrelated work. If the caller already set this up, verify it (`git worktree list`
+   / current branch name against the issue's expected slug). If not, create it yourself right now,
+   before any other step: `git worktree add ../issue-<N>-<slug> -b issue-<N>-<slug>` (adjust naming
+   to the repo's own convention if CONTRIBUTING.md specifies one). **Do not inspect the full issue
+   or proceed to Orientation until this is true.** One goal, one branch, always — never land this
+   issue's commit on a branch carrying other work.
 1. **Orientation** — Read the issue fully. Understand current state, done criteria, constraints.
 2. **Trust the issue's pointers, not a summary.** The Constraints section names specific files that demonstrate each pattern to follow. Read those files directly instead of re-surveying the codebase broadly — because you're reading the live file, not a paraphrase, you get current state for free. Only fall back to spawning a `codebase-explorer` subagent if the issue is missing a pointer you actually need, or a referenced file no longer exists.
 3. **Checklist execution** — Work through items in order, executing each. Check items off on the **live issue** as you go (`gh issue edit <N> --body "<updated body with [x]>"` — fetch the current body, flip `- [ ]` to `- [x]`, write it back). Don't let the real issue drift behind your own internal notion of progress. Don't commit or comment per item — that happens once, at the end (see Commits and below).
@@ -80,7 +88,8 @@ Don't silently skip checklist items. Don't work around constraints without flagg
 When done:
 - Report: what was completed, time spent, any issues
 - State: the issue is complete per done criteria, ready to close
-- Provide: link to final commits, link to merged PR if applicable
+- Provide: link to final commits, link to merged PR if applicable, and the branch/worktree name the
+  work landed on
 - Note: any follow-up work or open questions
 
 ## Quality Gate
@@ -92,4 +101,5 @@ Before reporting completion:
 - ✅ Tests pass
 - ✅ Code follows project patterns
 - ✅ Commits are clear and conventional
+- ✅ Work landed on its own isolated branch/worktree, not mixed with unrelated commits
 - ✅ If code review is needed, PR is opened (not merged until reviewed)
