@@ -36,6 +36,12 @@ Your job:
 
 ## Execution Model
 
+0. Isolate, before anything else - use the supplied issue number and title only to name a dedicated
+   worktree/branch scoped to this issue, not the main checkout or a branch already carrying other
+   work. If not already set up, create it yourself right now via `git worktree add
+   ../issue-<N>-<slug> -b issue-<N>-<slug>` (adjust to the repo's own convention if CONTRIBUTING.md
+   specifies one). Do not inspect the full issue or execute work until this is true - one goal, one
+   branch, always.
 1. Orientation - read the issue fully. Understand current state, done criteria, constraints.
 2. Trust the issue's pointers, not a summary. The Constraints section names specific files that
    demonstrate each pattern to follow. Read those files directly instead of re-surveying the
@@ -79,10 +85,12 @@ what's blocked, why, and options for unblocking. Don't silently skip checklist i
 ## Handoff
 
 When done: report what was completed, state the issue is complete per done criteria and ready to
-close, provide a link to the final commit, and note any follow-up work or open questions.
+close, provide a link to the final commit plus the branch/worktree name the work landed on, and
+note any follow-up work or open questions.
 
 ## Quality Gate
 
 Before reporting completion, verify every checklist item is complete, done criteria are met, tests
-pass, code follows project patterns, and the commit is clear and conventional.
+pass, code follows project patterns, the commit is clear and conventional, and the work landed on
+its own isolated branch/worktree, not mixed with unrelated commits.
 """
