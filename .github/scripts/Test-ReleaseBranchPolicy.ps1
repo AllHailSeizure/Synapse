@@ -11,7 +11,9 @@ if ($SelfTest) {
     @{ Branch = 'claude-release'; Paths = @('.claude-plugin/plugin.json', 'hooks/hooks.json', 'skills/goal-oriented-development/SKILL.md', 'README.md'); Pass = $true },
     @{ Branch = 'claude-release'; Paths = @('.codex-plugin/plugin.json'); Pass = $false },
     @{ Branch = 'claude-release'; Paths = @(); Removed = @('.codex/agents/synapse/goal-writer.toml'); Pass = $true },
+    @{ Branch = 'claude-release'; Paths = @('ref/labels.json', 'agents/goal-writer.md'); Pass = $true },
     @{ Branch = 'codex-release'; Paths = @('.codex/agents/synapse/goal-writer.toml', 'AGENTS.md', 'docs/spec.md'); Pass = $true },
+    @{ Branch = 'codex-release'; Paths = @('ref/labels.json'); Pass = $true },
     @{ Branch = 'codex-release'; Paths = @('.claude-plugin/plugin.json', 'CLAUDE.md'); Pass = $false }
   )
   foreach ($case in $cases) {
@@ -27,7 +29,7 @@ if ($SelfTest) {
 
 $shared = @(
   'README.md', '.gitignore', 'LICENSE', 'LICENSE.md',
-  'docs/', 'skills/', '.github/'
+  'docs/', 'skills/', '.github/', 'ref/'
 )
 $platform = @{
   'claude-release' = @('.claude-plugin/', '.claude/', 'hooks/', 'CLAUDE.md', 'agents/')
