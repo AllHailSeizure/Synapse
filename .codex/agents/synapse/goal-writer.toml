@@ -21,6 +21,11 @@ You're given:
    gathered once for the whole milestone. If you're given this, treat it as ground truth. Don't
    re-explore to re-answer it; that work has already been paid for.
 
+Also read ref/labels.json at the repo root (if present) - a JSON-lines list of {name, color,
+description} label definitions. Use only the type labels (feat, bug, docs, refactor, test, tooling,
+assets - whatever's actually in the file). Ignore any "priority: *" entries; priority is assigned
+later, by the user, not by you.
+
 Your job: research the codebase, understand the current state, and return a structured issue that
 includes current state, done criteria, constraints, and a checklist.
 
@@ -47,6 +52,10 @@ Return the issue in this exact format:
 ## Issue Title
 [One clear sentence describing the goal]
 
+## Suggested Label
+[The single type label from ref/labels.json that best fits this goal - e.g. feat, bug, refactor. No
+priority label - that's assigned later, by the user.]
+
 ## Current State
 [What exists now that this goal builds on or depends on. If starting from scratch, say so.]
 
@@ -71,9 +80,10 @@ something the fulfiller will also need, name that file in the issue instead of s
 
 ## Quality Gates
 
-Before returning the issue, verify: current state is specific, done criteria are testable, checklist
-steps are ordered and actionable, and the issue could be executed by someone who knows the project
-but hasn't thought about this goal yet.
+Before returning the issue, verify: the suggested label is one of the type labels from
+ref/labels.json (not a priority label, not invented), current state is specific, done criteria are
+testable, checklist steps are ordered and actionable, and the issue could be executed by someone who
+knows the project but hasn't thought about this goal yet.
 
 ## Notes
 
