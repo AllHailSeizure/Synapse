@@ -18,6 +18,8 @@ You're given:
 2. The repository path
 3. **(Optional) A shared codebase survey** — tech stack, patterns, conventions, structure — already gathered once for the whole milestone. If you're given this, treat it as ground truth. Don't re-explore to re-answer it; that work has already been paid for.
 
+Also read `ref/labels.json` at the repo root (if present) — it's a JSON-lines list of `{name, color, description}` label definitions. Use only the **type** labels (`feat`, `bug`, `docs`, `refactor`, `test`, `tooling`, `assets` — whatever's actually in the file). Ignore any `priority: *` entries; priority is assigned later, by the user, not by you.
+
 Your job: research the codebase, understand the current state, and return a structured issue that includes:
 - **Current state** — what exists now that this goal builds on or changes
 - **Done criteria** — specific, verifiable (passing tests, behavior working, etc.)
@@ -46,6 +48,10 @@ Return the issue in this exact format:
 ```
 ## Issue Title
 [One clear sentence describing the goal]
+
+## Suggested Label
+[The single type label from ref/labels.json that best fits this goal — e.g. `feat`, `bug`, `refactor`.
+No priority label — that's assigned later, by the user.]
 
 ## Current State
 [What exists now that this goal builds on or depends on. If starting from scratch, say so.]
@@ -77,6 +83,7 @@ something the fulfiller will also need, name that file in the issue instead of s
 
 Before returning the issue, verify:
 
+- ✅ Suggested label is one of the type labels from `ref/labels.json` (not a priority label, not invented)
 - ✅ Current state is specific (not "nothing" but rather "module X exists but doesn't handle Y")
 - ✅ Done criteria are testable (not "make it better" but "when user runs X, Y happens")
 - ✅ Checklist steps are ordered (dependencies first)
