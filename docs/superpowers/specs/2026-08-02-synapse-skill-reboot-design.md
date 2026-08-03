@@ -137,13 +137,22 @@ spec/plan cycle before implementation:
    `finishing-branches` behavior already agreed above.
 2a. **Worktree/branch cleanup on merge** — a QOL request from Nate: when a
    branch merges (anywhere in a stack), automatically remove its worktree
-   and delete the branch. Genuinely a "hook" in spirit, but a literal git
-   hook (`post-merge`, etc.) only fires on local git operations — it cannot
-   see a merge that happened on GitHub. Needs a decision on what actually
-   triggers the check (e.g. a script run at the start of a session, or on
-   `git fetch`/`git pull` in the main repo, querying `gh pr view <branch>
-   --json state` for each worktree branch) before this can be scoped as its
-   own spec.
+   and delete the branch. Resolved as two independent mechanisms, both
+   deliberately separate from Claude Code:
+   - **Remote branch:** enable GitHub's native "Automatically delete head
+     branches" repository setting. No custom code — this is a server-side,
+     instant-on-merge action GitHub already provides.
+   - **Local worktree + local branch:** GitHub cannot reach Nate's
+     filesystem, so something local has to notice the merge. Chosen
+     mechanism: a `post-checkout`/`post-merge` git hook, tracked in a
+     `.githooks/` directory and wired in via `core.hooksPath`, that fires on
+     routine local git activity (pull, checkout) and checks each worktree
+     branch with `gh pr view <branch> --json state` — merged branches get
+     their worktree removed (`git worktree remove`) and the local branch
+     deleted (`git branch -d`). Not instant, but self-triggering with no
+     standing background process. Still needs its own implementation plan
+     (hook script contents, `.githooks/` setup, documenting the one-time
+     `core.hooksPath` config step).
 3. **Comment discipline** — Nate flagged persistent over-commenting (e.g. 10
    lines of comments on a 1-line change) as a real problem. The existing
    `CLAUDE.md` rule ("default to no comments; only add when the WHY is
