@@ -135,6 +135,15 @@ spec/plan cycle before implementation:
 2. **PR-stacking mechanics** — how a stack of worktree-based branches tracks
    its dependency order (which branch is whose base), beyond the
    `finishing-branches` behavior already agreed above.
+2a. **Worktree/branch cleanup on merge** — a QOL request from Nate: when a
+   branch merges (anywhere in a stack), automatically remove its worktree
+   and delete the branch. Genuinely a "hook" in spirit, but a literal git
+   hook (`post-merge`, etc.) only fires on local git operations — it cannot
+   see a merge that happened on GitHub. Needs a decision on what actually
+   triggers the check (e.g. a script run at the start of a session, or on
+   `git fetch`/`git pull` in the main repo, querying `gh pr view <branch>
+   --json state` for each worktree branch) before this can be scoped as its
+   own spec.
 3. **Comment discipline** — Nate flagged persistent over-commenting (e.g. 10
    lines of comments on a 1-line change) as a real problem. The existing
    `CLAUDE.md` rule ("default to no comments; only add when the WHY is
@@ -143,11 +152,33 @@ spec/plan cycle before implementation:
    rule — possibly a self-review pass (the existing `simplify` skill may
    already cover this) rather than a new skill.
 
+## Post-review updates
+
+Feedback from Nate's review of this spec, applied directly since each item
+was concrete and low-risk:
+
+- **`speccing-first` removed.** It no longer exists as a concept in
+  Synapse — not just the missing skill file, but its references in
+  `CLAUDE.md` (the "Spec before code" step in "How We Work Together" and its
+  line in the Skills list) and `README.md` (its inventory entry, its line in
+  "How the skills chain," and its entry in the repository-structure
+  listing). Edits applied directly to both files.
+- **PR template added** at `.github/PULL_REQUEST_TEMPLATE.md`: summary,
+  issue linking (`Closes #` / `References #`), a stack section (base branch,
+  explicit note that stack PRs merge only on Nate's go-ahead, never
+  auto-merged), and a labels section referencing the type/priority taxonomy
+  already established in `ref/labels.json` on `feat/workflow-reorientation`
+  (`feat`/`fix`/`refactor`/`test`/`docs`/`tooling`/`assets` +
+  `priority:high/medium/low`). Labels themselves are applied via
+  `gh pr create --label`, not the template body.
+- **Stacked PRs never auto-merge.** `finishing-branches` opens each PR in
+  the stack (auto-pushed, non-blocking heads-up, as already designed above)
+  and stops there. Merging — of any PR in a stack, at any position — is
+  always Nate's explicit action, never automatic, regardless of what the
+  git-hook-driven review reports. This is now folded into the
+  `finishing-branches` adaptation, not just the open PR-stacking follow-up.
+
 ## Non-goals
 
 - No formal task-classification/triage system (see Rejected approach,
   above).
-- No change to `speccing-first`'s existence or role — it's referenced in
-  `CLAUDE.md` and `README.md` but the skill file itself is currently
-  missing from `skills/`. Restoring it is a cleanup task, not part of this
-  design.
