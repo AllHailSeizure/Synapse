@@ -4,9 +4,9 @@ This is the root configuration for Synapse — a personal workflow system that e
 
 ## Philosophy
 
-Synapse treats Claude as a force multiplier, not a collaborator. Skills are step-by-step directives with mandatory gates and visible outputs — not principles to interpret. Abstract guidance can be rationalized around. A required checklist cannot.
+Synapse treats the agent as a force multiplier, not a collaborator. Skills are concrete directives — not vibes — but they stay proportional: trivial work is not put through the same gates as irreversible work. Judgment over ceremony.
 
-Skills are the authority. When a skill applies, follow it exactly.
+Skills are the authority when they apply. Follow them; don't invent extra process.
 
 ### Living Evolution
 Synapse is intentionally living, not static. Each project is a learning opportunity. Post-project reflection surfaces patterns worth codifying into skills or CLAUDE.md updates.
@@ -76,10 +76,8 @@ Short subject line, blank line, optional body with detail.
 
 ## How We Work Together
 
-Every collaborative session follows this structure:
-
-1. **Goals before session.** If the project has a milestone, surface open issues and confirm which goal is next before starting.
-2. **Reflect between goals.** When a goal closes, explicitly ask whether the next one still makes sense before starting it.
+1. **User-directed issues.** Surface open issues when useful; the user picks what to address. Do not auto-select "next."
+2. **Reflect between issues.** When an issue closes, ask whether another still makes sense before starting it.
 
 ### Memory Scope
 
@@ -112,19 +110,23 @@ See `docs/EVOLUTION.md` for detailed reflection checklist.
 
 ## Skills
 
-Synapse skills are hard directives. Each one defines what Claude must visibly complete before moving to the next step.
+Synapse skills are hard directives. Judgment over ceremony — no fixed interview gates for trivial work.
 
-- `goal-oriented-development` — Structures project work as GitHub milestones and issues. Uses three specialized agents (explorer, goal-writer, goal-fulfiller) to research, write, and execute goals. Replaces `goal-tracking`.
-- `testing-preferences` — Testing strategy and expectations for this codebase.
-- `code-review-standards` — How feedback and review work.
-- `autonomous-work-boundaries` — Decision autonomy and approval points for agent sessions.
-- `systematic-debugging` — Structured debugging with a mandatory ruled-out list.
+- `thinking` — Proportional design-before-build (replaces ceremony brainstorming)
+- `verification` — Claim only what you checked; proportional; no substitute harnesses
+- `testing` — TDD when exploring; verification-first when behavior is clear
+- `goal-oriented-development` — User-directed issues (intent + evidence); no goal-fulfiller
+- `autonomous-work-boundaries` — What the agent owns vs what needs Nate
+- `writing-plans` / `executing-plans` — Plan when the work needs it; execute without endless loops
+- `worktrees` / `parallel-agents` / `subagent-team-execution` — Isolation and delegation
+- `code-review` — Receive feedback rigorously; no performative agreement
+- `finishing-branches` — Verify → push → PR; merge stays user-initiated
 
-See `skills/` for each skill's full documentation.
+See `skills/` and `skills/README.md`. Related WIP: `systematic-debugging` under `.claude/skills/synapse/`.
 
 ### Tooling
 
-- `/skill-creator` is an official Anthropic plugin for Claude Code. Use it (via the Skill tool) when creating or refining skills — not `superpowers:writing-skills`.
+- `/skill-creator` for authoring/editing skills — not a runtime skill in this suite.
 
 ---
 
@@ -132,8 +134,8 @@ See `skills/` for each skill's full documentation.
 
 Each project gets its own `CLAUDE.md` that inherits from this root and specifies local boundaries. See `docs/TEMPLATES/project-claude-template.md` for the template.
 
-Install Synapse into a project as a Claude Code plugin: `/plugin marketplace add AllHailSeizure/synapse#release` then `/plugin install synapse@synapse`. See the root README for the `main`/`release` publish gate this tracks.
+Install Synapse into a project as a Claude Code plugin: `/plugin marketplace add AllHailSeizure/synapse#claude-release` then `/plugin install synapse@synapse`.
 
 ---
 
-**Last updated:** 2026-06-28
+**Last updated:** 2026-08-06

@@ -1,105 +1,104 @@
 ---
 name: autonomous-work-boundaries
-description: Use this skill whenever the user delegates implementation, debugging, refactoring, research, or a batch of engineering tasks and expects autonomous progress. It defines the boundary between user-owned creative direction and agent-owned execution, especially when a task is ambiguous or blocked. Apply it before pausing to ask for direction; do not use it for informal exploration or questions that have not been authorized for execution.
+description: >-
+  Boundary between user-owned creative direction and agent-owned execution.
+  Use whenever the user delegates implementation, debugging, refactoring,
+  research, or a batch of engineering tasks and expects autonomous progress —
+  especially when ambiguous or blocked. Apply before pausing to ask; not for
+  informal exploration that was never authorized for execution.
 ---
 
 # Autonomous Work Boundaries
 
-## Purpose
+User owns product intent; agent owns execution inside that intent. Apply to a
+fix, ad-hoc request, feature, or milestone — not as a goal-management skill.
 
-Preserve the user's control of product intent while keeping execution moving. The user decides what to make and the consequential direction; the agent decides how to complete authorized work within those boundaries.
+## Authority to act
 
-This is an execution skill, not a goal-management skill. Apply it to a single fix, an ad-hoc request, a feature, or a milestone.
-
-## Authority to Act
-
-Treat a direct request, an approved plan, and an affirmative response to a proposed action as authorization to execute.
+Direct request, approved plan, or affirmative response to a proposed action =
+authorization.
 
 After authorization:
 
-- Start the work in the same turn. Do not use a response solely to restate that the task is confirmed.
-- Make ordinary implementation, sequencing, debugging, and research decisions independently.
-- Follow the repository's existing conventions and explicit project instructions.
-- For Git implementation work, use an isolated worktree when project practice requires it or the current tree is dirty or conflicts with the task. A workspace conflict is an operational problem to solve, not a reason to stop unrelated work.
+- Start work in the same turn — don't burn a turn only restating confirmation
+- Make ordinary implementation, sequencing, debugging, and research decisions
+- Follow repo conventions and project instructions
+- Use `worktrees` when practice requires it or the tree conflicts with the task
 
-## Decision Boundary
+## Decision boundary
 
-### The user owns
+### User owns
 
-- Product purpose, priorities, and scope
-- User-visible behavior, UX, visual or narrative direction, and other creative choices
-- New architectural direction when the existing codebase or approved plan does not already determine it
-- New dependencies, schema or migration changes, external side effects, and other actions reserved by local project instructions
-- Explicit project boundaries, including actions marked as prohibited
+- Purpose, priorities, scope
+- User-visible behavior, UX, creative direction
+- New architectural direction not already determined by code or approved plan
+- New dependencies, schema/migrations, external side effects, prohibited actions
 
-### The agent owns
+### Agent owns
 
-- Implementing the approved behavior using existing patterns and tools
-- Routine code structure, naming, error handling, tests, debugging, and refactoring within the established architecture
-- Reading the codebase and researching technical questions needed to execute the task
-- Choosing the least-surprising reversible implementation when the approved behavior and project conventions point to one
-- Creating clearly labeled stubs, fixtures, adapters, and placeholders when an unavailable input does not determine product intent
-- Isolating work, reproducing failures, and testing alternatives before treating technical uncertainty as a blocker
+- Implementing approved behavior with existing patterns
+- Routine structure, naming, errors, tests, debugging, refactor within architecture
+- Codebase reading and technical research
+- Least-surprising reversible option when conventions point to one
+- Clear stubs/fixtures when a missing input does not dictate product intent
+- Isolating work and testing alternatives before treating uncertainty as a blocker
 
-Do not invent user-facing behavior or silently cross a documented boundary. Do not equate ordinary implementation judgment with creative control.
+Do not invent user-facing behavior or silently cross a documented boundary.
 
-## Structural Improvements
+## Structural improvements
 
-Make implementation improvements that preserve the approved behavior and fit the established codebase. Examples include deriving a value instead of hardcoding it, extracting repeated logic, and choosing an existing reusable pattern.
+Ship improvements that preserve approved behavior and fit the codebase
+(derive vs hardcode, extract repetition, reuse existing patterns).
 
-When an improvement would introduce a materially different architecture, ownership model, or reusable asset design:
+If an improvement would change architecture, ownership, or reusable asset
+design: state the benefit, recommend it, **don't hostage** the approved work —
+complete the current valid design. Ask only when later meaningful work depends
+on that direction choice.
 
-- State the concrete benefit and recommend the change.
-- Do not make the approved work hostage to an optional improvement. Complete the current design when it remains valid and runnable.
-- Ask before committing to a structural direction only when later meaningful work depends on choosing that direction.
+## Work through blockers
 
-## Work Through Blockers
+Treat work as a dependency graph, not a linear checklist.
 
-Do not stop at the first blocked item. Treat the work as a dependency graph rather than a linear checklist.
+When blocked:
 
-When an item is blocked:
+1. Classify: execution problem / missing input / project boundary / user decision
+2. Exhaust safe recovery:
+   - Missing asset → stub and continue if it doesn't dictate product behavior
+   - Dirty/conflicting tree → isolated worktree
+   - Technical uncertainty → inspect, experiment, pick reversible option
+   - Prohibited → defer that action only; note permission needed
+3. Defer the blocked item and true dependents
+4. Continue every independent runnable task
+5. Ask only after runnable work is exhausted (unless the decision blocks all remaining useful work)
 
-1. Identify whether the issue is an execution problem, a missing input, a project boundary, or a user-owned decision.
-2. Exhaust safe recovery options appropriate to that type:
-   - Missing asset, file, or integration input: build a clear stub or interface and continue where the missing item does not dictate the product behavior.
-   - Dirty workspace or conflicting uncommitted work: move the task into an isolated worktree.
-   - Technical uncertainty: inspect the codebase, run focused experiments or tests, and use the least-surprising reversible option if one is supported by evidence.
-   - Explicitly prohibited action: do not bypass the boundary. Defer only that action and record the permission required.
-3. Mark the blocked item and every task that genuinely depends on it as deferred.
-4. Continue with every independent, runnable task. A local blocker must not invalidate unrelated work.
-5. Ask the user only after runnable work has been exhausted, unless the blocked decision prevents meaningful progress on all remaining work.
+Replace "when in doubt, ask" with: classify → seek evidence → reversible
+execution → defer only genuine user-owned decisions.
 
-A blocker is global only when the remaining useful work depends on the user's decision. For example, choosing Vite or Next.js before an app foundation exists can block the application; a missing animation file should not block unrelated game systems.
+## Asking for direction
 
-Replace "when in doubt, ask" with: classify the decision, seek evidence, make reversible execution choices, and defer only genuine user-owned decisions.
-
-## Asking for Direction
-
-When a user decision is necessary, ask one compact, actionable question. Include:
+One compact question:
 
 - What is blocked
-- Why a safe workaround would not preserve intent or respect a boundary
-- Which work was completed or remains runnable
-- A recommended default and any materially different option
+- Why a workaround wouldn't preserve intent / respect a boundary
+- What completed or remains runnable
+- Recommended default + materially different option
 
-Batch independent unresolved decisions into one handoff. Do not repeatedly interrupt the user as each is discovered.
+Batch independent decisions. After the answer, resume — don't reconfirm the
+broader task.
 
-After the user answers, resume the affected work directly. Do not ask them to reconfirm the broader task.
-
-## Completion Report
-
-At a natural handoff, report only the result and unresolved decisions. If anything is deferred, use this format:
+## Handoff format
 
 ```
 Completed: <concise result>
 
 Deferred decisions:
-- <item>: <exact decision needed>. Recommendation: <default>.
-  Impact: <only the work that depends on it>.
+- <item>: <decision needed>. Recommendation: <default>.
+  Impact: <only dependent work>.
 ```
 
-Do not report a task as simply "blocked" while independent work remains.
+Don't report "blocked" while independent work remains.
 
-## Local Boundaries
+## Local overrides
 
-Project instructions override this skill when they are more restrictive. Respect them as real boundaries, but continue all work that remains inside the permitted scope.
+Stricter project instructions win. Continue everything still inside permitted
+scope.
