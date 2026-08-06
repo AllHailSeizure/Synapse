@@ -10,11 +10,6 @@ The core principle: every skill defines what Claude must visibly complete before
 
 ## Skill inventory
 
-**`speccing-first`** *(collaborative sessions)*
-Two mandatory gates before any code is written:
-1. Enumerate implementation approaches, rule out wrong ones, agree on method
-2. State exact behavior in concrete terms ("when X, Y happens") and get confirmation
-
 **`over-engineering-guard`** *(collaborative sessions)*
 During implementation, classifies anything outside the agreed spec:
 - Small implementation decisions → handle in session
@@ -38,7 +33,6 @@ Structured debugging with a mandatory ruled-out list. *(pending rewrite / new)*
 
 ## How the skills chain
 
-`speccing-first` → ensures approach and behavior are agreed before implementation begins  
 `goal-tracking` → ensures the session has a single locked goal with new ideas queued  
 `over-engineering-guard` → holds the spec line during implementation, routes exceptions to the milestone  
 
@@ -64,7 +58,6 @@ To update: `/plugin marketplace update synapse`. To disable: `/plugin disable sy
   plugin.json       # plugin manifest
   marketplace.json  # self-hosted marketplace listing this plugin
 skills/
-  speccing-first/SKILL.md
   testing-preferences/SKILL.md
   goal-oriented-development/SKILL.md
 agents/
