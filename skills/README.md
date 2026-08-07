@@ -17,6 +17,7 @@ Lean, directive skills. Noun-phrase names. Proportional judgment over ceremony.
 | `code-review` | Receiving review feedback rigorously |
 | `finishing-branches` | Verify → push → PR |
 | `goal-oriented-development` | User-directed issues; no fulfiller |
+| `bug-capture` | Sticky-note bug → GitHub issue; no fix |
 | `autonomous-work-boundaries` | User intent vs agent execution |
 
 Related (separate track): `systematic-debugging` under `.claude/skills/synapse/`.

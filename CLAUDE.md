@@ -116,6 +116,7 @@ Synapse skills are hard directives. Judgment over ceremony — no fixed intervie
 - `verification` — Claim only what you checked; proportional; no substitute harnesses
 - `testing` — TDD when exploring; verification-first when behavior is clear
 - `goal-oriented-development` — User-directed issues (intent + evidence); no goal-fulfiller
+- `bug-capture` — Sticky-note capture (`/bug`); record for later, don't fix
 - `autonomous-work-boundaries` — What the agent owns vs what needs Nate
 - `writing-plans` / `executing-plans` — Plan when the work needs it; execute without endless loops
 - `worktrees` / `parallel-agents` / `subagent-team-execution` — Isolation and delegation
