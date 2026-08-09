@@ -40,32 +40,43 @@ directly with `/debug`.
 
 These three work together in a collaborative session. Autonomous agent behavior is governed by `autonomous-work-boundaries` separately.
 
-## Installing into a project
+## Installing
 
-Add the marketplace once, then install the plugin:
+Synapse is a personal system with one user, so it installs by pointing
+`~/.claude/` at this repo rather than by packaging a plugin:
 
+```bash
+pwsh -File scripts/Link-Synapse.ps1
 ```
-/plugin marketplace add AllHailSeizure/synapse#release
-/plugin install synapse@synapse
-```
 
-`main` is the working branch — skills get changed and tested here first. `release` only moves forward once a change has been tried in a real project; that's the deliberate publish step, and it's what the marketplace pointer above tracks. `/plugin marketplace update` picks up whatever is currently on `release` — nothing changes for an installed project until that branch moves.
+That creates one junction per skill at `~/.claude/skills/<name>`, plus
+`~/.claude/commands/synapse`. Per-skill rather than one junction of `skills/`
+because Claude Code discovers personal skills flat — as
+`~/.claude/skills/<name>/SKILL.md` — so a single junction would nest everything
+a level too deep and nothing would load. Junctions rather than symlinks because
+they need no admin rights on Windows.
 
-To update: `/plugin marketplace update synapse`. To disable: `/plugin disable synapse@synapse`. To remove: `/plugin uninstall synapse@synapse`.
+Re-run the script after adding or removing a skill. `-Remove` unlinks. Real
+directories in `~/.claude/skills` are never overwritten, so an unrelated
+personal skill sitting there is safe.
+
+Edits are live in every project the moment they're saved — there is no publish
+step and no version pinning. That is the deliberate tradeoff: a bad edit is
+immediately live everywhere, including mid-session. Work on a branch while a
+change is still cooking, and check out `master` when you want the junctions to
+serve the known-good state.
 
 ## Repository structure
 
 ```
-.claude-plugin/
-  plugin.json       # plugin manifest
-  marketplace.json  # self-hosted marketplace listing this plugin
 skills/
-  testing-preferences/SKILL.md
-  goal-oriented-development/SKILL.md
+  <skill-name>/SKILL.md    # one directory per skill
+commands/
+  debug.md                 # slash commands
 agents/
   codebase-explorer.md, goal-writer.md, goal-surveyor.md, goal-fulfiller.md
-CLAUDE.md           # root configuration (also read by Claude)
-docs/                # templates and evolution docs
+CLAUDE.md                  # root configuration (also read by Claude)
+docs/                      # templates and evolution docs
 ```
 
 Codex CLI support (`.codex/agents/synapse/`) is maintained separately and isn't part of the plugin — Codex's own agent migration system can import directly from this repo's Claude Code layout instead.
