@@ -9,4 +9,3 @@
 {"color":"d93f0b","description":"Major. A core flow is broken, but a workaround exists.","name":"p1"}
 {"color":"fbca04","description":"Normal. A real defect that doesn't block progress.","name":"p2"}
 {"color":"c5def5","description":"Minor. Polish, cosmetic, or low-impact. Default for /bug capture.","name":"p3"}
-{"color":"5319e7","description":"A bandaid attempted this and declined it as out of patch scope. Needs real investigation, not a patch.","name":"needs-debug"}

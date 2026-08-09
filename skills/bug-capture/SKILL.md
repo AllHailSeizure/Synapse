@@ -62,8 +62,9 @@ override beats a guess they have to correct.
 | `p2` | Normal. Real defect, doesn't block. |
 | `p3` | Minor. Polish, cosmetic, low impact. |
 
-Priority is severity, not difficulty. Nothing downstream rewrites it — if a
-bandaid can't handle a bug, that's `needs-debug`, not a priority bump.
+Priority is severity, not difficulty. Nothing downstream rewrites it. A
+bandaid that can't handle a bug simply leaves the issue open, which is
+already the signal that it's yours — no label needed to say so.
 
 ## Skip the kick
 
