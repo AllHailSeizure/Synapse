@@ -46,7 +46,7 @@ Synapse is a personal system with one user, so it installs by pointing
 `~/.claude/` at this repo rather than by packaging a plugin:
 
 ```bash
-pwsh -File scripts/Link-Synapse.ps1
+powershell -File scripts/Link-Synapse.ps1
 ```
 
 That creates one junction per skill at `~/.claude/skills/<name>`, plus
