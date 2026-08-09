@@ -28,8 +28,10 @@ How feedback and review work. *(pending rewrite)*
 **`autonomous-work-boundaries`**
 Decision autonomy and approval points for agent sessions. *(pending rewrite)*
 
-**`systematic-debugging`**
-Structured debugging with a mandatory ruled-out list. *(pending rewrite / new)*
+**`debugging`**
+Hypothesis-driven debugging: cursory look, up to four competing hypotheses,
+instrumentation that tells them apart, one repro, then fix and PR. Invoked
+directly with `/debug`.
 
 ## How the skills chain
 

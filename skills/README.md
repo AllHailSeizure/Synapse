@@ -14,18 +14,24 @@ Lean, directive skills. Noun-phrase names. Proportional judgment over ceremony.
 | `executing-plans` | Inline plan execution + checkpoints |
 | `subagent-team-execution` | Fresh subagent per plan task |
 | `testing` | TDD default / verification-first when clear |
+| `debugging` | Hypotheses → instrument → repro → fix → PR (`/debug`) |
 | `code-review` | Receiving review feedback rigorously |
 | `finishing-branches` | Verify → push → PR |
 | `goal-oriented-development` | User-directed issues; no fulfiller |
 | `bug-capture` | Sticky-note bug → GitHub issue; no fix |
 | `autonomous-work-boundaries` | User intent vs agent execution |
 
-Related (separate track): `systematic-debugging` under `.claude/skills/synapse/`.
+## Commands
+
+| Command | Skill |
+|---------|-------|
+| `/debug` | `debugging` |
 
 ## Dropped / not ported
 
 | Dropped | Why |
 |---------|-----|
+| `systematic-debugging` | 5 agent types, skeptic gate, escalation cap, cap-out issues — replaced by `debugging` |
 | Old brainstorming checklist | 8-step interview, section gates, mandatory specs, visual companion, forced writing-plans — replaced by `thinking` |
 | requesting-code-review | Review when useful, not a suite gate |
 | writing-skills | Authoring lives with skill-creator, not this runtime suite |

@@ -116,6 +116,7 @@ Synapse skills are hard directives. Judgment over ceremony — no fixed intervie
 - `verification` — Claim only what you checked; proportional; no substitute harnesses
 - `testing` — TDD when exploring; verification-first when behavior is clear
 - `goal-oriented-development` — User-directed issues (intent + evidence); no goal-fulfiller
+- `debugging` — Hypotheses fast, instrument, one repro, fix, PR (`/debug`)
 - `bug-capture` — Sticky-note capture (`/bug`); record for later, don't fix
 - `autonomous-work-boundaries` — What the agent owns vs what needs Nate
 - `writing-plans` / `executing-plans` — Plan when the work needs it; execute without endless loops
@@ -123,7 +124,7 @@ Synapse skills are hard directives. Judgment over ceremony — no fixed intervie
 - `code-review` — Receive feedback rigorously; no performative agreement
 - `finishing-branches` — Verify → push → PR; merge stays user-initiated
 
-See `skills/` and `skills/README.md`. Related WIP: `systematic-debugging` under `.claude/skills/synapse/`.
+See `skills/` and `skills/README.md`.
 
 ### Tooling
 
