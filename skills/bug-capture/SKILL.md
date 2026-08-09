@@ -24,9 +24,9 @@ is a sticky note with a GitHub id and a trigger comment.
    root cause / fix / evidence passes.
 2. Title = a short slice of what they said (first line or ~72 chars).
    Body = their words verbatim (or nearly so).
-3. Create on the current repo with `gh issue create`, label `bug`. If the
-   label is missing, create the issue without it and note that in the
-   reply — do not block on labels.
+3. Create on the current repo with `gh issue create`, labels `bug` and a
+   priority (see below). If a label is missing, create the issue without
+   it and note that in the reply — do not block on labels.
 4. Kick the bandaid unless they opted out (see below). Comment on the
    issue just created with a body that starts with `@bug-bandaid` and
    carries the bug text so the automation does not need Issues API:
@@ -44,6 +44,26 @@ is a sticky note with a GitHub id and a trigger comment.
    in the reply; still return the issue URL.
 5. Reply with the issue URL in one short line.
 6. Stop. Resume the prior conversation topic. Do not diagnose or fix.
+
+## Priority
+
+Default `p3`. Capture usually happens mid-playthrough, where most of what
+you notice is minor — so the default should cost nothing to accept.
+
+They can override by leading with the level: `/bug p0 hard crash on chapter
+load`. Take it verbatim, strip it from the title and body, apply that label
+instead. Don't infer priority from how the bug sounds — a default they can
+override beats a guess they have to correct.
+
+| Label | Means |
+|-------|-------|
+| `p0` | Blocker. Unplayable, broken build, data loss. No workaround. |
+| `p1` | Major. Core flow broken, workaround exists. |
+| `p2` | Normal. Real defect, doesn't block. |
+| `p3` | Minor. Polish, cosmetic, low impact. |
+
+Priority is severity, not difficulty. Nothing downstream rewrites it — if a
+bandaid can't handle a bug, that's `needs-debug`, not a priority bump.
 
 ## Skip the kick
 

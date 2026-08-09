@@ -18,4 +18,4 @@ Merges only after its base lands, and only on Nate's explicit go-ahead — never
 
 <!-- Applied via `gh pr create --label`, not this template body — listed here so type/priority are visible in the diff. -->
 Type: `feat` | `fix` | `refactor` | `test` | `docs` | `tooling` | `assets`
-Priority: `priority:high` | `priority:medium` | `priority:low`
+Priority: `p0` | `p1` | `p2` | `p3`
