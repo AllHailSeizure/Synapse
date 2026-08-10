@@ -45,26 +45,23 @@ These three work together in a collaborative session. Autonomous agent behavior 
 Synapse is a personal system with one user, so it installs by pointing
 `~/.claude/` at this repo rather than by packaging a plugin:
 
+Copy the skills and commands into each agent's config directory:
+
 ```bash
-powershell -File scripts/Link-Synapse.ps1
+powershell -Command "'.claude','.cursor' | % { Copy-Item 'D:\Libraries\Synapse\skills\*' \"$env:USERPROFILE\$_\skills\" -Recurse -Force; Copy-Item 'D:\Libraries\Synapse\commands\*.md' \"$env:USERPROFILE\$_\commands\" -Force }"
 ```
 
-That creates one junction per skill at `~/.claude/skills/<name>`, plus
-`~/.claude/commands/synapse`. Per-skill rather than one junction of `skills/`
-because Claude Code discovers personal skills flat — as
-`~/.claude/skills/<name>/SKILL.md` — so a single junction would nest everything
-a level too deep and nothing would load. Junctions rather than symlinks because
-they need no admin rights on Windows.
+Every agent discovers personal skills the same way — `<config>/skills/<name>/SKILL.md`
+— so one copy command serves all of them.
 
-Re-run the script after adding or removing a skill. `-Remove` unlinks. Real
-directories in `~/.claude/skills` are never overwritten, so an unrelated
-personal skill sitting there is safe.
+Re-run it after changing a skill. That's the tradeoff: copies don't go stale on
+their own, but they don't update on their own either, so an edit isn't live
+anywhere until you re-run. Worth checking when a skill doesn't behave the way
+the repo says it should.
 
-Edits are live in every project the moment they're saved — there is no publish
-step and no version pinning. That is the deliberate tradeoff: a bad edit is
-immediately live everywhere, including mid-session. Work on a branch while a
-change is still cooking, and check out `master` when you want the junctions to
-serve the known-good state.
+Codex is not in that list yet — it installs Synapse as a plugin from the
+`codex-release` branch, which is several generations behind. Sorting that out is
+its own decision.
 
 ## Repository structure
 
