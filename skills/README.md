@@ -20,6 +20,14 @@ Lean, directive skills. Noun-phrase names. Proportional judgment over ceremony.
 | `goal-oriented-development` | User-directed issues; no fulfiller |
 | `bug-capture` | Sticky-note bug → GitHub issue; no fix |
 | `autonomous-work-boundaries` | User intent vs agent execution |
+| `asset-churn-audit` | Which assets the branch needs vs churn (`/weedeat`) |
+| `worktree-cleanup` | Worktree/branch sprawl, tiered by removal safety (`/weedeat`) |
+
+The two `/weedeat` skills ship a script under `scripts/` and read repo-specific
+configuration from the `## Assets` and `## Worktrees` sections of the target
+repo's `SYNAPSE.md` — the same manifest the bandaids read. Schema:
+[`docs/TEMPLATES/SYNAPSE.md`](../docs/TEMPLATES/SYNAPSE.md). Unlike a bandaid,
+a missing section degrades to generic defaults instead of stopping.
 
 ## Commands
 
@@ -27,6 +35,7 @@ Lean, directive skills. Noun-phrase names. Proportional judgment over ceremony.
 |---------|-------|
 | `/debug` | `debugging` |
 | `/bug` | `bug-capture` |
+| `/weedeat` | `asset-churn-audit` + `worktree-cleanup` |
 
 ## Dropped / not ported
 

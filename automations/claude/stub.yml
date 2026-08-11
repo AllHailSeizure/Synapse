@@ -11,6 +11,15 @@ on:
 
 jobs:
   bandaid:
+    # A called workflow's jobs can only hold permissions the caller already has,
+    # so these must be granted here even when the repo default is read/write —
+    # id-token is never in the default set.
+    permissions:
+      contents: write
+      issues: write
+      pull-requests: write
+      id-token: write
+      actions: read
     uses: AllHailSeizure/Synapse/.github/workflows/bandaids.yml@master
     secrets: inherit
     # with:

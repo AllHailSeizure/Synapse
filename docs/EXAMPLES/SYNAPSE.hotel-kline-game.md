@@ -61,6 +61,25 @@ ownership, and generic chapter-state access.
 
 benign: Godot shutdown noise involving ObjectDB instances, live resources, or
 leaked RIDs.
+
+## Assets
+
+base: origin/master
+art: .png, .jpg, .jpeg, .aseprite, .pxo
+audio: .ogg, .wav, .mp3, .aup3
+sidecar: .import, .uid
+references: *.tscn, *.tres, *.gd, *.godot
+resource-prefix: res://
+analyzers: godot-import, pixelorama-pxo
+flag: .aup3 | REVIEW | Audacity project (LFS, ~100MB) — a source recording session, not a game asset; the game never loads one. Belongs in an audio branch unless this PR is specifically about audio production.
+
+## Worktrees
+
+containers: .claude/worktrees, .worktrees
+foreign: .cursor, .codex, .vscode
+noise-suffixes: .import, .uid
+noise-dirs: .godot/, .worktrees/, .claude/worktrees/
+protected: master, main
 ```
 
 ---
@@ -76,3 +95,8 @@ Two things moved position rather than content:
   a behaviour change worth knowing about.
 - The CLAUDE.md hard-gate list was inline in two prompts and referenced
   generically in the third. It now lives in `note`, so all three get it.
+
+`Assets` and `Worktrees` were added later, when the `/weedeat` survey skills
+moved into Synapse. They came out of two skills that had lived in the game
+repo's own `.claude/skills/` with this knowledge hard-coded in their scripts;
+no bandaid reads either section.

@@ -1,5 +1,9 @@
 # Platform Release Branches
 
+> **SUPERSEDED 2026-08-11.** `claude-release` and `codex-release` were deleted
+> and Synapse moved to a single model-agnostic marketplace on `master`. Design
+> history — the branches this describes no longer exist.
+
 ## Purpose
 
 Synapse maintains a shared development branch and independently publishable Claude Code and Codex plugin branches. The release branches must prevent platform-specific files from crossing into the other platform's package.

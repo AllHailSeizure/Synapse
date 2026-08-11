@@ -9,5 +9,8 @@
   "homepage": "https://github.com/AllHailSeizure/synapse",
   "repository": "https://github.com/AllHailSeizure/synapse",
   "license": "MIT",
-  "skills": "./automations/claude/skills/"
+  "skills": [
+    "./skills/",
+    "./automations/claude/skills/"
+  ]
 }
