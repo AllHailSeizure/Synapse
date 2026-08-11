@@ -1,5 +1,11 @@
 # Platform Release Branches Implementation Plan
 
+> **SUPERSEDED 2026-08-11.** `claude-release` and `codex-release` were deleted
+> and Synapse moved to a single model-agnostic marketplace on `master`. Keeping
+> two platform branches meant implementing every feature twice, and it drifted:
+> at deletion the release branches held three features master never got. This
+> document is design history — do not implement it.
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** Publish Synapse as a private local Codex plugin while enforcing separate Claude Code and Codex release branches.
