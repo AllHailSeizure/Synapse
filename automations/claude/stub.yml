@@ -10,5 +10,5 @@ on:
 
 jobs:
   bandaid:
-    uses: AllHailSeizure/synapse/.github/workflows/bandaids.yml@master
+    uses: AllHailSeizure/Synapse/.github/workflows/bandaids.yml@master
     secrets: inherit

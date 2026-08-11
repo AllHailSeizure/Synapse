@@ -11,7 +11,7 @@ on:
         required: true
 
 env:
-  MARKETPLACE: https://github.com/AllHailSeizure/synapse.git
+  MARKETPLACE: https://github.com/AllHailSeizure/Synapse.git
   CLAUDE_ARGS: |
     --model claude-opus-5
     --max-turns 60
