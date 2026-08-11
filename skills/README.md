@@ -20,6 +20,12 @@ Lean, directive skills. Noun-phrase names. Proportional judgment over ceremony.
 | `goal-oriented-development` | User-directed issues; no fulfiller |
 | `bug-capture` | Sticky-note bug → GitHub issue; no fix |
 | `autonomous-work-boundaries` | User intent vs agent execution |
+| `asset-churn-audit` | Which assets the branch needs vs churn (`/weedeat`) |
+| `worktree-cleanup` | Worktree/branch sprawl, tiered by removal safety (`/weedeat`) |
+
+The two `/weedeat` skills ship a script under `scripts/` and read repo-specific
+configuration from `.synapse/weedeat.toml` in the target repo. Schema and
+template: [`docs/TEMPLATES/weedeat.toml`](../docs/TEMPLATES/weedeat.toml).
 
 ## Commands
 
@@ -27,6 +33,7 @@ Lean, directive skills. Noun-phrase names. Proportional judgment over ceremony.
 |---------|-------|
 | `/debug` | `debugging` |
 | `/bug` | `bug-capture` |
+| `/weedeat` | `asset-churn-audit` + `worktree-cleanup` |
 
 ## Dropped / not ported
 

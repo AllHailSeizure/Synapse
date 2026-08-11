@@ -123,6 +123,7 @@ Synapse skills are hard directives. Judgment over ceremony — no fixed intervie
 - `worktrees` / `parallel-agents` / `subagent-team-execution` — Isolation and delegation
 - `code-review` — Receive feedback rigorously; no performative agreement
 - `finishing-branches` — Verify → push → PR; merge stays user-initiated
+- `asset-churn-audit` / `worktree-cleanup` — Report what accumulated on its own; never delete (`/weedeat`)
 
 See `skills/` and `skills/README.md`.
 

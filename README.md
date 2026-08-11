@@ -12,8 +12,10 @@ The shared skills live in `skills/` and cover:
 - testing, verification, debugging, and code review;
 - worktree isolation and bounded subagent delegation;
 - finishing branches with verification, push, and pull request creation;
-- user-directed GitHub issues and sticky-note bug capture; and
-- autonomous-work boundaries between user intent and agent execution.
+- user-directed GitHub issues and sticky-note bug capture;
+- autonomous-work boundaries between user intent and agent execution; and
+- report-only surveys of what a repo accumulates on its own — asset churn in a
+  branch, worktree and branch sprawl.
 
 See [`skills/README.md`](skills/README.md) for the complete inventory and the
 skills that were intentionally dropped or replaced.
@@ -33,6 +35,21 @@ adapters are in `agents/`.
 The `/bug` command is defined in [`commands/bug.md`](commands/bug.md) and
 delegates to the capture-only `bug-capture` skill. The command index is in
 [`commands/README.md`](commands/README.md).
+
+## Per-repo configuration
+
+Two kinds of repo-specific configuration live in the repos Synapse operates on,
+not in Synapse itself:
+
+- `SYNAPSE.md` at the repo root — the flat manifest the bandaids read at Gate 0.
+  Template: [`docs/TEMPLATES/SYNAPSE.md`](docs/TEMPLATES/SYNAPSE.md).
+- `.synapse/weedeat.toml` — structured input for the `/weedeat` survey skills:
+  which extensions count as assets, where worktrees live, which regenerated
+  files carry no work. Template:
+  [`docs/TEMPLATES/weedeat.toml`](docs/TEMPLATES/weedeat.toml).
+
+Both skills run without the config file, on generic defaults, and say so in
+their own output.
 
 ## Codex plugin installation
 
