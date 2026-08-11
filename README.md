@@ -50,7 +50,8 @@ adapters are in `agents/`.
 
 The `/bug` command is defined in [`commands/bug.md`](commands/bug.md) and
 delegates to the capture-only `bug-capture` skill. The command index is in
-[`commands/README.md`](commands/README.md).
+[`docs/COMMANDS.md`](docs/COMMANDS.md) — kept out of `commands/`, since every
+`.md` in that directory ships as a slash command.
 
 ## Per-repo configuration
 
