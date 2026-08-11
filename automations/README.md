@@ -8,6 +8,7 @@ work. They run server-side regardless of which editor you're in.
 | `bug-bandaid` | issue comment containing `@bug-bandaid` | Patch a small bug: ≤4 hypotheses, one repro, one fix, PR |
 | `review-bandaid` | inline PR review comment containing `@review-bandaid` | Evaluate one review thread as a claim: YES / NO / UNVERIFIABLE |
 | `merge-bandaid` | PR comment containing `@merge-bandaid` | Resolve a mechanical merge conflict with one merge commit |
+| `ci-bandaid` | PR comment containing `@ci-bandaid` | Fix one failing CI check: one repro, one causal fix, one commit |
 
 ## What a bandaid is for
 

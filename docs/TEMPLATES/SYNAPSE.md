@@ -110,6 +110,7 @@ unknown conventions is precisely the failure this file prevents.
 | bug | Identity, Verify, Repro, Protected |
 | review | Identity, Verify, Protected |
 | merge | Identity, Verify, Protected |
+| ci | Identity, Verify, Protected |
 
 `Ignore` is optional everywhere — absent means nothing is filtered. `Secrets`
 is required only by the frozen Cursor automations.
