@@ -43,16 +43,20 @@ is where your judgment is genuinely required, not a hedge.
 
 ## Repo configuration
 
-Everything repo-specific lives in `.synapse/weedeat.toml` under `[assets]`:
-which extensions count as assets, which files can reference one, how references
-spell an asset path, and which format analyzers apply. The template with the
-full schema is `docs/TEMPLATES/weedeat.toml` in the Synapse repo.
+Everything repo-specific lives in the `## Assets` section of the target repo's
+`SYNAPSE.md` — the same manifest the bandaids read: which extensions count as
+assets, which files can reference one, how references spell an asset path, and
+which format analyzers apply. Schema and example:
+`docs/TEMPLATES/SYNAPSE.md` in the Synapse repo.
 
-**Check for that file first.** Without it the audit still runs, but on generic
-defaults and with no analyzers, so every verdict rests on reference scanning
-alone — usable, and much blunter than it looks in the output. The script says
-so in its own header when the config is missing. If a repo audits assets more
-than once, write the config instead of re-reading blunt output.
+**Check for that section first.** Without it the audit still runs, but on
+generic defaults and with no analyzers, so every verdict rests on reference
+scanning alone — usable, and much blunter than it looks in the output. The
+script says so in its own header when the section is missing. If a repo audits
+assets more than once, write the section instead of re-reading blunt output.
+
+Unlike a bandaid, a missing section is not a stop. This is a survey; it degrades
+and announces the degrading.
 
 ## What the evidence actually is
 

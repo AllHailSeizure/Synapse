@@ -6,8 +6,9 @@ them. It never runs a removal itself, because the destructive step needs a human
 who can recognize which parked WIP still matters.
 
 Repo-specific knowledge (where worktrees live, which uncommitted paths carry no
-work) comes from `.synapse/weedeat.toml`. Without it the survey runs on generic
-defaults, which is correct but treats every uncommitted file as real work.
+work) comes from the `## Worktrees` section of the repo's SYNAPSE.md. Without it
+the survey runs on generic defaults, which is correct but treats every
+uncommitted file as real work.
 
 Usage:
     python scripts/survey_worktrees.py [--json out.json] [--no-fetch]
@@ -54,23 +55,56 @@ def repo_root() -> str:
     return git("rev-parse", "--show-toplevel")
 
 
-def load_config(root: str) -> dict:
-    """Read `[worktrees]` out of .synapse/weedeat.toml. Absent file is not an error."""
-    path = Path(root) / ".synapse" / "weedeat.toml"
+def read_manifest(root: str) -> dict[str, dict[str, list[str]]]:
+    """Parse SYNAPSE.md into {section: {key: [values]}}.
+
+    Sections are `## Heading`, entries are `key: value`. Repeated keys
+    accumulate. Code fences are skipped, so the fenced and bare styles both
+    parse the same.
+    """
+    path = Path(root) / "SYNAPSE.md"
     if not path.is_file():
         return {}
-    try:
-        import tomllib
-    except ImportError:
-        print(f"{path} found but this Python has no tomllib (needs 3.11+); "
-              "continuing on generic defaults.", file=sys.stderr)
+    sections: dict[str, dict[str, list[str]]] = {}
+    current: str | None = None
+    for line in path.read_text(encoding="utf-8", errors="replace").splitlines():
+        stripped = line.strip()
+        if stripped.startswith("```"):
+            continue
+        if stripped.startswith("## "):
+            current = stripped[3:].strip().lower()
+            sections.setdefault(current, {})
+            continue
+        if current is None or stripped.startswith("#") or ":" not in stripped:
+            continue
+        key, _, value = stripped.partition(":")
+        key, value = key.strip().lower(), value.strip()
+        # Prose in a section reads as a key when it happens to contain a colon;
+        # a real entry key is a single bare word.
+        if key and value and " " not in key:
+            sections[current].setdefault(key, []).append(value)
+    return sections
+
+
+def csv(section: dict, key: str, default: list[str] | None = None) -> list[str]:
+    values = section.get(key)
+    if not values:
+        return list(default) if default is not None else []
+    return [item.strip() for item in values[-1].split(",") if item.strip()]
+
+
+def worktrees_config(manifest: dict) -> dict:
+    """The `## Worktrees` section, shaped for the survey."""
+    section = manifest.get("worktrees", {})
+    if not section:
         return {}
-    try:
-        return tomllib.loads(path.read_text(encoding="utf-8")).get("worktrees", {})
-    except (tomllib.TOMLDecodeError, OSError) as exc:
-        print(f"Could not read {path}: {exc}; continuing on generic defaults.",
-              file=sys.stderr)
-        return {}
+    return {
+        "containers": csv(section, "containers", DEFAULT_CONTAINERS),
+        "foreign_markers": csv(section, "foreign", DEFAULT_FOREIGN),
+        "noise_suffixes": csv(section, "noise-suffixes"),
+        "noise_dirs": csv(section, "noise-dirs"),
+        "protected_branches": csv(section, "protected", DEFAULT_PROTECTED),
+    }
 
 
 def list_worktrees(root: str) -> list[dict]:
@@ -220,7 +254,7 @@ def main() -> int:
         print("Not inside a git repository.", file=sys.stderr)
         return 1
 
-    cfg = load_config(root)
+    cfg = worktrees_config(read_manifest(root))
     containers = list(cfg.get("containers", DEFAULT_CONTAINERS))
     foreign_markers = list(cfg.get("foreign_markers", DEFAULT_FOREIGN))
     noise_suffixes = tuple(cfg.get("noise_suffixes", []))
@@ -265,7 +299,7 @@ def main() -> int:
     print(f"{len(surveyed)} worktrees, {len(local)} local branches, "
           f"{len(orphans)} orphaned directories.")
     if not cfg:
-        print("\n> No `.synapse/weedeat.toml` in this repo - running on generic "
+        print("\n> No `## Worktrees` section in SYNAPSE.md - running on generic "
               "defaults. Every uncommitted file counts as real work, so worktrees "
               "dirty only with regenerated files will read as HOLD.")
     if not have_gh:

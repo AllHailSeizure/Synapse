@@ -24,8 +24,10 @@ Lean, directive skills. Noun-phrase names. Proportional judgment over ceremony.
 | `worktree-cleanup` | Worktree/branch sprawl, tiered by removal safety (`/weedeat`) |
 
 The two `/weedeat` skills ship a script under `scripts/` and read repo-specific
-configuration from `.synapse/weedeat.toml` in the target repo. Schema and
-template: [`docs/TEMPLATES/weedeat.toml`](../docs/TEMPLATES/weedeat.toml).
+configuration from the `## Assets` and `## Worktrees` sections of the target
+repo's `SYNAPSE.md` — the same manifest the bandaids read. Schema:
+[`docs/TEMPLATES/SYNAPSE.md`](../docs/TEMPLATES/SYNAPSE.md). Unlike a bandaid,
+a missing section degrades to generic defaults instead of stopping.
 
 ## Commands
 

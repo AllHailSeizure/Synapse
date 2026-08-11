@@ -50,13 +50,15 @@ reaching for a faster approximation.
 
 ## Repo configuration
 
-`.synapse/weedeat.toml` under `[worktrees]` supplies where this repo creates
-worktrees and which uncommitted paths carry no work. The template with the full
-schema is `docs/TEMPLATES/weedeat.toml` in the Synapse repo.
+The `## Worktrees` section of the target repo's `SYNAPSE.md` — the same manifest
+the bandaids read — supplies where this repo creates worktrees and which
+uncommitted paths carry no work. Schema and example:
+`docs/TEMPLATES/SYNAPSE.md` in the Synapse repo.
 
 The noise filter is the key entry, and see below for why. Without it the survey
 still runs, but every regenerated sidecar counts as real work, and a repo whose
-engine rewrites files on editor open reports nearly everything as HOLD.
+engine rewrites files on editor open reports nearly everything as HOLD. A
+missing section is not a stop — this is a survey; it degrades and says so.
 
 ## Two things a hand-rolled survey always gets wrong
 

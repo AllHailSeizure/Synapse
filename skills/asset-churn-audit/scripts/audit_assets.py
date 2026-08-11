@@ -7,9 +7,10 @@ and this answers the mechanical part -- whether the content actually changed,
 and whether anything in the diff references the asset.
 
 Repo-specific knowledge (which extensions are assets, which files can reference
-one, which format analyzers apply) comes from `.synapse/weedeat.toml`. Without
-it the audit falls back to generic defaults: common art and audio extensions,
-reference-scanning across every tracked file, no format analyzers.
+one, which format analyzers apply) comes from the `## Assets` section of the
+repo's SYNAPSE.md. Without it the audit falls back to generic defaults: common
+art and audio extensions, reference-scanning across every tracked file, no
+format analyzers.
 
 Read-only. It prints verdicts and the revert commands; it never writes to the
 repo.
@@ -54,36 +55,77 @@ def repo_root() -> str:
     return (run("rev-parse", "--show-toplevel") or "").strip()
 
 
-def load_config(root: str) -> dict:
-    """Read `[assets]` out of .synapse/weedeat.toml. Absent file is not an error."""
-    path = Path(root) / ".synapse" / "weedeat.toml"
-    if not path.is_file():
-        return {}
-    try:
-        import tomllib
-    except ImportError:
-        print(f"{path} found but this Python has no tomllib (needs 3.11+); "
-              "continuing on generic defaults.", file=sys.stderr)
-        return {}
-    try:
-        return tomllib.loads(path.read_text(encoding="utf-8")).get("assets", {})
-    except (tomllib.TOMLDecodeError, OSError) as exc:
-        print(f"Could not read {path}: {exc}; continuing on generic defaults.",
-              file=sys.stderr)
-        return {}
+def read_manifest(root: str) -> dict[str, dict[str, list[str]]]:
+    """Parse SYNAPSE.md into {section: {key: [values]}}.
 
-
-def manifest_base(root: str) -> str | None:
-    """The `base:` line from SYNAPSE.md, so the branch isn't configured twice."""
+    Sections are `## Heading`, entries are `key: value`. Repeated keys
+    accumulate, so a section can carry several `flag:` lines. Code fences are
+    skipped, so the fenced and bare styles both parse the same.
+    """
     path = Path(root) / "SYNAPSE.md"
     if not path.is_file():
-        return None
+        return {}
+    sections: dict[str, dict[str, list[str]]] = {}
+    current: str | None = None
     for line in path.read_text(encoding="utf-8", errors="replace").splitlines():
-        if line.strip().startswith("base:"):
-            value = line.split(":", 1)[1].strip()
-            if value:
-                return f"origin/{value}"
-    return None
+        stripped = line.strip()
+        if stripped.startswith("```"):
+            continue
+        if stripped.startswith("## "):
+            current = stripped[3:].strip().lower()
+            sections.setdefault(current, {})
+            continue
+        if current is None or stripped.startswith("#") or ":" not in stripped:
+            continue
+        key, _, value = stripped.partition(":")
+        key, value = key.strip().lower(), value.strip()
+        # Prose in a section reads as a key when it happens to contain a colon;
+        # a real entry key is a single bare word.
+        if key and value and " " not in key:
+            sections[current].setdefault(key, []).append(value)
+    return sections
+
+
+def one(section: dict, key: str) -> str | None:
+    values = section.get(key)
+    return values[-1] if values else None
+
+
+def csv(section: dict, key: str, default: list[str] | None = None) -> list[str]:
+    value = one(section, key)
+    if value is None:
+        return list(default) if default is not None else []
+    return [item.strip() for item in value.split(",") if item.strip()]
+
+
+def assets_config(manifest: dict) -> dict:
+    """The `## Assets` section, shaped for Audit."""
+    section = manifest.get("assets", {})
+    if not section:
+        return {}
+    flags = []
+    for entry in section.get("flag", []):
+        parts = [p.strip() for p in entry.split("|")]
+        if len(parts) >= 2 and parts[0]:
+            flags.append({"ext": parts[0], "verdict": parts[1],
+                          "reason": parts[2] if len(parts) > 2 else
+                                    "flagged by SYNAPSE.md"})
+    return {
+        "base": one(section, "base"),
+        "art": csv(section, "art", DEFAULT_ART),
+        "audio": csv(section, "audio", DEFAULT_AUDIO),
+        "sidecar": csv(section, "sidecar"),
+        "reference_globs": csv(section, "references"),
+        "resource_prefix": one(section, "resource-prefix") or "",
+        "analyzers": csv(section, "analyzers"),
+        "flag": flags,
+    }
+
+
+def identity_base(manifest: dict) -> str | None:
+    """The `base:` line from `## Identity`, so the branch isn't configured twice."""
+    value = one(manifest.get("identity", {}), "base")
+    return f"origin/{value}" if value else None
 
 
 def default_base(root: str) -> str | None:
@@ -313,11 +355,13 @@ def main() -> int:
         print("Not inside a git repository.", file=sys.stderr)
         return 1
 
-    cfg = load_config(root)
-    base = args.base or cfg.get("base") or manifest_base(root) or default_base(root)
+    manifest = read_manifest(root)
+    cfg = assets_config(manifest)
+    base = (args.base or cfg.get("base") or identity_base(manifest)
+            or default_base(root))
     if not base:
-        print("Could not determine a baseline ref. Pass --base, or set "
-              "`[assets] base` in .synapse/weedeat.toml.", file=sys.stderr)
+        print("Could not determine a baseline ref. Pass --base, or set `base:` "
+              "under `## Assets` or `## Identity` in SYNAPSE.md.", file=sys.stderr)
         return 1
 
     if not args.no_fetch and base.startswith("origin/"):
@@ -340,7 +384,7 @@ def main() -> int:
     if not results:
         print(f"\n# Asset churn audit\n\nNo asset files in the diff against `{base}`.")
         if not cfg:
-            print("\n> No `.synapse/weedeat.toml` in this repo, so only these "
+            print("\n> No `## Assets` section in SYNAPSE.md, so only these "
                   f"extensions were considered: {', '.join(sorted(audit.assets))}.")
         return 0
 
@@ -350,7 +394,7 @@ def main() -> int:
     print(f"\n# Asset churn audit\n\nBaseline: `{base}`"
           f"{' + uncommitted changes' if args.include_worktree else ''}")
     if not cfg:
-        print("\n> No `.synapse/weedeat.toml` in this repo — running on generic "
+        print("\n> No `## Assets` section in SYNAPSE.md — running on generic "
               "defaults, with no format analyzers. Verdicts rest on reference "
               "scanning alone.")
     for verdict in ("CHURN", "REVIEW", "KEEP"):
