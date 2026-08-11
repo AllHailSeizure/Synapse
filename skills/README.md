@@ -26,6 +26,7 @@ Lean, directive skills. Noun-phrase names. Proportional judgment over ceremony.
 | Command | Skill |
 |---------|-------|
 | `/debug` | `debugging` |
+| `/bug` | `bug-capture` |
 
 ## Dropped / not ported
 

@@ -136,7 +136,9 @@ See `skills/` and `skills/README.md`.
 
 Each project gets its own `CLAUDE.md` that inherits from this root and specifies local boundaries. See `docs/TEMPLATES/project-claude-template.md` for the template.
 
-Synapse installs by copying `skills/` and `commands/` into each agent's config directory — see README. No plugin, no marketplace, no publish step. Re-run the copy after changing a skill.
+Synapse installs by copying `skills/` and `commands/` into each agent's config directory — see README. Re-run the copy after changing a skill.
+
+For Claude, Synapse is also a plugin: `.claude-plugin/marketplace.json` publishes this repo as the `synapse` marketplace, and the bandaid automations install from it in CI with no copy step. See `automations/README.md`.
 
 ---
 

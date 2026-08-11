@@ -1,0 +1,15 @@
+{
+  "name": "synapse",
+  "owner": {
+    "name": "AllHailSeizure",
+    "email": "natebosma@gmail.com",
+    "url": "https://github.com/AllHailSeizure"
+  },
+  "plugins": [
+    {
+      "name": "synapse",
+      "source": "./",
+      "description": "Structured coding skills plus the bandaid automations that run them unattended in GitHub Actions."
+    }
+  ]
+}

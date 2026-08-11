@@ -1,7 +1,7 @@
 # Bandaid automations
 
-Cursor cloud automations that fire on GitHub events and cut the churn of small,
-repetitive work. They run server-side regardless of which editor you're in.
+Automations that fire on GitHub events and cut the churn of small, repetitive
+work. They run server-side regardless of which editor you're in.
 
 | Bandaid | Fires on | Job |
 |---------|----------|-----|
@@ -30,37 +30,44 @@ going, because you're there to steer.
 ## Layout
 
 ```
-prompts/*.md            source of truth — generic, reads SYNAPSE.md at Gate 0
-Build-Automations.ps1   prompts + repo slug -> importable Cursor JSON
-build/<repo>/*.json     generated, gitignored
+claude/skills/<name>/SKILL.md   source of truth — generic, reads SYNAPSE.md at Gate 0
+claude/stub.yml                 the per-repo workflow stub
+cursor/                         frozen — the retired Cursor implementation
 ```
 
-Prompts are markdown, not JSON, because a 20KB prompt stored as one escaped
-string is undiffable, and these get edited far more than imported.
+The skills ship in the Synapse plugin. The real workflow logic lives in
+`.github/workflows/bandaids.yml` at the repo root, called as a reusable
+workflow, so an edit there lands in every repo at once.
 
 ## Adding a repo
 
-```bash
-powershell -File automations/Build-Automations.ps1 -Repo owner/name -Label "Nice Name"
-```
-
-Then import the JSON into Cursor, and commit a `SYNAPSE.md` to the target repo
-root — see `docs/TEMPLATES/SYNAPSE.md` for the schema and
-`docs/EXAMPLES/SYNAPSE.hotel-kline-game.md` for a filled one.
+1. Copy `claude/stub.yml` to the target repo's `.github/workflows/bandaids.yml`.
+   It's identical in every repo — nothing to fill in.
+2. Add a `CLAUDE_CODE_OAUTH_TOKEN` secret to the repo (or the account). Generate
+   it with `claude setup-token`; runs bill against the subscription.
+3. Commit a `SYNAPSE.md` to the target repo root — see
+   `docs/TEMPLATES/SYNAPSE.md` for the schema and
+   `docs/EXAMPLES/SYNAPSE.hotel-kline-game.md` for a filled one.
 
 Without `SYNAPSE.md` every run stops at Gate 0 naming the missing section. That
 is deliberate: a bandaid improvising against unknown conventions is the failure
 this whole arrangement exists to prevent.
 
-The target repo also needs the secrets named in its manifest available to Cursor
-(issue ops and PR ops use separate PATs, scoped per command, never handed to
-git).
+The runner starts bare, so whatever the repo's Verify and Repro commands invoke
+must be installed by the workflow before the bandaid job — see the Runner
+section of the template.
 
 ## Editing a prompt
 
-Edit `prompts/<name>.md`, rebuild, re-import. The frontmatter carries the
-trigger type, the mention token, the model, and which manifest sections that
-bandaid requires — the body carries everything else and stays repo-agnostic.
+Edit `claude/skills/<name>/SKILL.md` and push. Target repos pick it up on the
+next fire; there is no build, import, or copy step.
 
 If you find yourself wanting to write a repo name, a file path, or a build
 command into a prompt, it belongs in that repo's `SYNAPSE.md` instead.
+
+## Cursor
+
+`cursor/` holds the retired implementation: three prompts and the PowerShell
+builder that turned them into importable Cursor JSON. It is frozen — disable the
+automations in Cursor's UI and don't edit these. They exist so the arrangement
+can be restored if the Actions version doesn't hold up.

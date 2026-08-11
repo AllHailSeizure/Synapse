@@ -1,79 +1,71 @@
 # Synapse
 
-Synapse is a personal skill system for Claude. It installs into any project and enforces structured coding practices through hard directives — mandatory gates with visible outputs, not guidelines to interpret.
+Synapse is a personal workflow system for Claude Code and Codex. It keeps
+software work deliberate with concise skills, visible evidence, and gates that
+scale with risk instead of ceremony.
 
-## What it is
+## Current skill suite
 
-Synapse is a Claude Code plugin. Its skills and agents live in `skills/` and `agents/` at the repo root and are installed into any project via Claude Code's native plugin system — no scripts, no symlinks, no junctions. Once installed, Claude reads and follows the skills automatically based on context.
+The shared skills live in `skills/` and cover:
 
-The core principle: every skill defines what Claude must visibly complete before moving to the next step. If a step has no required output, it isn't hard enough.
+- proportional thinking and implementation plans;
+- testing, verification, debugging, and code review;
+- worktree isolation and bounded subagent delegation;
+- finishing branches with verification, push, and pull request creation;
+- user-directed GitHub issues and sticky-note bug capture; and
+- autonomous-work boundaries between user intent and agent execution.
 
-## Skill inventory
+See [`skills/README.md`](skills/README.md) for the complete inventory and the
+skills that were intentionally dropped or replaced.
 
-**`over-engineering-guard`** *(collaborative sessions)*
-During implementation, classifies anything outside the agreed spec:
-- Small implementation decisions → handle in session
-- Ambiguous additions → flag and ask
-- New features or polish layers → log to GitHub milestone, return to current goal
+## Claude-compatible installation
 
-**`goal-tracking`**
-Structures project work as GitHub milestones and issues. One open issue = one active goal. New ideas surface as new issues, not as scope expansion. Reflection gate required before starting the next goal.
+The shared skills and commands can be copied into the local Claude-compatible
+configuration directories:
 
-**`testing-preferences`**
-Testing strategy and expectations. *(pending rewrite)*
-
-**`code-review-standards`**
-How feedback and review work. *(pending rewrite)*
-
-**`autonomous-work-boundaries`**
-Decision autonomy and approval points for agent sessions. *(pending rewrite)*
-
-**`debugging`**
-Hypothesis-driven debugging: cursory look, up to four competing hypotheses,
-instrumentation that tells them apart, one repro, then fix and PR. Invoked
-directly with `/debug`.
-
-## How the skills chain
-
-`goal-tracking` → ensures the session has a single locked goal with new ideas queued  
-`over-engineering-guard` → holds the spec line during implementation, routes exceptions to the milestone  
-
-These three work together in a collaborative session. Autonomous agent behavior is governed by `autonomous-work-boundaries` separately.
-
-## Installing
-
-Synapse is a personal system with one user, so it installs by pointing
-`~/.claude/` at this repo rather than by packaging a plugin:
-
-Copy the skills and commands into each agent's config directory:
-
-```bash
+```powershell
 powershell -Command "'.claude','.cursor' | % { Copy-Item 'D:\Libraries\Synapse\skills\*' \"$env:USERPROFILE\$_\skills\" -Recurse -Force; Copy-Item 'D:\Libraries\Synapse\commands\*.md' \"$env:USERPROFILE\$_\commands\" -Force }"
 ```
 
-Every agent discovers personal skills the same way — `<config>/skills/<name>/SKILL.md`
-— so one copy command serves all of them.
+The Claude root guidance is in [`CLAUDE.md`](CLAUDE.md), and the Claude agent
+adapters are in `agents/`.
 
-Re-run it after changing a skill. That's the tradeoff: copies don't go stale on
-their own, but they don't update on their own either, so an edit isn't live
-anywhere until you re-run. Worth checking when a skill doesn't behave the way
-the repo says it should.
+The `/bug` command is defined in [`commands/bug.md`](commands/bug.md) and
+delegates to the capture-only `bug-capture` skill. The command index is in
+[`commands/README.md`](commands/README.md).
 
-Codex is not in that list yet — it installs Synapse as a plugin from the
-`codex-release` branch, which is several generations behind. Sorting that out is
-its own decision.
+## Codex plugin installation
+
+The repository also contains the Codex package manifest at
+`.codex-plugin/plugin.json` and Codex root guidance in `AGENTS.md`. The
+registered Codex agents live under `.codex/agents/synapse/`.
+
+Codex plugin manifests expose skills rather than Claude-style slash-command
+files, so use the `bug-capture` skill for the same bug-report workflow in
+Codex.
+
+For a personal local checkout, place the repository at
+`C:\Users\nateb\plugins\synapse`, then refresh and install it from the personal
+marketplace:
+
+```powershell
+python C:\Users\nateb\.codex\skills\.system\plugin-creator\scripts\update_plugin_cachebuster.py C:\Users\nateb\plugins\synapse
+codex plugin add synapse@personal
+```
+
+Start a new Codex task after reinstalling so the updated skills and agent
+registrations are loaded.
 
 ## Repository structure
 
+```text
+skills/                         shared skills
+.codex-plugin/plugin.json       Codex plugin manifest
+.codex/agents/synapse/          Codex agent registrations
+agents/                         Claude-compatible agent adapters
+commands/                       Claude-compatible commands
+automations/                    Bandaid automations (claude/ live, cursor/ frozen)
+docs/                           templates and design history
+AGENTS.md                       Codex root guidance
+CLAUDE.md                       Claude-compatible root guidance
 ```
-skills/
-  <skill-name>/SKILL.md    # one directory per skill
-commands/
-  debug.md                 # slash commands
-agents/
-  codebase-explorer.md, goal-writer.md, goal-surveyor.md, goal-fulfiller.md
-CLAUDE.md                  # root configuration (also read by Claude)
-docs/                      # templates and evolution docs
-```
-
-Codex CLI support (`.codex/agents/synapse/`) is maintained separately and isn't part of the plugin — Codex's own agent migration system can import directly from this repo's Claude Code layout instead.

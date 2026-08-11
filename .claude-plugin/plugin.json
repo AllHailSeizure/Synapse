@@ -1,0 +1,13 @@
+{
+  "name": "synapse",
+  "description": "Personal workflow system that enforces structured coding practices through hard directives, not guidelines.",
+  "author": {
+    "name": "AllHailSeizure",
+    "email": "natebosma@gmail.com",
+    "url": "https://github.com/AllHailSeizure"
+  },
+  "homepage": "https://github.com/AllHailSeizure/synapse",
+  "repository": "https://github.com/AllHailSeizure/synapse",
+  "license": "MIT",
+  "skills": "./automations/claude/skills/"
+}

@@ -31,10 +31,11 @@ issues: <ENV_VAR_NAME>
 pull-requests: <ENV_VAR_NAME>
 ```
 
-Names only — never values. A bandaid scopes these per-command
-(`GH_TOKEN="$VAR" gh ...`) and never exports them globally or hands them to
-git. Omit a line if that surface isn't used; a bandaid needing a missing one
-stops rather than falling back to default auth.
+Cursor-only, and only for the frozen automations under `automations/cursor/`.
+The GitHub Actions bandaids authenticate `gh` through the workflow, so a repo
+running only those can omit this section entirely.
+
+Names only — never values. Omit a line if that surface isn't used.
 
 ## Verify
 
@@ -106,8 +107,16 @@ unknown conventions is precisely the failure this file prevents.
 
 | Bandaid | Requires |
 |---------|----------|
-| bug | Identity, Secrets(issues), Verify, Repro, Protected |
-| review | Identity, Secrets(pull-requests), Verify, Protected |
-| merge | Identity, Secrets(pull-requests), Verify, Protected |
+| bug | Identity, Verify, Repro, Protected |
+| review | Identity, Verify, Protected |
+| merge | Identity, Verify, Protected |
 
-`Ignore` is optional everywhere — absent means nothing is filtered.
+`Ignore` is optional everywhere — absent means nothing is filtered. `Secrets`
+is required only by the frozen Cursor automations.
+
+## Runner
+
+The Verify and Repro commands run on a GitHub Actions runner, which starts
+bare. Anything they invoke — an engine binary, a language toolchain, a linter —
+has to be installed by the repo's own workflow before the bandaid job, or every
+run stops at the verification gate.
