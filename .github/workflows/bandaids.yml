@@ -6,6 +6,16 @@ name: bandaids
 
 on:
   workflow_call:
+    inputs:
+      setup:
+        description: >-
+          Bash run by every bandaid job before Claude starts. The runner is
+          bare, so whatever this repo's SYNAPSE.md Verify and Repro commands
+          invoke has to be installed here. Export variables those commands
+          reference by appending to $GITHUB_ENV.
+        type: string
+        required: false
+        default: ""
     secrets:
       CLAUDE_CODE_OAUTH_TOKEN:
         required: true
@@ -38,6 +48,10 @@ jobs:
       - uses: actions/checkout@v6
         with:
           fetch-depth: 0
+      - name: Repo setup
+        if: inputs.setup != ''
+        shell: bash
+        run: ${{ inputs.setup }}
       - uses: anthropics/claude-code-action@v1
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
@@ -67,6 +81,10 @@ jobs:
       - uses: actions/checkout@v6
         with:
           fetch-depth: 0
+      - name: Repo setup
+        if: inputs.setup != ''
+        shell: bash
+        run: ${{ inputs.setup }}
       - uses: anthropics/claude-code-action@v1
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
@@ -95,6 +113,10 @@ jobs:
       - uses: actions/checkout@v6
         with:
           fetch-depth: 0
+      - name: Repo setup
+        if: inputs.setup != ''
+        shell: bash
+        run: ${{ inputs.setup }}
       - uses: anthropics/claude-code-action@v1
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}

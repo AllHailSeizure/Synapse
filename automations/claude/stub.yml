@@ -1,5 +1,6 @@
 # Copy to .github/workflows/bandaids.yml in any repo that should run bandaids.
-# Identical in every repo — all logic lives in the reusable workflow.
+# All logic lives in the reusable workflow; the only per-repo part is `setup`,
+# which installs whatever this repo's SYNAPSE.md Verify and Repro commands need.
 name: bandaids
 
 on:
@@ -12,3 +13,6 @@ jobs:
   bandaid:
     uses: AllHailSeizure/Synapse/.github/workflows/bandaids.yml@master
     secrets: inherit
+    # with:
+    #   setup: |
+    #     echo "SOME_TOOL=$GITHUB_WORKSPACE/.bin/tool" >> "$GITHUB_ENV"
