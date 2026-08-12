@@ -44,10 +44,13 @@ is where your judgment is genuinely required, not a hedge.
 ## Repo configuration
 
 Everything repo-specific lives in the `## Assets` section of the target repo's
-`SYNAPSE.md` — the same manifest the bandaids read: which extensions count as
-assets, which files can reference one, how references spell an asset path, and
-which format analyzers apply. Schema and example:
-`docs/TEMPLATES/SYNAPSE.md` in the Synapse repo.
+`.synapse/weedeat.md`: which extensions count as assets, which files can
+reference one, how references spell an asset path, and which format analyzers
+apply. The baseline branch comes from `## Identity` in `.synapse/identity.md`.
+Schema and example: `docs/TEMPLATES/synapse/` in the Synapse repo.
+
+Nothing else is read — not `.synapse/bandaids.md`, and not a root `SYNAPSE.md`,
+which is a stale artifact of the old single-file layout.
 
 **Check for that section first.** Without it the audit still runs, but on
 generic defaults and with no analyzers, so every verdict rests on reference

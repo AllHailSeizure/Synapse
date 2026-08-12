@@ -15,16 +15,16 @@ This is NOT a general code-review sweep, bug hunt, refactor, research task, or m
 
 REPOSITORY
 
-Read `SYNAPSE.md` from the repository root before anything else. It is the only source of repo-specific configuration. Take from it:
+Read `.synapse/identity.md` and `.synapse/bandaids.md` before anything else. Together they are the only source of repo-specific configuration, and there is no fallback: a root `SYNAPSE.md` is a stale artifact of the old layout and must be ignored if present. Take from them:
 
-- Identity: repo slug, base branch, stack
+- Identity (`identity.md`): repo slug, base branch, stack
 - Verify: the exact validation commands, in order
 - Protected: content you may not modify
 - Ignore: output signatures that look like failure but aren't
 
-If `SYNAPSE.md` is absent, unparseable, or missing any of Identity, Verify, or Protected, STOP at GATE 0 as UNVERIFIABLE and name the missing section.
+If either file is absent, unparseable, or missing any of Identity, Verify, or Protected, STOP at GATE 0 as UNVERIFIABLE and name the missing section.
 
-Everywhere below, `$REPO`, `$BASE`, the verify commands, and the protected list come from `SYNAPSE.md`.
+Everywhere below, `$REPO`, `$BASE`, the verify commands, and the protected list come from those two files.
 
 TRIGGER
 
@@ -182,13 +182,13 @@ BUDGET
 - At most 1 thread reply.
 - At most 1 thread-resolution mutation.
 
-An investigative operation is one search, file read, resource inspection, test-discovery action, or diagnostic command. Mandatory repository instruction documents, and `SYNAPSE.md` itself, do not count toward the 10-file limit. A command containing multiple unrelated searches or reads counts each separately. Do not batch operations to evade the budget.
+An investigative operation is one search, file read, resource inspection, test-discovery action, or diagnostic command. Mandatory repository instruction documents, and the `.synapse/` files themselves, do not count toward the 10-file limit. A command containing multiple unrelated searches or reads counts each separately. Do not batch operations to evade the budget.
 
 GATE 0 — TARGET THREAD INTAKE
 
 Allowed actions:
 
-1. Read `SYNAPSE.md` and resolve every value listed under REPOSITORY.
+1. Read `.synapse/identity.md` and `.synapse/bandaids.md` and resolve every value listed under REPOSITORY.
 2. Resolve $PR and $TRIGGER_COMMENT_ID from the skill arguments.
 3. Confirm `gh` authenticates.
 4. Read the target PR:
@@ -340,7 +340,7 @@ Do not change the verdict, try a second implementation, fix adjacent findings, a
 
 PROTECTED CONTENT
 
-Without direct, explicit permission for the exact change, treat everything listed under Protected in `SYNAPSE.md` as off limits — both the `read-only` globs and the `no-edit` descriptions. Do not invent or rewrite authored content, and do not infer authored content from filenames.
+Without direct, explicit permission for the exact change, treat everything listed under Protected in `.synapse/bandaids.md` as off limits — both the `read-only` globs and the `no-edit` descriptions. Do not invent or rewrite authored content, and do not infer authored content from filenames.
 
 Follow every hard gate in the repo's own CLAUDE.md.
 
@@ -350,11 +350,11 @@ GATE 5Y — EXACTLY ONE VALIDATION PASS
 
 First run exactly one post-fix confirmation equivalent to the claim check used in GATE 3.
 
-Then run each command under Verify in `SYNAPSE.md` once, in the order listed. Run the `import` entry, if present, first.
+Then run each command under Verify in `.synapse/bandaids.md` once, in the order listed. Run the `import` entry, if present, first.
 
 Also run `git diff --check`, inspect the complete final diff, confirm no protected content changed, confirm every changed line traces to the target finding, and complete applicable CLAUDE.md self-checks.
 
-Ignore only the output signatures named under Ignore in `SYNAPSE.md`.
+Ignore only the output signatures named under Ignore in `.synapse/bandaids.md`.
 
 Do not debug a failing validation, edit the fix, try another fix, update tests merely to accept the new behaviour, run validation twice, or return to GATE 4Y.
 

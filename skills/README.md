@@ -25,9 +25,9 @@ Lean, directive skills. Noun-phrase names. Proportional judgment over ceremony.
 
 The two `/weedeat` skills ship a script under `scripts/` and read repo-specific
 configuration from the `## Assets` and `## Worktrees` sections of the target
-repo's `SYNAPSE.md` — the same manifest the bandaids read. Schema:
-[`docs/TEMPLATES/SYNAPSE.md`](../docs/TEMPLATES/SYNAPSE.md). Unlike a bandaid,
-a missing section degrades to generic defaults instead of stopping.
+repo's `.synapse/weedeat.md`, plus `.synapse/identity.md` for the baseline
+branch. Schema: [`docs/TEMPLATES/synapse/`](../docs/TEMPLATES/synapse/). Unlike
+a bandaid, a missing section degrades to generic defaults instead of stopping.
 
 ## Commands
 

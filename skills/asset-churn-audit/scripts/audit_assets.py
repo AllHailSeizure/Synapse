@@ -7,10 +7,10 @@ and this answers the mechanical part -- whether the content actually changed,
 and whether anything in the diff references the asset.
 
 Repo-specific knowledge (which extensions are assets, which files can reference
-one, which format analyzers apply) comes from the `## Assets` section of the
-repo's SYNAPSE.md. Without it the audit falls back to generic defaults: common
-art and audio extensions, reference-scanning across every tracked file, no
-format analyzers.
+one, which format analyzers apply) comes from `.synapse/weedeat.md`, with the
+baseline branch from `.synapse/identity.md`. Without them the audit falls back
+to generic defaults: common art and audio extensions, reference-scanning across
+every tracked file, no format analyzers.
 
 Read-only. It prints verdicts and the revert commands; it never writes to the
 repo.
@@ -55,14 +55,13 @@ def repo_root() -> str:
     return (run("rev-parse", "--show-toplevel") or "").strip()
 
 
-def read_manifest(root: str) -> dict[str, dict[str, list[str]]]:
-    """Parse SYNAPSE.md into {section: {key: [values]}}.
+def parse_sections(path: Path) -> dict[str, dict[str, list[str]]]:
+    """Parse one .synapse/*.md into {section: {key: [values]}}.
 
     Sections are `## Heading`, entries are `key: value`. Repeated keys
     accumulate, so a section can carry several `flag:` lines. Code fences are
     skipped, so the fenced and bare styles both parse the same.
     """
-    path = Path(root) / "SYNAPSE.md"
     if not path.is_file():
         return {}
     sections: dict[str, dict[str, list[str]]] = {}
@@ -86,6 +85,21 @@ def read_manifest(root: str) -> dict[str, dict[str, list[str]]]:
     return sections
 
 
+def read_manifest(root: str) -> dict[str, dict[str, list[str]]]:
+    """Read only what this tool needs: shared identity plus its own file.
+
+    `.synapse/bandaids.md` is deliberately not read — no reason to load another
+    tool's configuration. There is no fallback to a root SYNAPSE.md either: a
+    stale file nobody remembers is worse than a clean set of defaults.
+    """
+    base = Path(root) / ".synapse"
+    merged: dict[str, dict[str, list[str]]] = {}
+    for name in ("identity.md", "weedeat.md"):
+        for section, entries in parse_sections(base / name).items():
+            merged.setdefault(section, {}).update(entries)
+    return merged
+
+
 def one(section: dict, key: str) -> str | None:
     values = section.get(key)
     return values[-1] if values else None
@@ -99,7 +113,7 @@ def csv(section: dict, key: str, default: list[str] | None = None) -> list[str]:
 
 
 def assets_config(manifest: dict) -> dict:
-    """The `## Assets` section, shaped for Audit."""
+    """The `## Assets` section of .synapse/weedeat.md, shaped for Audit."""
     section = manifest.get("assets", {})
     if not section:
         return {}
@@ -109,7 +123,7 @@ def assets_config(manifest: dict) -> dict:
         if len(parts) >= 2 and parts[0]:
             flags.append({"ext": parts[0], "verdict": parts[1],
                           "reason": parts[2] if len(parts) > 2 else
-                                    "flagged by SYNAPSE.md"})
+                                    "flagged by .synapse/weedeat.md"})
     return {
         "base": one(section, "base"),
         "art": csv(section, "art", DEFAULT_ART),
@@ -123,7 +137,7 @@ def assets_config(manifest: dict) -> dict:
 
 
 def identity_base(manifest: dict) -> str | None:
-    """The `base:` line from `## Identity`, so the branch isn't configured twice."""
+    """The `base:` line from `.synapse/identity.md`, not configured twice."""
     value = one(manifest.get("identity", {}), "base")
     return f"origin/{value}" if value else None
 
@@ -340,8 +354,8 @@ class Audit:
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--base", help="baseline ref; overrides .synapse/weedeat.toml "
-                                       "and SYNAPSE.md")
+    parser.add_argument("--base", help="baseline ref; overrides .synapse/weedeat.md "
+                                       "and .synapse/identity.md")
     parser.add_argument("--include-worktree", action="store_true",
                         help="also classify uncommitted changes")
     parser.add_argument("--no-fetch", action="store_true")
@@ -361,7 +375,7 @@ def main() -> int:
             or default_base(root))
     if not base:
         print("Could not determine a baseline ref. Pass --base, or set `base:` "
-              "under `## Assets` or `## Identity` in SYNAPSE.md.", file=sys.stderr)
+              "under `## Identity` in .synapse/identity.md.", file=sys.stderr)
         return 1
 
     if not args.no_fetch and base.startswith("origin/"):
@@ -384,7 +398,7 @@ def main() -> int:
     if not results:
         print(f"\n# Asset churn audit\n\nNo asset files in the diff against `{base}`.")
         if not cfg:
-            print("\n> No `## Assets` section in SYNAPSE.md, so only these "
+            print("\n> No `## Assets` section in .synapse/weedeat.md, so only these "
                   f"extensions were considered: {', '.join(sorted(audit.assets))}.")
         return 0
 
@@ -394,7 +408,7 @@ def main() -> int:
     print(f"\n# Asset churn audit\n\nBaseline: `{base}`"
           f"{' + uncommitted changes' if args.include_worktree else ''}")
     if not cfg:
-        print("\n> No `## Assets` section in SYNAPSE.md — running on generic "
+        print("\n> No `## Assets` section in .synapse/weedeat.md — running on generic "
               "defaults, with no format analyzers. Verdicts rest on reference "
               "scanning alone.")
     for verdict in ("CHURN", "REVIEW", "KEEP"):

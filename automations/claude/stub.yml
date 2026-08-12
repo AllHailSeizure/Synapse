@@ -1,6 +1,6 @@
 # Copy to .github/workflows/bandaids.yml in any repo that should run bandaids.
 # All logic lives in the reusable workflow; the only per-repo part is `setup`,
-# which installs whatever this repo's SYNAPSE.md Verify and Repro commands need.
+# which installs whatever this repo's .synapse/bandaids.md Verify and Repro commands need.
 name: bandaids
 
 on:

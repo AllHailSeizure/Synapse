@@ -6,7 +6,7 @@ them. It never runs a removal itself, because the destructive step needs a human
 who can recognize which parked WIP still matters.
 
 Repo-specific knowledge (where worktrees live, which uncommitted paths carry no
-work) comes from the `## Worktrees` section of the repo's SYNAPSE.md. Without it
+work) comes from the `## Worktrees` section of `.synapse/weedeat.md`. Without it
 the survey runs on generic defaults, which is correct but treats every
 uncommitted file as real work.
 
@@ -56,13 +56,18 @@ def repo_root() -> str:
 
 
 def read_manifest(root: str) -> dict[str, dict[str, list[str]]]:
-    """Parse SYNAPSE.md into {section: {key: [values]}}.
+    """Parse `.synapse/weedeat.md` into {section: {key: [values]}}.
+
+    Only this tool's own file is read. It needs nothing from `identity.md` —
+    the survey works off local refs and the PR list, not a baseline branch —
+    and nothing at all from `bandaids.md`. There is no fallback to a root
+    SYNAPSE.md: a stale file nobody remembers is worse than clean defaults.
 
     Sections are `## Heading`, entries are `key: value`. Repeated keys
     accumulate. Code fences are skipped, so the fenced and bare styles both
     parse the same.
     """
-    path = Path(root) / "SYNAPSE.md"
+    path = Path(root) / ".synapse" / "weedeat.md"
     if not path.is_file():
         return {}
     sections: dict[str, dict[str, list[str]]] = {}
@@ -94,7 +99,7 @@ def csv(section: dict, key: str, default: list[str] | None = None) -> list[str]:
 
 
 def worktrees_config(manifest: dict) -> dict:
-    """The `## Worktrees` section, shaped for the survey."""
+    """The `## Worktrees` section of .synapse/weedeat.md, shaped for the survey."""
     section = manifest.get("worktrees", {})
     if not section:
         return {}
@@ -299,7 +304,7 @@ def main() -> int:
     print(f"{len(surveyed)} worktrees, {len(local)} local branches, "
           f"{len(orphans)} orphaned directories.")
     if not cfg:
-        print("\n> No `## Worktrees` section in SYNAPSE.md - running on generic "
+        print("\n> No `## Worktrees` section in .synapse/weedeat.md - running on generic "
               "defaults. Every uncommitted file counts as real work, so worktrees "
               "dirty only with regenerated files will read as HOLD.")
     if not have_gh:
