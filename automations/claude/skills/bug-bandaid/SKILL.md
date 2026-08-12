@@ -13,17 +13,17 @@ This is a small, local bug-fixing job — not a research task, design task, refa
 
 REPOSITORY
 
-Read `SYNAPSE.md` from the repository root before anything else. It is the only source of repo-specific configuration. Take from it:
+Read `.synapse/identity.md` and `.synapse/bandaids.md` before anything else. Together they are the only source of repo-specific configuration, and there is no fallback: a root `SYNAPSE.md` is a stale artifact of the old layout and must be ignored if present. Take from them:
 
-- Identity: repo slug, base branch, stack
+- Identity (`identity.md`): repo slug, base branch, stack
 - Verify: the exact validation commands, in order
 - Repro: the mechanism for deterministically reproducing a bug
 - Protected: content you may not modify
 - Ignore: output signatures that look like failure but aren't
 
-If `SYNAPSE.md` is absent, unparseable, or missing any of Identity, Verify, Repro, or Protected, STOP at GATE 0 and name the missing section. Do not infer conventions from the codebase, from other repos, or from these instructions. Improvising against unknown conventions is the exact failure this file exists to prevent.
+If either file is absent, unparseable, or missing any of Identity, Verify, Repro, or Protected, STOP at GATE 0 and name the missing section. Do not infer conventions from the codebase, from other repos, or from these instructions. Improvising against unknown conventions is the exact failure this file exists to prevent.
 
-Everywhere below, `$REPO`, `$BASE`, the verify commands, the repro mechanism, and the protected list come from `SYNAPSE.md`.
+Everywhere below, `$REPO`, `$BASE`, the verify commands, the repro mechanism, and the protected list come from those two files.
 
 TRIGGER
 
@@ -99,7 +99,7 @@ Before the pre-fix repro, the total budget is:
 - At most 4 written hypotheses.
 - No program/test launches except the single pre-fix repro.
 
-Mandatory repository instruction documents, and `SYNAPSE.md` itself, do not count toward the 10-file limit.
+Mandatory repository instruction documents, and the `.synapse/` files themselves, do not count toward the 10-file limit.
 
 A command containing multiple searches or file reads counts each separately. Do not combine commands to evade the budget.
 
@@ -111,7 +111,7 @@ GATE 0 — INTAKE AND ISOLATION
 
 Allowed actions:
 
-1. Read `SYNAPSE.md` and resolve every value listed under REPOSITORY.
+1. Read `.synapse/identity.md` and `.synapse/bandaids.md` and resolve every value listed under REPOSITORY.
 2. Resolve $ISSUE from the skill argument.
 3. Fetch the issue exactly once, including title, body, and labels.
 4. Read committed repository instructions:
@@ -126,7 +126,7 @@ The checkout is an ephemeral clone created for this run, so no further isolation
 
 Gate passes only if:
 
-- `SYNAPSE.md` was read and every required section is present and non-empty.
+- `.synapse/identity.md` and `.synapse/bandaids.md` were read and every required section is present and non-empty.
 - The issue was fetched successfully.
 - The issue number is unambiguous.
 - A task branch based on `origin/$BASE` is checked out.
@@ -181,7 +181,7 @@ Declare before launching:
 - Observable bug condition.
 - Observable non-bug condition.
 
-Use the mechanism given under Repro in `SYNAPSE.md`. Prefer its `default`; use its `fallback` only when the default does not fit the reported bug.
+Use the mechanism given under Repro in `.synapse/bandaids.md`. Prefer its `default`; use its `fallback` only when the default does not fit the reported bug.
 
 Rules:
 
@@ -211,7 +211,7 @@ Do not change hypotheses, try an alternate solution, refactor nearby code, renam
 
 PROTECTED CONTENT
 
-Unless the issue contains direct, explicit permission for the exact change, treat everything listed under Protected in `SYNAPSE.md` as off limits — both the `read-only` globs and the `no-edit` descriptions.
+Unless the issue contains direct, explicit permission for the exact change, treat everything listed under Protected in `.synapse/bandaids.md` as off limits — both the `read-only` globs and the `no-edit` descriptions.
 
 Beyond the listed entries: do not invent or rewrite authored content of any kind, and do not infer authored content from filenames. Where a data file is the source of truth for authored text, the file is editable but its authored text is not, unless the issue explicitly supplies the intended change.
 
@@ -228,9 +228,9 @@ Do not return to GATE 3 after entering this gate.
 Allowed verification:
 
 1. Run exactly one post-fix confirmation using the same state and input as the pre-fix repro.
-2. Run each command under Verify in `SYNAPSE.md` once, in the order listed. Run the `import` entry, if present, first.
+2. Run each command under Verify in `.synapse/bandaids.md` once, in the order listed. Run the `import` entry, if present, first.
 
-Ignore only the output signatures named under Ignore in `SYNAPSE.md`. Anything else that looks like a failure is a failure.
+Ignore only the output signatures named under Ignore in `.synapse/bandaids.md`. Anything else that looks like a failure is a failure.
 
 Do not debug a verification failure. Do not edit the fix after a verification failure. Do not try another fix.
 

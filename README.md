@@ -55,13 +55,28 @@ delegates to the capture-only `bug-capture` skill. The command index is in
 
 ## Per-repo configuration
 
-A repo that Synapse operates on carries exactly one Synapse file: `SYNAPSE.md`
-at its root. Nothing else — no skills, no scripts, no config directory. The
-bandaids read it at Gate 0 and stop on a missing section; the `/weedeat` survey
-skills read `## Assets` and `## Worktrees` and degrade to generic defaults
-instead, saying so in their own output.
+A repo that Synapse operates on carries one `.synapse/` directory and nothing
+else — no skills, no scripts. Each tool reads only the files it needs:
 
-Schema and examples: [`docs/TEMPLATES/SYNAPSE.md`](docs/TEMPLATES/SYNAPSE.md).
+```text
+.synapse/identity.md    repo, base, stack          every tool
+.synapse/bandaids.md    Secrets, Verify, Repro,    the bandaids
+                        Protected, Ignore
+.synapse/weedeat.md     Assets, Worktrees          the /weedeat surveys
+```
+
+The bandaids stop at Gate 0 on a missing section. The `/weedeat` surveys degrade
+to documented defaults instead and say so in their own output.
+
+There is **no fallback** to the old root `SYNAPSE.md`. That single file was a
+contention point — every workstream edited it, and an uncommitted edit was once
+reset away by another before it was committed. Reading it as a fallback would
+also mean silently serving standards from a file nobody remembers, so a tool
+that can't find `.synapse/` fails loudly or uses defaults you can read here. If
+a root `SYNAPSE.md` is still lying around, delete it.
+
+Schema: [`docs/TEMPLATES/synapse/`](docs/TEMPLATES/synapse/). Worked example:
+[`docs/EXAMPLES/synapse.hotel-kline-game.md`](docs/EXAMPLES/synapse.hotel-kline-game.md).
 
 ## Codex plugin installation
 

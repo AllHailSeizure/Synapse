@@ -50,10 +50,10 @@ reaching for a faster approximation.
 
 ## Repo configuration
 
-The `## Worktrees` section of the target repo's `SYNAPSE.md` — the same manifest
-the bandaids read — supplies where this repo creates worktrees and which
-uncommitted paths carry no work. Schema and example:
-`docs/TEMPLATES/SYNAPSE.md` in the Synapse repo.
+The `## Worktrees` section of the target repo's `.synapse/weedeat.md` supplies
+where this repo creates worktrees and which uncommitted paths carry no work.
+That one file is all this survey reads. Schema and example:
+`docs/TEMPLATES/synapse/weedeat.md` in the Synapse repo.
 
 The noise filter is the key entry, and see below for why. Without it the survey
 still runs, but every regenerated sidecar counts as real work, and a repo whose

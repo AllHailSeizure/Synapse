@@ -1,26 +1,39 @@
-# Example — SYNAPSE.md for hotel-kline-game
+# Example — `.synapse/` for hotel-kline-game
 
-Copy the fenced content below to `SYNAPSE.md` at the root of
-`AllHailSeizure/hotel-kline-game`. Everything in it was extracted verbatim from
-the three bandaid prompts as they ran before generalization, so behaviour
-should be unchanged on the first run.
+A worked example of a filled-in manifest set. Copy each fenced block to the
+named path under `.synapse/` at the root of `AllHailSeizure/hotel-kline-game`.
+The blank templates are in `docs/TEMPLATES/synapse/`.
 
-Kept here as a worked example of a filled-in manifest — the blank template is
-`docs/TEMPLATES/SYNAPSE.md`.
+Most of this was extracted verbatim from the three bandaid prompts as they ran
+before generalization, so behaviour should be unchanged on the first run.
+
+Three files, not one, and each tool reads only what it needs: the bandaids read
+`identity.md` + `bandaids.md`, the `/weedeat` surveys read `identity.md` +
+`weedeat.md`, and neither loads the other's file.
 
 ---
 
-```markdown
-# SYNAPSE.md
+## `.synapse/identity.md`
 
-Repo configuration for Synapse bandaids. Machine-actionable — keep values
-literal. See docs/TEMPLATES/SYNAPSE.md in the Synapse repo for the schema.
+```markdown
+# Identity
+
+Shared by every Synapse tool. Machine-actionable — keep values literal.
 
 ## Identity
 
 repo: AllHailSeizure/hotel-kline-game
 base: master
 stack: Godot 4.6.3-stable, pure GDScript
+```
+
+## `.synapse/bandaids.md`
+
+```markdown
+# Bandaids
+
+Repo configuration for Synapse bandaids. Machine-actionable — keep values
+literal. See docs/TEMPLATES/synapse/bandaids.md in the Synapse repo.
 
 ## Secrets
 
@@ -61,10 +74,18 @@ ownership, and generic chapter-state access.
 
 benign: Godot shutdown noise involving ObjectDB instances, live resources, or
 leaked RIDs.
+```
+
+## `.synapse/weedeat.md`
+
+```markdown
+# Weedeat
+
+Repo configuration for the /weedeat survey skills. See
+docs/TEMPLATES/synapse/weedeat.md in the Synapse repo.
 
 ## Assets
 
-base: origin/master
 art: .png, .jpg, .jpeg, .aseprite, .pxo
 audio: .ogg, .wav, .mp3, .aup3
 sidecar: .import, .uid
@@ -82,6 +103,9 @@ noise-dirs: .godot/, .worktrees/, .claude/worktrees/
 protected: master, main
 ```
 
+Note there is no `base:` under `## Assets` — it would only repeat `master` from
+`identity.md`, which the audit already reads and prefixes with `origin/`.
+
 ---
 
 ## Notes on the extraction
@@ -96,7 +120,17 @@ Two things moved position rather than content:
 - The CLAUDE.md hard-gate list was inline in two prompts and referenced
   generically in the third. It now lives in `note`, so all three get it.
 
-`Assets` and `Worktrees` were added later, when the `/weedeat` survey skills
-moved into Synapse. They came out of two skills that had lived in the game
-repo's own `.claude/skills/` with this knowledge hard-coded in their scripts;
-no bandaid reads either section.
+`Assets` and `Worktrees` came from two skills that had lived in the game repo's
+own `.claude/skills/` with this knowledge hard-coded in their scripts.
+
+## Why three files instead of one
+
+This started as a single root `SYNAPSE.md`. Every workstream edited that one
+file, and while the weedeat sections were being added an uncommitted edit was
+reset away by concurrent bandaid work in the same checkout — before it was ever
+committed. Separate files give each workstream its own edit surface.
+
+There is deliberately no fallback to the old root path. A tool that quietly read
+`SYNAPSE.md` when `.synapse/` was absent would serve whatever stale standards
+that forgotten file still held. If a root `SYNAPSE.md` survives in a repo,
+delete it.

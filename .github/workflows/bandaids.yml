@@ -10,7 +10,7 @@ on:
       setup:
         description: >-
           Bash run by every bandaid job before Claude starts. The runner is
-          bare, so whatever this repo's SYNAPSE.md Verify and Repro commands
+          bare, so whatever this repo's .synapse/bandaids.md Verify and Repro commands
           invoke has to be installed here. Export variables those commands
           reference by appending to $GITHUB_ENV.
         type: string

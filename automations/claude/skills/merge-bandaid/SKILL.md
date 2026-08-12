@@ -15,16 +15,16 @@ This is NOT a general bug-fixing, refactoring, research, code-review, or design 
 
 REPOSITORY
 
-Read `SYNAPSE.md` from the repository root before anything else. It is the only source of repo-specific configuration. Take from it:
+Read `.synapse/identity.md` and `.synapse/bandaids.md` before anything else. Together they are the only source of repo-specific configuration, and there is no fallback: a root `SYNAPSE.md` is a stale artifact of the old layout and must be ignored if present. Take from them:
 
-- Identity: repo slug, base branch, stack
+- Identity (`identity.md`): repo slug, base branch, stack
 - Verify: the exact validation commands, in order
 - Protected: content you may not modify
 - Ignore: output signatures that look like failure but aren't
 
-If `SYNAPSE.md` is absent, unparseable, or missing any of Identity, Verify, or Protected, STOP at GATE 0 and name the missing section. Do not infer conventions from the codebase or from other repos.
+If either file is absent, unparseable, or missing any of Identity, Verify, or Protected, STOP at GATE 0 and name the missing section. Do not infer conventions from the codebase or from other repos.
 
-Everywhere below, `$REPO`, `$BASE`, the verify commands, and the protected list come from `SYNAPSE.md`.
+Everywhere below, `$REPO`, `$BASE`, the verify commands, and the protected list come from those two files.
 
 TRIGGER
 
@@ -153,7 +153,7 @@ GATE 0 — PR INTAKE
 
 Allowed actions:
 
-1. Read `SYNAPSE.md` and resolve every value listed under REPOSITORY.
+1. Read `.synapse/identity.md` and `.synapse/bandaids.md` and resolve every value listed under REPOSITORY.
 2. Resolve $PR from the skill argument.
 3. Confirm `gh` authenticates.
 4. Read the target PR:
@@ -240,7 +240,7 @@ Gate passes only if every conflict is mechanical and the combined result preserv
 
 STOP if any conflict includes:
 
-- Anything listed under Protected in `SYNAPSE.md`, whether by `read-only` glob or `no-edit` description.
+- Anything listed under Protected in `.synapse/bandaids.md`, whether by `read-only` glob or `no-edit` description.
 - Authored content of any kind differing between the two sides.
 - Modify/delete, rename/rename, or competing-file-ownership conflicts.
 - Competing implementations of the same behaviour.
@@ -282,9 +282,9 @@ If a marker remains, a new problem appears, or the proposed resolution needs rev
 
 GATE 5 — EXACTLY ONE VALIDATION PASS
 
-Run each command under Verify in `SYNAPSE.md` once against the fully combined tree, in the order listed. Run the `import` entry, if present, first.
+Run each command under Verify in `.synapse/bandaids.md` once against the fully combined tree, in the order listed. Run the `import` entry, if present, first.
 
-Ignore only the output signatures named under Ignore in `SYNAPSE.md`.
+Ignore only the output signatures named under Ignore in `.synapse/bandaids.md`.
 
 Do not fix a failing test, change the resolution, update snapshots or expectations, diagnose unrelated failures, run a check twice, or return to an earlier gate.
 

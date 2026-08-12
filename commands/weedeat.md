@@ -19,10 +19,11 @@ PR too big" is the asset audit, "what can I delete" is the cleanup. When it's
 genuinely ambiguous, run both; they don't interfere.
 
 Follow the invoked skill as the source of truth. Both read repo-specific
-configuration from `SYNAPSE.md` at the repo root — `## Assets` and
-`## Worktrees`. If the relevant section is missing, say so once in the report
-rather than silently running blunt, and offer to write one from
-`docs/TEMPLATES/SYNAPSE.md`.
+configuration from `.synapse/weedeat.md` — `## Assets` and `## Worktrees` — plus
+`.synapse/identity.md` for the baseline branch. They read nothing else, and
+there is no fallback to a root `SYNAPSE.md`. If the relevant section is missing,
+say so once in the report rather than silently running blunt, and offer to write
+one from `docs/TEMPLATES/synapse/weedeat.md`.
 
 ## The boundary
 
