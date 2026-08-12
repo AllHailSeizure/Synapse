@@ -186,6 +186,7 @@ Use the mechanism given under Repro in `.synapse/bandaids.md`. Prefer its `defau
 Rules:
 
 - Launch exactly once.
+- Bound the launch with the `timeout` given under Repro. Redirect its output to a file and read the file afterward; do not sit on a pipe waiting for a match.
 - Use one deterministic input sequence.
 - Do not free-roam or play through broadly.
 - Do not try alternate states, inputs, or hypotheses.
@@ -195,6 +196,8 @@ Rules:
 Gate passes only if the observed behaviour directly reproduces the reported bug and supports the selected hypothesis.
 
 If the harness fails, the result is ambiguous, or the bug does not reproduce, STOP. There is no retry.
+
+Hitting the timeout is a harness failure, and it consumes the one launch. Do not raise the timeout, change how output is captured, and launch again — that is a retry wearing a plumbing costume. The whole job has 30 minutes; three escalating relaunches spend most of it and reach no fix.
 
 GATE 3 — EXACTLY ONE FIX ATTEMPT
 
