@@ -25,3 +25,4 @@ jobs:
     # with:
     #   setup: |
     #     echo "SOME_TOOL=$GITHUB_WORKSPACE/.bin/tool" >> "$GITHUB_ENV"
+    #   debug: true   # unhide Claude's output in the job log while diagnosing

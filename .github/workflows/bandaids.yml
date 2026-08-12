@@ -16,15 +16,30 @@ on:
         type: string
         required: false
         default: ""
+      debug:
+        description: >-
+          Unhide the Claude SDK output in the job log. Diagnostic only — the
+          log becomes public to anyone who can read the repo's Actions runs.
+        type: boolean
+        required: false
+        default: false
     secrets:
       CLAUDE_CODE_OAUTH_TOKEN:
         required: true
 
 env:
   MARKETPLACE: https://github.com/AllHailSeizure/Synapse.git
+  # No track_progress: it buries `prompt` in the action's own template as
+  # <custom_instructions>, so the slash command is never expanded and the
+  # bandaid skill never loads. The skills comment on the issue themselves.
+  # allowedTools has to be stated: the action's default set is read-only plus
+  # git, which cannot apply a fix or run a repo's verify commands.
+  # Sonnet, not Opus: bandaids are bounded mechanical jobs, and these runs
+  # spend the same subscription window as interactive work.
   CLAUDE_ARGS: |
-    --model claude-opus-5
+    --model claude-sonnet-5
     --max-turns 60
+    --allowedTools "Bash,Read,Edit,Write,Glob,Grep"
     --disallowedTools "Task,WebSearch,WebFetch"
 
 jobs:
@@ -53,12 +68,14 @@ jobs:
         shell: bash
         run: ${{ inputs.setup }}
       - uses: anthropics/claude-code-action@v1
+        env:
+          GH_TOKEN: ${{ github.token }}
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
           plugin_marketplaces: ${{ env.MARKETPLACE }}
           plugins: synapse@synapse
           prompt: "/synapse:bug-bandaid ${{ github.event.issue.number }}"
-          track_progress: true
+          show_full_output: ${{ inputs.debug }}
           claude_args: ${{ env.CLAUDE_ARGS }}
 
   merge:
@@ -86,12 +103,14 @@ jobs:
         shell: bash
         run: ${{ inputs.setup }}
       - uses: anthropics/claude-code-action@v1
+        env:
+          GH_TOKEN: ${{ github.token }}
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
           plugin_marketplaces: ${{ env.MARKETPLACE }}
           plugins: synapse@synapse
           prompt: "/synapse:merge-bandaid ${{ github.event.issue.number }}"
-          track_progress: true
+          show_full_output: ${{ inputs.debug }}
           claude_args: ${{ env.CLAUDE_ARGS }}
 
   ci:
@@ -119,12 +138,14 @@ jobs:
         shell: bash
         run: ${{ inputs.setup }}
       - uses: anthropics/claude-code-action@v1
+        env:
+          GH_TOKEN: ${{ github.token }}
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
           plugin_marketplaces: ${{ env.MARKETPLACE }}
           plugins: synapse@synapse
           prompt: "/synapse:ci-bandaid ${{ github.event.issue.number }}"
-          track_progress: true
+          show_full_output: ${{ inputs.debug }}
           claude_args: ${{ env.CLAUDE_ARGS }}
 
   review:
@@ -151,10 +172,12 @@ jobs:
         shell: bash
         run: ${{ inputs.setup }}
       - uses: anthropics/claude-code-action@v1
+        env:
+          GH_TOKEN: ${{ github.token }}
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
           plugin_marketplaces: ${{ env.MARKETPLACE }}
           plugins: synapse@synapse
           prompt: "/synapse:review-bandaid ${{ github.event.pull_request.number }} ${{ github.event.comment.id }}"
-          track_progress: true
+          show_full_output: ${{ inputs.debug }}
           claude_args: ${{ env.CLAUDE_ARGS }}
