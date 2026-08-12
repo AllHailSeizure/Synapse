@@ -55,6 +55,7 @@ lint:   python3 Tools/lint/check_architecture_rules.py
 ```
 default: <how to deterministically reproduce a reported bug>
 fallback: <what to do when the default doesn't fit>
+timeout: <seconds>
 ```
 
 Required by bug-bandaid; ignored by the others. This is the highest-leverage
@@ -63,6 +64,12 @@ entry here turns into a stop every time.
 
 Describe a mechanism, not a wish. "Write the request to `user://x.cfg`, run
 `addons/y/runner.tscn`" is actionable; "run the game and check" is not.
+
+`timeout` bounds the single repro launch. 300 is a sensible default; omitting
+the line means 300. Set it to a value the repro comfortably fits inside — the
+bandaid gets one launch, and hitting the bound is a stop, not a prompt to try
+again with a bigger number. The whole job has 30 minutes, so a repro allowed to
+run for ten of them leaves little room for the fix and verification that follow.
 
 ## Protected
 
@@ -121,3 +128,8 @@ The Verify and Repro commands run on a GitHub Actions runner, which starts
 bare. Anything they invoke — an engine binary, a language toolchain, a linter —
 has to be installed by the repo's own workflow before the bandaid job, or every
 run stops at the verification gate.
+
+The job is capped at 30 minutes, and that budget covers toolchain setup, the
+repro, the fix, and every Verify command — on a cold runner with no caches. If
+the commands here take minutes rather than seconds, say so in the entry, so a
+bandaid reading them knows it cannot afford a second attempt at anything.
