@@ -3,10 +3,11 @@ from __future__ import annotations
 import contextlib
 import io
 import subprocess
+import sys
 import tempfile
 import unittest
 from pathlib import Path
-from unittest.mock import patch
+from unittest.mock import Mock, patch
 
 from apps.weedeat.cli import run
 
@@ -20,6 +21,23 @@ def git(root: Path, *args: str) -> str:
 
 
 class RunIntegrationTest(unittest.TestCase):
+    @patch("apps.weedeat.scan.gh_pr_heads", return_value=(set(), False))
+    @patch("apps.weedeat.tui.review")
+    def test_headless_run_prints_remainder_without_launching_tui(
+        self, review, _pr_heads
+    ) -> None:
+        fake_stdout = Mock(wraps=sys.stdout)
+        fake_stdout.isatty.return_value = False
+        output = io.StringIO()
+        fake_stdout.write.side_effect = output.write
+        fake_stdout.flush.side_effect = lambda: None
+
+        with patch("sys.stdout", fake_stdout):
+            self.assertEqual(run(str(Path.cwd()), no_fetch=True), 0)
+
+        self.assertIn("Remainder (", output.getvalue())
+        review.assert_not_called()
+
     def test_safe_worktree_and_branch_are_pruned_but_unmerged_work_is_kept(self) -> None:
         with tempfile.TemporaryDirectory() as temp:
             base = Path(temp)

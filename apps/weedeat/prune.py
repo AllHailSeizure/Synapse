@@ -28,3 +28,16 @@ def prune_branch(root: str, entry: dict) -> tuple[bool, str]:
     assert not entry["unpushed"], "automatic pruning rejects unpushed commits"
     assert not entry["checked_out"], "automatic pruning rejects checked-out branches"
     return _run(root, "branch", "-D", entry["branch"])
+
+
+def prune_reviewed_worktree(root: str, entry: dict) -> tuple[bool, str]:
+    """Remove a non-safe worktree after an explicit interactive confirmation."""
+    assert entry["tier"] in ("STALE", "REVIEW", "HOLD")
+    assert not entry.get("locked"), "locked worktrees are never deletion candidates"
+    return _run(root, "worktree", "remove", "--force", entry["path"])
+
+
+def prune_reviewed_branch(root: str, branch: str) -> tuple[bool, str]:
+    """Delete a branch after its non-safe worktree was explicitly confirmed."""
+    assert branch, "detached worktrees have no branch to delete"
+    return _run(root, "branch", "-D", branch)

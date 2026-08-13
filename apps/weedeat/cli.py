@@ -51,9 +51,11 @@ def main(argv: list[str] | None = None) -> int:
 def run(root: str, no_fetch: bool = False, dry_run: bool = False) -> int:
     result = run_survey(root, no_fetch=no_fetch)
     auto = [entry for entry in result["worktrees"] if entry["tier"] == "SAFE"]
+    auto_worktree_branches = {entry["branch"] for entry in auto if entry["branch"]}
     auto_branches = [
         entry for entry in result["branches"]
         if entry["merged"] and not entry["unpushed"]
+        and (not entry["checked_out"] or entry["branch"] in auto_worktree_branches)
     ]
     remainder = [
         entry for entry in result["worktrees"] if entry["tier"] in REMAINDER_TIERS
@@ -84,7 +86,13 @@ def run(root: str, no_fetch: bool = False, dry_run: bool = False) -> int:
         success, message = prune_branch(root, entry)
         print_prune_result("branch", entry["branch"], success, message)
 
-    print_remainder(remainder)
+    reviewable = [entry for entry in remainder if not entry.get("locked")]
+    if reviewable and sys.stdout.isatty():
+        from apps.weedeat.tui import review
+
+        review(root, reviewable)
+    else:
+        print_remainder(remainder)
     return 0
 
 

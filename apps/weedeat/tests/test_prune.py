@@ -3,7 +3,11 @@ from __future__ import annotations
 import unittest
 from unittest.mock import patch
 
-from apps.weedeat.prune import prune_branch, prune_worktree
+from apps.weedeat.prune import (
+    prune_branch,
+    prune_reviewed_worktree,
+    prune_worktree,
+)
 
 
 class PruneGuardsTest(unittest.TestCase):
@@ -12,6 +16,18 @@ class PruneGuardsTest(unittest.TestCase):
         for tier in ("STALE", "REVIEW", "HOLD", "FOREIGN", "MAIN", "UNKNOWN"):
             with self.subTest(tier=tier), self.assertRaises(AssertionError):
                 prune_worktree("repo", {"tier": tier, "path": "tree"})
+        run.assert_not_called()
+
+    @patch("apps.weedeat.prune.subprocess.run")
+    def test_manual_review_rejects_locked_and_non_remainder_entries(self, run) -> None:
+        cases = [
+            {"tier": "HOLD", "locked": True, "path": "tree"},
+            {"tier": "SAFE", "locked": False, "path": "tree"},
+            {"tier": "FOREIGN", "locked": False, "path": "tree"},
+        ]
+        for entry in cases:
+            with self.subTest(entry=entry), self.assertRaises(AssertionError):
+                prune_reviewed_worktree("repo", entry)
         run.assert_not_called()
 
     @patch("apps.weedeat.prune.subprocess.run")
