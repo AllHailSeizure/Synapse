@@ -5,10 +5,10 @@ description: Survey what's overgrown in this repo — asset churn in the branch,
 # /weedeat
 
 Clear the weeds: things that accumulated on their own and nobody planted. Two
-skills cover the two kinds, and both are read-only surveys that end in a report
-plus commands for the user to run.
+agents cover the two kinds, and both are read-only surveys that end in a
+report plus commands for the user to run.
 
-| Argument | Skill |
+| Argument | Agent |
 |---|---|
 | `assets`, `churn`, `branch`, `diff`, `pr` | `asset-churn-audit` |
 | `worktrees`, `branches`, `sprawl`, `repo` | `worktree-cleanup` |
@@ -16,24 +16,39 @@ plus commands for the user to run.
 
 Pick from the user's words when the argument doesn't match the table — "is this
 PR too big" is the asset audit, "what can I delete" is the cleanup. When it's
-genuinely ambiguous, run both; they don't interfere.
+genuinely ambiguous, dispatch both; they don't interfere.
 
-Follow the invoked skill as the source of truth. Both read repo-specific
-configuration from `.synapse/weedeat.md` — `## Assets` and `## Worktrees` — plus
-`.synapse/identity.md` for the baseline branch. They read nothing else, and
-there is no fallback to a root `SYNAPSE.md`. If the relevant section is missing,
-say so once in the report rather than silently running blunt, and offer to write
-one from `docs/TEMPLATES/synapse/weedeat.md`.
+## Dispatching
+
+Before spawning an agent, resolve the absolute path to its script so the agent
+doesn't have to guess: `agents/scripts/audit_assets.py` for the audit,
+`agents/scripts/survey_worktrees.py` for the cleanup, both relative to this
+Synapse install (`$CLAUDE_PLUGIN_ROOT` when installed as a plugin). Pass that
+resolved path, plus the target repository path, in the agent's prompt.
+
+Both agents read repo-specific configuration from `.synapse/weedeat.md` —
+`## Assets` and `## Worktrees` — plus `.synapse/identity.md` for the baseline
+branch. They read nothing else, and there is no fallback to a root
+`SYNAPSE.md`. If the relevant section is missing, they say so once in their
+own report rather than silently running blunt; offer to write one from
+`docs/TEMPLATES/synapse/weedeat.md` if the user wants to fix that going
+forward.
 
 ## The boundary
 
-**Report, then stop.** Neither skill deletes, reverts, or stages anything, and
+**Report, then stop.** Neither agent deletes, reverts, or stages anything, and
 neither do you under this command. Present the findings and the exact commands,
 and wait.
+
+This boundary describes the agent-dispatched report path specifically. When
+the `weedeat` CLI is installed and the session is interactive, a human may run
+`weedeat run` directly: it auto-prunes only the strict-safe tier, then opens a
+TUI for explicit review of everything else. That path is human-invoked; the
+agent never starts it on the user's behalf.
 
 If the user then authorizes a tier — "drop the churn", "remove the safe ones" —
 that authorizes exactly that tier for that run. It is not authorization for
 REVIEW or HOLD, and it does not carry to the next invocation.
 
-When both skills run, report them as two sections under one summary. Lead with
+When both agents run, report them as two sections under one summary. Lead with
 the counts and the single most important risk in each, not a wall of paths.

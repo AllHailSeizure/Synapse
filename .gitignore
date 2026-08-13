@@ -1,3 +1,5 @@
 skills/goal-oriented-development-workspace/
 .claude/
 automations/cursor/build/
+__pycache__/
+*.egg-info/
