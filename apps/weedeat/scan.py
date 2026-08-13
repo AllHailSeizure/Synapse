@@ -1,26 +1,9 @@
-#!/usr/bin/env python3
-"""Survey every git worktree and branch in this repo and classify removal safety.
-
-Read-only by design: this prints findings and the commands that would act on
-them. It never runs a removal itself, because the destructive step needs a human
-who can recognize which parked WIP still matters.
-
-Repo-specific knowledge (where worktrees live, which uncommitted paths carry no
-work) comes from the `## Worktrees` section of `.synapse/weedeat.md`. Without it
-the survey runs on generic defaults, which is correct but treats every
-uncommitted file as real work.
-
-Usage:
-    python scripts/survey_worktrees.py [--json out.json] [--no-fetch]
-"""
+"""Deterministic worktree and branch survey used by every weedeat frontend."""
 
 from __future__ import annotations
 
-import argparse
-import json
 import os
 import subprocess
-import sys
 from pathlib import Path
 
 DEFAULT_CONTAINERS = [".claude/worktrees", ".worktrees", "worktrees"]
@@ -244,21 +227,8 @@ def classify(tree: dict, root: str, merged: set[str], open_heads: set[str],
     }
 
 
-def main() -> int:
-    parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--json", help="also write the full survey to this path")
-    parser.add_argument("--no-fetch", action="store_true", help="skip git fetch --prune")
-    args = parser.parse_args()
-
-    # The Windows console defaults to a codepage that mangles non-ASCII output.
-    if hasattr(sys.stdout, "reconfigure"):
-        sys.stdout.reconfigure(encoding="utf-8", errors="replace")
-
-    root = repo_root()
-    if not root:
-        print("Not inside a git repository.", file=sys.stderr)
-        return 1
-
+def run_survey(root: str, no_fetch: bool = False) -> dict:
+    """Build the complete deterministic survey without rendering a report."""
     cfg = worktrees_config(read_manifest(root))
     containers = list(cfg.get("containers", DEFAULT_CONTAINERS))
     foreign_markers = list(cfg.get("foreign_markers", DEFAULT_FOREIGN))
@@ -267,8 +237,7 @@ def main() -> int:
         c if c.endswith("/") else c + "/" for c in containers)
     protected = set(cfg.get("protected_branches", DEFAULT_PROTECTED))
 
-    if not args.no_fetch:
-        print("Fetching origin (pruning deleted remote branches)...", file=sys.stderr)
+    if not no_fetch:
         git("fetch", "origin", "--prune", cwd=root)
 
     merged, have_gh = gh_pr_heads("merged", 500)
@@ -296,60 +265,10 @@ def main() -> int:
             "checked_out": branch in attached,
         })
 
-    tiers: dict[str, list[dict]] = {}
-    for entry in surveyed:
-        tiers.setdefault(entry["tier"], []).append(entry)
-
-    print("\n# Worktree cleanup survey\n")
-    print(f"{len(surveyed)} worktrees, {len(local)} local branches, "
-          f"{len(orphans)} orphaned directories.")
-    if not cfg:
-        print("\n> No `## Worktrees` section in .synapse/weedeat.md - running on generic "
-              "defaults. Every uncommitted file counts as real work, so worktrees "
-              "dirty only with regenerated files will read as HOLD.")
-    if not have_gh:
-        print("\n> `gh` unavailable - merge status could not be checked, so nothing "
-              "is classified SAFE. Everything needs manual review.")
-
-    for tier in ("SAFE", "STALE", "REVIEW", "HOLD", "FOREIGN", "UNKNOWN", "MAIN"):
-        rows = tiers.get(tier, [])
-        if not rows:
-            continue
-        print(f"\n## {tier} ({len(rows)})")
-        for row in rows:
-            label = row["branch"] or "(detached)"
-            print(f"- `{label}` - {row['reason']}")
-            print(f"    {row['path']}")
-            if row["dirty"]:
-                shown = ", ".join(row["dirty"][:4])
-                more = f" +{len(row['dirty']) - 4} more" if len(row["dirty"]) > 4 else ""
-                print(f"    uncommitted: {shown}{more}")
-
-    if orphans:
-        print(f"\n## ORPHANED DIRECTORIES ({len(orphans)})")
-        print("Full checkouts on disk that git no longer registers as worktrees.")
-        for name in orphans:
-            print(f"- `{name}`")
-
-    deletable = [b for b in branch_rows
-                 if b["merged"] and not b["unpushed"] and not b["checked_out"]]
-    keepers = [b for b in branch_rows if not b["merged"] and not b["open_pr"]]
-    print("\n## BRANCHES")
-    print(f"- {len(deletable)} merged, not checked out, nothing unpushed - deletable")
-    print(f"- {len(keepers)} with no merged PR and no open PR - need a look before deleting")
-    for row in keepers:
-        flag = f" ({row['unpushed']} unpushed)" if row["unpushed"] else ""
-        print(f"    - `{row['branch']}`{flag}")
-
-    if args.json:
-        Path(args.json).write_text(json.dumps(
-            {"worktrees": surveyed, "orphan_dirs": orphans, "branches": branch_rows,
-             "gh_available": have_gh, "configured": bool(cfg)}, indent=2),
-            encoding="utf-8")
-        print(f"\nFull survey written to {args.json}")
-
-    return 0
-
-
-if __name__ == "__main__":
-    raise SystemExit(main())
+    return {
+        "worktrees": surveyed,
+        "orphan_dirs": orphans,
+        "branches": branch_rows,
+        "gh_available": have_gh,
+        "configured": bool(cfg),
+    }
