@@ -35,7 +35,8 @@ class RunIntegrationTest(unittest.TestCase):
         with patch("sys.stdout", fake_stdout):
             self.assertEqual(run(str(Path.cwd()), no_fetch=True), 0)
 
-        self.assertIn("Remainder (", output.getvalue())
+        self.assertIn("# Worktree cleanup remainder", output.getvalue())
+        self.assertIn("## HOLD", output.getvalue())
         review.assert_not_called()
 
     def test_safe_worktree_and_branch_are_pruned_but_unmerged_work_is_kept(self) -> None:
@@ -80,7 +81,8 @@ class RunIntegrationTest(unittest.TestCase):
                 with contextlib.redirect_stdout(dry_output):
                     self.assertEqual(run(str(repo), no_fetch=True, dry_run=True), 0)
                 self.assertIn("worktree `merged`", dry_output.getvalue())
-                self.assertIn("[HOLD] `unmerged`", dry_output.getvalue())
+                self.assertIn("## HOLD", dry_output.getvalue())
+                self.assertIn("`unmerged`", dry_output.getvalue())
                 self.assertTrue(safe_tree.exists())
 
                 with contextlib.redirect_stdout(io.StringIO()):

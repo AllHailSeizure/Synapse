@@ -102,8 +102,21 @@ def print_prune_result(kind: str, label: str, success: bool, message: str) -> No
 
 
 def print_remainder(remainder: list[dict]) -> None:
-    print(f"Remainder ({len(remainder)}):")
-    for entry in remainder:
-        label = entry["branch"] or "(detached)"
-        print(f"- [{entry['tier']}] `{label}` - {entry['reason']}")
-        print(f"    {entry['path']}")
+    print("\n# Worktree cleanup remainder")
+    print(f"\n{len(remainder)} worktrees need manual review.")
+    for tier in REMAINDER_TIERS:
+        rows = [entry for entry in remainder if entry["tier"] == tier]
+        if not rows:
+            continue
+        print(f"\n## {tier} ({len(rows)})")
+        for entry in rows:
+            label = entry["branch"] or "(detached)"
+            print(f"- `{label}` - {entry['reason']}")
+            print(f"    {entry['path']}")
+            if entry.get("dirty"):
+                shown = ", ".join(entry["dirty"][:4])
+                more = (
+                    f" +{len(entry['dirty']) - 4} more"
+                    if len(entry["dirty"]) > 4 else ""
+                )
+                print(f"    uncommitted: {shown}{more}")
