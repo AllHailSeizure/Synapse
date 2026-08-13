@@ -49,6 +49,37 @@ The Codex research agents are registered under `.codex/agents/synapse/`:
 The primary Codex session remains responsible for user confirmation and GitHub
 mutations. The current suite does not dispatch a goal-fulfiller agent.
 
+## Weeds (`/weedeat` equivalent)
+
+Two more agents under `.codex/agents/synapse/` survey what a repo accumulates
+on its own - Claude's `/weedeat` command triggers these by name; Codex has no
+slash commands, so dispatch on the same signals directly:
+
+- `asset-churn-audit` - dispatch before opening or merging a PR that touches
+  assets, when `git status` shows dirty art nobody remembers editing, or when
+  a PR diff looks larger than the work done.
+- `worktree-cleanup` - dispatch when the user mentions worktree sprawl, stale
+  or dead branches, running out of disk, or asks what is safe to delete.
+
+Both ship a script at `agents/scripts/<name>.py` in this Synapse install.
+Resolve its absolute path before dispatching (the agent's own instructions
+expect it as an input, not something it discovers itself) and pass it along
+with the repository path. Both read repo-specific configuration from
+`.synapse/weedeat.md` - `## Assets` and `## Worktrees` - plus
+`.synapse/identity.md` for the baseline branch; a missing section degrades to
+generic defaults rather than stopping.
+
+Both are report-only. Present findings and the exact commands, then stop - do
+not run a removal, revert, or stage anything yourself. If the user authorizes
+one tier ("drop the churn", "remove the safe ones"), that authorizes only that
+tier for that run, not REVIEW or HOLD, and it does not carry to the next
+invocation.
+
+That boundary applies to the agent-dispatched report path. If the standalone
+`weedeat` CLI is installed, a human in an interactive terminal may run
+`weedeat run` directly to auto-prune the strict-safe tier and review the rest
+in a TUI. Agents do not launch that human-invoked path on the user's behalf.
+
 ## Repository layout
 
 ```text
