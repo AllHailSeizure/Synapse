@@ -21,6 +21,10 @@ import json
 import sys
 from pathlib import Path
 
+# Importing the shared scanner must not make the survey report its own bytecode
+# cache as new work in the checkout it is inspecting.
+sys.dont_write_bytecode = True
+
 REPO_ROOT = Path(__file__).resolve().parents[2]
 if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
