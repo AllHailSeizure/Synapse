@@ -6,7 +6,8 @@ Lean, directive skills. Noun-phrase names. Proportional judgment over ceremony.
 
 | Skill | Role |
 |-------|------|
-| `thinking` | Proportional design-before-build |
+| `thinking` | Read-only collaborative exploration |
+| `writing-specs` | Capture feature intent in a document |
 | `verification` | Claim only what you checked |
 | `worktrees` | Isolated workspaces |
 | `parallel-agents` | When/how to fan out subagents |
@@ -42,7 +43,7 @@ a bandaid, a missing section degrades to generic defaults instead of stopping.
 | Dropped | Why |
 |---------|-----|
 | `systematic-debugging` | 5 agent types, skeptic gate, escalation cap, cap-out issues — replaced by `debugging` |
-| Old brainstorming checklist | 8-step interview, section gates, mandatory specs, visual companion, forced writing-plans — replaced by `thinking` |
+| Old brainstorming checklist | 8-step interview, section gates, visual companion, and forced writing-plans — replaced by conversational `thinking` and explicit document capture through `writing-specs` |
 | requesting-code-review | Review when useful, not a suite gate |
 | writing-skills | Authoring lives with skill-creator, not this runtime suite |
 | Goal-fulfiller model | Primary session addresses issues; surveyor + writer only |
@@ -52,7 +53,7 @@ a bandaid, a missing section degrades to generic defaults instead of stopping.
 
 ## Suite-wide rules
 
-- Trivial → just do it
-- Ambiguous → 1–3 questions, then act
-- Risky / hard to reverse → short design + one yes
+- `thinking` is read-only conversation; authorization to change ends it
+- `writing-specs` captures intent only when explicitly requested
+- Neither skill automatically invokes the other
 - Keep mechanics, cut ritual
