@@ -42,9 +42,10 @@ and wait.
 
 This boundary describes the agent-dispatched report path specifically. When
 the `weedeat` CLI is installed and the session is interactive, a human may run
-`weedeat run` directly: it auto-prunes only the strict-safe tier, then opens a
-TUI for explicit review of everything else. That path is human-invoked; the
-agent never starts it on the user's behalf.
+`weedeat run` directly: it opens a line-oriented prompt showing numeric risk
+levels and removes nothing until the human enters and confirms `trim N`.
+Level `0` is never deletable. That path is human-invoked; the agent never
+starts it on the user's behalf.
 
 If the user then authorizes a tier — "drop the churn", "remove the safe ones" —
 that authorizes exactly that tier for that run. It is not authorization for

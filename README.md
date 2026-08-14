@@ -8,7 +8,7 @@ scale with risk instead of ceremony.
 
 The shared skills live in `skills/` and cover:
 
-- proportional thinking and implementation plans;
+- read-only collaborative thinking, feature specifications, and implementation plans;
 - testing, verification, debugging, and code review;
 - worktree isolation and bounded subagent delegation;
 - finishing branches with verification, push, and pull request creation;
@@ -53,16 +53,18 @@ delegates to the capture-only `bug-capture` skill. The command index is in
 [`docs/COMMANDS.md`](docs/COMMANDS.md) — kept out of `commands/`, since every
 `.md` in that directory ships as a slash command.
 
-## Per-repo configuration
+## Per-repo configuration and artifacts
 
-A repo that Synapse operates on carries one `.synapse/` directory and nothing
-else — no skills, no scripts. Each tool reads only the files it needs:
+A repo that Synapse operates on stores configuration in one `.synapse/`
+directory — no skills or scripts. Feature specification artifacts live
+separately in `synapse/specs/`. Each tool reads only the files it needs:
 
 ```text
 .synapse/identity.md    repo, base, stack          every tool
 .synapse/bandaids.md    Secrets, Verify, Repro,    the bandaids
                         Protected, Ignore
 .synapse/weedeat.md     Assets, Worktrees          the /weedeat surveys
+.synapse/weedeat-tags.json                       weedeat CLI overrides
 ```
 
 The bandaids stop at Gate 0 on a missing section. The `/weedeat` surveys degrade
@@ -77,6 +79,26 @@ a root `SYNAPSE.md` is still lying around, delete it.
 
 Schema: [`docs/TEMPLATES/synapse/`](docs/TEMPLATES/synapse/). Worked example:
 [`docs/EXAMPLES/synapse.hotel-kline-game.md`](docs/EXAMPLES/synapse.hotel-kline-game.md).
+
+## Weedeat command interface
+
+Install the standalone package with `pip install -e apps/weedeat`, then run
+`weedeat run` from a Git repository. The prompt lists branches by numeric risk:
+
+```text
+0  protected — never trimmed
+1  safe — merged and clean
+2  stale — no merged or open PR
+3  review — merged but carrying local changes
+4  hold — active, unknown, or carrying unmerged work
+```
+
+Nothing is removed on launch. `trim 1` removes confirmed level-1 entries;
+`trim 2` includes levels 1 and 2, and so on. Every trim previews its work and
+requires confirmation. Use `branch <name> tag <0-4>` or
+`worktree <path> tag <0-4>` for a persistent override. A level-0 entry cannot
+be removed by any trim command. Tags are written to
+`.synapse/weedeat-tags.json`; attached branches and worktrees share one tag.
 
 ## Codex plugin installation
 

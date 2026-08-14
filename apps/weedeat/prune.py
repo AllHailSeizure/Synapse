@@ -1,4 +1,4 @@
-"""Guarded Git mutations used by weedeat's automatic safe-tier pass."""
+"""Guarded Git mutations used by an explicitly confirmed trim command."""
 
 from __future__ import annotations
 
@@ -16,28 +16,17 @@ def _run(root: str, *args: str) -> tuple[bool, str]:
     return result.returncode == 0, message
 
 
-def prune_worktree(root: str, entry: dict) -> tuple[bool, str]:
-    """Remove an automatically classified SAFE worktree."""
-    assert entry["tier"] == "SAFE", "automatic pruning requires a SAFE worktree"
+def prune_worktree(root: str, entry: dict, threshold: int) -> tuple[bool, str]:
+    """Remove one worktree selected by an explicit trim threshold."""
+    assert 1 <= entry["level"] <= threshold, "worktree is outside trim threshold"
+    assert not entry.get("system_protected"), "protected worktrees cannot be removed"
+    assert not entry.get("locked"), "locked worktrees cannot be removed"
     return _run(root, "worktree", "remove", "--force", entry["path"])
 
 
-def prune_branch(root: str, entry: dict) -> tuple[bool, str]:
-    """Delete a merged, unattached local branch with nothing unpushed."""
-    assert entry["merged"], "automatic pruning requires a merged branch"
-    assert not entry["unpushed"], "automatic pruning rejects unpushed commits"
-    assert not entry["checked_out"], "automatic pruning rejects checked-out branches"
+def prune_branch(root: str, entry: dict, threshold: int) -> tuple[bool, str]:
+    """Delete one unattached branch selected by an explicit trim threshold."""
+    assert 1 <= entry["level"] <= threshold, "branch is outside trim threshold"
+    assert not entry.get("system_protected"), "protected branches cannot be removed"
+    assert not entry["checked_out"], "checked-out branches cannot be removed"
     return _run(root, "branch", "-D", entry["branch"])
-
-
-def prune_reviewed_worktree(root: str, entry: dict) -> tuple[bool, str]:
-    """Remove a non-safe worktree after an explicit interactive confirmation."""
-    assert entry["tier"] in ("STALE", "REVIEW", "HOLD")
-    assert not entry.get("locked"), "locked worktrees are never deletion candidates"
-    return _run(root, "worktree", "remove", "--force", entry["path"])
-
-
-def prune_reviewed_branch(root: str, branch: str) -> tuple[bool, str]:
-    """Delete a branch after its non-safe worktree was explicitly confirmed."""
-    assert branch, "detached worktrees have no branch to delete"
-    return _run(root, "branch", "-D", branch)

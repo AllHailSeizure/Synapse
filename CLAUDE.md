@@ -112,7 +112,8 @@ See `docs/EVOLUTION.md` for detailed reflection checklist.
 
 Synapse skills are hard directives. Judgment over ceremony — no fixed interview gates for trivial work.
 
-- `thinking` — Proportional design-before-build (replaces ceremony brainstorming)
+- `thinking` — Read-only collaborative exploration; authorization to change ends it
+- `writing-specs` — Capture feature intent in a document when explicitly requested
 - `verification` — Claim only what you checked; proportional; no substitute harnesses
 - `testing` — TDD when exploring; verification-first when behavior is clear
 - `goal-oriented-development` — User-directed issues (intent + evidence); no goal-fulfiller
@@ -124,6 +125,10 @@ Synapse skills are hard directives. Judgment over ceremony — no fixed intervie
 - `code-review` — Receive feedback rigorously; no performative agreement
 - `finishing-branches` — Verify → push → PR; merge stays user-initiated
 - `asset-churn-audit` / `worktree-cleanup` — Report what accumulated on its own; never delete (`/weedeat`)
+
+Feature specs live in `synapse/specs/`. Keep `PENDING`, `APPROVED`, or
+`IMPLEMENTED` synchronized in the filename and title; use `IMPLEMENTED` only
+after the approved spec's success criteria are verified.
 
 See `skills/` and `skills/README.md`.
 

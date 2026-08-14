@@ -6,6 +6,8 @@ import os
 import subprocess
 from pathlib import Path
 
+from apps.weedeat.tags import read_tags, worktree_key
+
 DEFAULT_CONTAINERS = [".claude/worktrees", ".worktrees", "worktrees"]
 
 # Worktrees other tools create and may be actively using. Reported, never
@@ -184,7 +186,8 @@ def orphan_dirs(root: str, containers: list[str], registered: set[str]) -> list[
 
 def classify(tree: dict, root: str, merged: set[str], open_heads: set[str],
              have_gh: bool, foreign_markers: list[str],
-             noise_suffixes: tuple[str, ...], noise_dirs: tuple[str, ...]) -> dict:
+             noise_suffixes: tuple[str, ...], noise_dirs: tuple[str, ...],
+             protected_branches: set[str]) -> dict:
     path = tree.get("path", "")
     branch = tree.get("branch", "")
     norm = path.replace("\\", "/")
@@ -196,34 +199,102 @@ def classify(tree: dict, root: str, merged: set[str], open_heads: set[str],
     is_merged = branch in merged if have_gh else False
     is_open = branch in open_heads
 
+    system_protected = False
     if is_main:
-        tier, why = "MAIN", "primary checkout"
+        level, why, system_protected = 0, "primary checkout", True
+    elif branch in protected_branches:
+        level, why, system_protected = 0, "configured protected branch", True
     elif tree.get("locked"):
-        tier, why = "HOLD", "worktree is locked"
+        level, why, system_protected = 0, "worktree is locked", True
+    elif foreign:
+        level, why, system_protected = 0, "owned by another tool", True
     elif is_open:
-        tier, why = "HOLD", "branch has an open PR"
+        level, why = 4, "branch has an open PR"
     elif dirt or unpushed:
         bits = []
         if dirt:
             bits.append(f"{len(dirt)} uncommitted file(s)")
         if unpushed:
             bits.append(f"{unpushed} unpushed commit(s)")
-        tier = "REVIEW" if is_merged else "HOLD"
+        level = 3 if is_merged else 4
         why = " + ".join(bits) + (" despite merged PR" if is_merged else "")
     elif is_merged:
-        tier, why = "SAFE", "PR merged, tree clean, nothing unpushed"
+        level, why = 1, "PR merged, tree clean, nothing unpushed"
     elif not have_gh:
-        tier, why = "UNKNOWN", "gh unavailable - merge status not checked"
+        level, why = 4, "gh unavailable - merge status not checked"
     else:
-        tier, why = "STALE", "no merged PR, no open PR, nothing uncommitted"
-
-    if foreign and tier in ("SAFE", "STALE", "REVIEW"):
-        tier, why = "FOREIGN", f"{why} (owned by another tool - report only)"
+        level, why = 2, "no merged PR, no open PR, nothing uncommitted"
 
     return {
-        "path": path, "branch": branch, "tier": tier, "reason": why,
+        "path": path, "branch": branch, "level": level,
+        "automatic_level": level, "tag": None, "reason": why,
         "dirty": dirt, "unpushed": unpushed, "merged": is_merged,
         "detached": tree.get("detached", False), "locked": tree.get("locked", False),
+        "system_protected": system_protected,
+    }
+
+
+def apply_tag(row: dict, tags: dict, root: str) -> dict:
+    """Apply a manual override unless the row is protected by a hard invariant."""
+    result = dict(row)
+    if result.get("system_protected"):
+        return result
+    branch = result.get("branch")
+    if branch and branch in tags.get("branches", {}):
+        tag = tags["branches"][branch]
+    elif result.get("path"):
+        tag = tags.get("worktrees", {}).get(worktree_key(root, result["path"]))
+    else:
+        tag = None
+    if tag is not None:
+        result["level"] = tag
+        result["tag"] = tag
+    return result
+
+
+def classify_branch(branch: str, *, merged: set[str], open_heads: set[str],
+                    have_gh: bool, unpushed: int, protected: set[str],
+                    worktree: dict | None) -> dict:
+    if worktree is not None:
+        return {
+            "branch": branch,
+            "path": worktree["path"],
+            "level": worktree["level"],
+            "automatic_level": worktree["automatic_level"],
+            "tag": worktree["tag"],
+            "reason": worktree["reason"],
+            "merged": worktree["merged"],
+            "open_pr": branch in open_heads,
+            "unpushed": worktree["unpushed"],
+            "checked_out": True,
+            "system_protected": worktree["system_protected"],
+        }
+    if branch in protected:
+        level, reason, system_protected = 0, "configured protected branch", True
+    elif branch in open_heads:
+        level, reason, system_protected = 4, "branch has an open PR", False
+    elif unpushed:
+        level = 3 if branch in merged else 4
+        reason = f"{unpushed} unpushed commit(s)"
+        system_protected = False
+    elif branch in merged:
+        level, reason, system_protected = 1, "PR merged, nothing unpushed", False
+    elif not have_gh:
+        level, reason, system_protected = 4, "gh unavailable - merge status not checked", False
+    else:
+        level, reason, system_protected = 2, "no merged PR or open PR", False
+    return {
+        "branch": branch,
+        "path": None,
+        "level": level,
+        "automatic_level": level,
+        "tag": None,
+        "reason": reason,
+        "merged": branch in merged,
+        "open_pr": branch in open_heads,
+        "unpushed": unpushed,
+        "checked_out": False,
+        "system_protected": system_protected,
     }
 
 
@@ -236,6 +307,7 @@ def run_survey(root: str, no_fetch: bool = False) -> dict:
     noise_dirs = tuple(cfg.get("noise_dirs", [])) or tuple(
         c if c.endswith("/") else c + "/" for c in containers)
     protected = set(cfg.get("protected_branches", DEFAULT_PROTECTED))
+    tags = read_tags(root)
 
     if not no_fetch:
         git("fetch", "origin", "--prune", cwd=root)
@@ -246,24 +318,27 @@ def run_survey(root: str, no_fetch: bool = False) -> dict:
     registered = {str(Path(t["path"]).resolve()).replace("\\", "/")
                   for t in trees if t.get("path")}
 
-    surveyed = [classify(t, root, merged, open_heads, have_gh, foreign_markers,
-                         noise_suffixes, noise_dirs) for t in trees]
+    surveyed = [apply_tag(
+        classify(t, root, merged, open_heads, have_gh, foreign_markers,
+                 noise_suffixes, noise_dirs, protected), tags, root
+    ) for t in trees]
     orphans = orphan_dirs(root, containers, registered)
 
     local = [b for b in git("for-each-ref", "--format=%(refname:short)",
                             "refs/heads", cwd=root).splitlines() if b]
-    attached = {s["branch"] for s in surveyed if s["branch"]}
+    attached = {s["branch"]: s for s in surveyed if s["branch"]}
     branch_rows = []
     for branch in local:
-        if branch in protected:
-            continue
-        branch_rows.append({
-            "branch": branch,
-            "merged": branch in merged,
-            "open_pr": branch in open_heads,
-            "unpushed": unpushed_count(root, branch),
-            "checked_out": branch in attached,
-        })
+        row = classify_branch(
+            branch,
+            merged=merged,
+            open_heads=open_heads,
+            have_gh=have_gh,
+            unpushed=unpushed_count(root, branch),
+            protected=protected,
+            worktree=attached.get(branch),
+        )
+        branch_rows.append(apply_tag(row, tags, root))
 
     return {
         "worktrees": surveyed,

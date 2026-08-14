@@ -12,12 +12,17 @@ executable directives with visible outputs and proportional gates.
 - Protect the selected scope. If a new implementation idea is outside it,
   surface the pivot before writing code.
 - Verify the exact claim before saying work is complete.
+- Store feature specs in `synapse/specs/` with `PENDING`, `APPROVED`, or
+  `IMPLEMENTED` in both the filename and title.
+- When implementation is governed by an approved spec, mark it `IMPLEMENTED`
+  only after verifying its success criteria.
 
 ## Skills
 
 The active suite lives in `skills/`:
 
-- `thinking` — proportional design before risky or ambiguous changes.
+- `thinking` — read-only collaborative exploration of intent and tradeoffs.
+- `writing-specs` — capture feature intent in an approved document.
 - `verification` — claim only what was checked.
 - `worktrees` — isolate work when the checkout or project workflow requires it.
 - `parallel-agents` and `subagent-team-execution` — bounded delegation.
@@ -77,8 +82,10 @@ invocation.
 
 That boundary applies to the agent-dispatched report path. If the standalone
 `weedeat` CLI is installed, a human in an interactive terminal may run
-`weedeat run` directly to auto-prune the strict-safe tier and review the rest
-in a TUI. Agents do not launch that human-invoked path on the user's behalf.
+`weedeat run` directly to review numeric risk levels in a command prompt.
+Nothing is removed on launch; `trim N` previews levels `1..N` and requires
+confirmation, while level `0` is never deletable. Agents do not launch that
+human-invoked path on the user's behalf.
 
 ## Repository layout
 

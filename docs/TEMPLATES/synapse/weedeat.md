@@ -84,3 +84,21 @@ noise-suffixes: .import, .uid
 noise-dirs: .godot/, .worktrees/, .claude/worktrees/
 protected: master, main
 ```
+
+## Manual cleanup tags
+
+The interactive `weedeat run` command writes manual numeric overrides to the
+adjacent `.synapse/weedeat-tags.json` file. Do not edit that JSON while the
+prompt is running; use these commands instead:
+
+```text
+branch <name> tag <0-4>
+branch <name> untag
+worktree <path> tag <0-4>
+worktree <path> untag
+```
+
+Level `0` is protected and is never eligible for `trim`. Levels `1` through
+`4` increase in risk. Tagging an attached branch or worktree updates their
+shared branch tag. Primary, configured-protected, locked, and foreign-tool
+entries are system-protected and cannot be retagged into a deletable level.
