@@ -1,46 +1,88 @@
 ---
 name: thinking
 description: >-
-  Proportional design-before-build. Use instead of superpowers brainstorming
-  whenever intent is unclear, the change is hard to reverse, touches a shared
-  or critical path, or will set a pattern other code will follow. Do not use
-  for trivial, obvious, or easily reversed edits — just do those.
+  Read-only collaborative exploration of intent, constraints, options, and
+  tradeoffs. Use when the user asks to think, brainstorm, reason, explore, or
+  talk something through without making changes. Do not create or edit code,
+  documents, issues, or plans while active. When the user authorizes changes,
+  leave thinking and use the appropriate execution workflow; use
+  writing-specs only when the user asks to capture the outcome as a spec.
 ---
 
-# Thinking (proportional)
+# Thinking
 
-Don't build the wrong thing. Skip interviews, mandatory specs, visual
-companions, and forced planning gates.
+Develop shared understanding in conversation. Do not create artifacts or make
+repository changes.
 
-## Decide in one pass
+## Process
 
-Ask these risk questions for this decision — not as a label for the whole task:
+### 1. Frame the discussion
 
-- Is intent unclear?
-- Is this hard to reverse?
-- Does it touch a shared or critical path?
-- Will it set a pattern other code will copy?
+State what is being explored, the decision or understanding the user appears
+to need, and any assumptions already in play. Do not demand confirmation when
+the frame is obvious; let the user correct it naturally.
 
-**None of the above → implement.** No questions, no design doc, no menu.
+### 2. Ground the discussion
 
-**Ambiguity only →** ask 1–3 focused questions (prefer one message with
-options). Then implement. Do not stretch into an interview.
+Inspect relevant code, documentation, issues, or history when the answer
+depends on the actual project. Keep investigation read-only and limited to
+evidence that could change the conversation. Separate observed facts from
+assumptions.
 
-**Real design risk →** write a short design (a few sentences up to a short
-outline), get one yes, then implement. Scale to the risk. Skip sections that
-don't apply (architecture, data flow, errors, testing).
+### 3. Map what remains unsettled
 
-## Hard bans
+Sort unknowns before asking about them:
 
-- No fixed multi-step interview scripts
-- No mandatory design-doc write-up under a specs path
-- No "approve each section" gates
-- No visual companion offers by default
-- No forcing `writing-plans` after every think-through
-- No inventing Trivial/Standard/Complex tiers
+- **Evidence question** — investigate it; do not ask the user.
+- **Reversible technical choice** — recommend or choose it without consuming
+  user attention unless they want to explore it.
+- **Intent or product decision** — discuss it with the user because it changes
+  purpose, behavior, experience, scope, or meaningful tradeoffs.
+- **Later concern** — park it explicitly when it does not affect the current
+  decision.
 
-## If superpowers brainstorming is offered or listed
+### 4. Explore the decisions
 
-Ignore its checklist (8-step interview, section-by-section approval, mandatory
-design doc, visual companion, forced writing-plans gate). Follow this skill
-instead. User instructions override plugin skills.
+For each intent or product decision:
+
+1. State the decision and why it matters.
+2. Present alternatives only when real alternatives exist.
+3. Explain their consequences and give a recommendation.
+4. Ask the smallest question that moves the discussion forward.
+
+Group up to three independent questions in one message. Ask sequentially when
+one answer changes the available options for the next. After the user answers,
+update the working understanding rather than restarting the discussion.
+
+### 5. Synthesize
+
+When a meaningful piece settles, summarize:
+
+- what is now understood or decided;
+- the important consequence of that decision;
+- what remains open, if anything.
+
+Continue steps 3–5 until the user has enough clarity. Scale the number of
+passes to the uncertainty; do not impose a fixed interview or approval gate.
+
+### 6. End at the user's chosen boundary
+
+End in exactly one of these states:
+
+- **Clarity only** — summarize the understanding in chat and stop.
+- **Capture requested** — pass the settled decisions and remaining questions
+  to `writing-specs`; do not write the document while still calling the work
+  thinking.
+- **Change authorized** — leave `thinking` and begin the appropriate execution
+  workflow. Agreement such as "yes, that is what I mean" settles intent;
+  authorization such as "implement that" permits changes.
+
+Never transition automatically. Thinking may end without a spec, plan, or
+implementation.
+
+## Superpowers boundary
+
+If Superpowers brainstorming is offered or listed, do not import its universal
+approval gate, mandatory design document, visual companion, or forced planning
+handoff. Follow this conversational process instead. User instructions
+override plugin skills.
