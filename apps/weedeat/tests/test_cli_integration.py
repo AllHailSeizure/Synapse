@@ -10,6 +10,8 @@ from pathlib import Path
 from unittest.mock import Mock, patch
 
 from apps.weedeat.cli import run
+from apps.weedeat.scan import run_survey
+from apps.weedeat.trim import execute_trim
 
 
 def git(root: Path, *args: str) -> str:
@@ -22,8 +24,8 @@ def git(root: Path, *args: str) -> str:
 
 class RunIntegrationTest(unittest.TestCase):
     @patch("apps.weedeat.scan.gh_pr_heads", return_value=(set(), False))
-    @patch("apps.weedeat.tui.review")
-    def test_headless_run_prints_remainder_without_launching_tui(
+    @patch("apps.weedeat.console.review")
+    def test_headless_run_prints_numeric_report_without_opening_console(
         self, review, _pr_heads
     ) -> None:
         fake_stdout = Mock(wraps=sys.stdout)
@@ -35,11 +37,26 @@ class RunIntegrationTest(unittest.TestCase):
         with patch("sys.stdout", fake_stdout):
             self.assertEqual(run(str(Path.cwd()), no_fetch=True), 0)
 
-        self.assertIn("# Worktree cleanup remainder", output.getvalue())
-        self.assertIn("## HOLD", output.getvalue())
+        self.assertIn("# weedeat", output.getvalue())
+        self.assertRegex(output.getvalue(), r"[0-4]  ")
         review.assert_not_called()
 
-    def test_safe_worktree_and_branch_are_pruned_but_unmerged_work_is_kept(self) -> None:
+    @patch("apps.weedeat.cli.run_survey")
+    @patch("apps.weedeat.console.review")
+    def test_interactive_run_opens_console_without_pruning(self, review, scan) -> None:
+        result = {"branches": [], "worktrees": [], "orphan_dirs": []}
+        scan.return_value = result
+        fake_stdin = Mock()
+        fake_stdin.isatty.return_value = True
+        fake_stdout = Mock()
+        fake_stdout.isatty.return_value = True
+
+        with patch("sys.stdin", fake_stdin), patch("sys.stdout", fake_stdout):
+            self.assertEqual(run("repo", no_fetch=True), 0)
+
+        review.assert_called_once_with("repo", result)
+
+    def test_run_never_prunes_until_a_trim_command_is_confirmed(self) -> None:
         with tempfile.TemporaryDirectory() as temp:
             base = Path(temp)
             remote = base / "remote.git"
@@ -77,23 +94,35 @@ class RunIntegrationTest(unittest.TestCase):
                 return ({"merged"} if state == "merged" else set(), True)
 
             with patch("apps.weedeat.scan.gh_pr_heads", side_effect=pr_heads):
-                dry_output = io.StringIO()
-                with contextlib.redirect_stdout(dry_output):
+                output = io.StringIO()
+                with contextlib.redirect_stdout(output):
                     self.assertEqual(run(str(repo), no_fetch=True, dry_run=True), 0)
-                self.assertIn("worktree `merged`", dry_output.getvalue())
-                self.assertIn("## HOLD", dry_output.getvalue())
-                self.assertIn("`unmerged`", dry_output.getvalue())
-                self.assertTrue(safe_tree.exists())
+                self.assertIn("1  merged", output.getvalue())
+                self.assertIn("4  unmerged", output.getvalue())
 
                 with contextlib.redirect_stdout(io.StringIO()):
                     self.assertEqual(run(str(repo), no_fetch=True), 0)
 
-            worktrees = git(repo, "worktree", "list", "--porcelain")
-            branches = git(repo, "branch", "--format=%(refname:short)").splitlines()
-            self.assertNotIn(str(safe_tree), worktrees)
-            self.assertNotIn("merged", branches)
-            self.assertIn(str(hold_tree).replace("\\", "/"), worktrees)
-            self.assertIn("unmerged", branches)
+            before_trees = git(repo, "worktree", "list", "--porcelain")
+            before_branches = git(
+                repo, "branch", "--format=%(refname:short)"
+            ).splitlines()
+            self.assertIn(str(safe_tree).replace("\\", "/"), before_trees)
+            self.assertIn("merged", before_branches)
+
+            with patch("apps.weedeat.scan.gh_pr_heads", side_effect=pr_heads):
+                result = run_survey(str(repo), no_fetch=True)
+                outcomes = execute_trim(str(repo), result, 1)
+            self.assertTrue(all(outcome[2] for outcome in outcomes))
+
+            after_trees = git(repo, "worktree", "list", "--porcelain")
+            after_branches = git(
+                repo, "branch", "--format=%(refname:short)"
+            ).splitlines()
+            self.assertNotIn(str(safe_tree).replace("\\", "/"), after_trees)
+            self.assertNotIn("merged", after_branches)
+            self.assertIn(str(hold_tree).replace("\\", "/"), after_trees)
+            self.assertIn("unmerged", after_branches)
 
 
 if __name__ == "__main__":

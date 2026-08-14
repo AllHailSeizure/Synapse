@@ -1,1 +1,1 @@
-"""Worktree cleanup scanner, CLI, and interactive review app."""
+"""Branch and worktree scanner with a guarded cleanup command interface."""

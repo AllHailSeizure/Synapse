@@ -82,8 +82,10 @@ invocation.
 
 That boundary applies to the agent-dispatched report path. If the standalone
 `weedeat` CLI is installed, a human in an interactive terminal may run
-`weedeat run` directly to auto-prune the strict-safe tier and review the rest
-in a TUI. Agents do not launch that human-invoked path on the user's behalf.
+`weedeat run` directly to review numeric risk levels in a command prompt.
+Nothing is removed on launch; `trim N` previews levels `1..N` and requires
+confirmation, while level `0` is never deletable. Agents do not launch that
+human-invoked path on the user's behalf.
 
 ## Repository layout
 
