@@ -4,7 +4,10 @@ description: >-
   User-directed GitHub issue workflow. Use when the user wants to create,
   select, inspect, prioritize, or address an issue; when work must stay inside
   an approved issue; or when a high-level direction needs evidence before the
-  user decides what to track. Do not infer the next goal from the codebase.
+  user decides what to track. When the user says to address, work through, or
+  unblock a selected feature issue without explicitly requesting
+  implementation, route to writing-specs rather than goal-writer. Do not infer
+  the next goal from the codebase.
 ---
 
 # Goal-Oriented Development
@@ -34,7 +37,12 @@ silently starting is not.
 
 ## Writing issues
 
-When the user has chosen an outcome to track, spawn a `goal-writer` agent
+Use `goal-writer` only when the user wants to create a GitHub issue or
+explicitly rewrite an existing issue. Do not dispatch it merely because a
+selected feature issue is incomplete or needs product decisions; route that
+work through `writing-specs` instead.
+
+When the user has chosen a new outcome to track, spawn a `goal-writer` agent
 (Task tool / subagent) with the stated intent and repository path. It returns
 an evidence-based draft. Present it for confirmation before creating the
 GitHub issue.
@@ -52,10 +60,23 @@ it.
 
 ## Addressing issues
 
-When the user says to address an issue, the primary session takes it on. Read
-the issue as an approved problem statement, then use the normal implementation
-skills (`thinking`, `testing`, plans as needed) to inspect live code, confirm
-behavior, and implement.
+When the user says to address, work through, or unblock a selected issue,
+inspect the issue, milestone context, and relevant repository evidence, then
+route by intent:
+
+- **Feature issue, implementation not explicitly requested** — invoke
+  `writing-specs`. It invokes `thinking`, develops shared understanding, and
+  captures an approved spec before any implementation.
+- **Explicit request to create or rewrite the GitHub issue** — use
+  `goal-writer`, present its draft, and mutate GitHub only after confirmation.
+- **Explicit request to implement or fix now** — treat the issue as the scope
+  boundary and use the normal implementation skills.
+- **Bug, verification, or refactor with settled behavior** — do not force a
+  feature spec; follow the appropriate workflow for the user's requested
+  outcome.
+
+Do not interpret “address this feature issue” as permission to implement, and
+do not use `goal-writer` as a substitute for developing the feature's meaning.
 
 Do **not** dispatch a goal-fulfiller. Do not treat issue evidence as a mandated
 solution. Surface material conflict between the issue and live code or user

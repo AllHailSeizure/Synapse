@@ -43,6 +43,10 @@ They intentionally avoid ceremony for trivial, reversible work.
 
 When the user names an issue or asks to work from issues, inspect the relevant
 issue and milestone context. Do not infer the next goal from the repository.
+When the user says to address, work through, or unblock a selected feature
+issue without explicitly requesting implementation, route through
+`writing-specs`; do not default to `goal-writer` or implementation. Use
+`goal-writer` only to create or explicitly rewrite a GitHub issue.
 The Codex research agents are registered under `.codex/agents/synapse/`:
 
 - `codebase-explorer` answers focused repository questions.

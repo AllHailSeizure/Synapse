@@ -5,8 +5,9 @@ description: >-
   tradeoffs. Use when the user asks to think, brainstorm, reason, explore, or
   talk something through without making changes. Do not create or edit code,
   documents, issues, or plans while active. When the user authorizes changes,
-  leave thinking and use the appropriate execution workflow; use
-  writing-specs only when the user asks to capture the outcome as a spec.
+  leave thinking and use the appropriate execution workflow. When invoked by
+  writing-specs, return the settled understanding for capture; otherwise use
+  writing-specs only when the user asks for a spec.
 ---
 
 # Thinking
@@ -94,14 +95,17 @@ passes to the uncertainty; do not impose a fixed interview or approval gate.
 End in exactly one of these states:
 
 - **Clarity only** — summarize the understanding in chat and stop.
-- **Capture requested** — pass the settled decisions and remaining questions
-  to `writing-specs`; do not write the document while still calling the work
-  thinking.
+- **Capture route active** — when invoked by `writing-specs`, return the
+  settled decisions and remaining questions for capture. When thinking was
+  invoked on its own, do this only if the user asks for a spec. Do not write
+  the document while still calling the work thinking.
 - **Change authorized** — leave `thinking` and begin the appropriate execution
   workflow. Agreement such as "yes, that is what I mean" settles intent;
   authorization such as "implement that" permits changes.
 
-Never transition automatically. Thinking may end without a spec, plan, or
+Never transition automatically from standalone thinking. A
+`writing-specs`-initiated thinking pass returns to its caller once shared
+understanding settles. Thinking may otherwise end without a spec, plan, or
 implementation.
 
 ## Superpowers boundary

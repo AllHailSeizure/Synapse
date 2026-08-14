@@ -2,11 +2,13 @@
 name: writing-specs
 description: >-
   Capture feature intent in a concise, approved specification document. Use
-  when the user explicitly asks to write, capture, or document a feature spec,
-  whether the intent comes from thinking, a selected issue, or an existing
-  discussion. Always run the thinking skill first to establish shared,
-  plain-language understanding before writing. Do not trigger automatically
-  after thinking, implement the feature, or write an implementation plan.
+  when the user asks to write, capture, or document a feature spec, or asks to
+  address, work through, or unblock a selected feature issue without
+  explicitly requesting implementation. Intent may come from thinking, an
+  issue, or an existing discussion. Always run the thinking skill first to
+  establish shared, plain-language understanding before writing. Do not
+  trigger automatically after thinking, implement the feature, or write an
+  implementation plan.
 ---
 
 # Writing Specs

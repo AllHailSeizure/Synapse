@@ -43,7 +43,7 @@ a bandaid, a missing section degrades to generic defaults instead of stopping.
 | Dropped | Why |
 |---------|-----|
 | `systematic-debugging` | 5 agent types, skeptic gate, escalation cap, cap-out issues — replaced by `debugging` |
-| Old brainstorming checklist | 8-step interview, section gates, visual companion, and forced writing-plans — replaced by conversational `thinking` and explicit document capture through `writing-specs` |
+| Old brainstorming checklist | 8-step interview, section gates, visual companion, and forced writing-plans — replaced by conversational `thinking` and bounded document capture through `writing-specs` |
 | requesting-code-review | Review when useful, not a suite gate |
 | writing-skills | Authoring lives with skill-creator, not this runtime suite |
 | Goal-fulfiller model | Primary session addresses issues; surveyor + writer only |
@@ -54,6 +54,6 @@ a bandaid, a missing section degrades to generic defaults instead of stopping.
 ## Suite-wide rules
 
 - `thinking` is read-only conversation; authorization to change ends it
-- `writing-specs` captures intent only when explicitly requested
-- Neither skill automatically invokes the other
+- `writing-specs` captures explicitly requested specs and selected feature issues routed by `goal-oriented-development`
+- `writing-specs` always invokes `thinking`; standalone `thinking` never invokes spec-writing automatically
 - Keep mechanics, cut ritual
