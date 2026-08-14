@@ -8,7 +8,7 @@ scale with risk instead of ceremony.
 
 The shared skills live in `skills/` and cover:
 
-- proportional thinking and implementation plans;
+- read-only collaborative thinking, feature specifications, and implementation plans;
 - testing, verification, debugging, and code review;
 - worktree isolation and bounded subagent delegation;
 - finishing branches with verification, push, and pull request creation;
@@ -53,10 +53,11 @@ delegates to the capture-only `bug-capture` skill. The command index is in
 [`docs/COMMANDS.md`](docs/COMMANDS.md) — kept out of `commands/`, since every
 `.md` in that directory ships as a slash command.
 
-## Per-repo configuration
+## Per-repo configuration and artifacts
 
-A repo that Synapse operates on carries one `.synapse/` directory and nothing
-else — no skills, no scripts. Each tool reads only the files it needs:
+A repo that Synapse operates on stores configuration in one `.synapse/`
+directory — no skills or scripts. Feature specification artifacts live
+separately in `synapse/specs/`. Each tool reads only the files it needs:
 
 ```text
 .synapse/identity.md    repo, base, stack          every tool
