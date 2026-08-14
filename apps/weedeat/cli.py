@@ -1,4 +1,4 @@
-"""Command-line entry points for the weedeat worktree cleanup app."""
+"""Command-line entry points for the weedeat cleanup console."""
 
 from __future__ import annotations
 
@@ -7,29 +7,25 @@ import json
 import sys
 
 from apps.weedeat.scan import repo_root, run_survey
-from apps.weedeat.prune import prune_branch, prune_worktree
-
-
-REMAINDER_TIERS = ("STALE", "REVIEW", "HOLD")
 
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="weedeat")
     subparsers = parser.add_subparsers(dest="command", required=True)
 
-    scan_parser = subparsers.add_parser("scan", help="emit the worktree survey as JSON")
+    scan_parser = subparsers.add_parser("scan", help="emit the survey as JSON")
     scan_parser.add_argument(
         "--no-fetch", action="store_true", help="skip git fetch --prune"
     )
 
-    run_parser = subparsers.add_parser("run", help="prune safe entries and review the rest")
+    run_parser = subparsers.add_parser("run", help="open the cleanup command prompt")
     run_parser.add_argument(
         "--no-fetch", action="store_true", help="skip git fetch --prune"
     )
     run_parser.add_argument(
-        "--dry-run", action="store_true", help="show actions without changing Git state"
+        "--dry-run", action="store_true",
+        help="print the current classifications without opening the prompt",
     )
-
     return parser
 
 
@@ -49,74 +45,33 @@ def main(argv: list[str] | None = None) -> int:
 
 
 def run(root: str, no_fetch: bool = False, dry_run: bool = False) -> int:
+    """Survey once, then open the prompt only when both streams are interactive."""
     result = run_survey(root, no_fetch=no_fetch)
-    auto = [entry for entry in result["worktrees"] if entry["tier"] == "SAFE"]
-    auto_worktree_branches = {entry["branch"] for entry in auto if entry["branch"]}
-    auto_branches = [
-        entry for entry in result["branches"]
-        if entry["merged"] and not entry["unpushed"]
-        and (not entry["checked_out"] or entry["branch"] in auto_worktree_branches)
-    ]
-    remainder = [
-        entry for entry in result["worktrees"] if entry["tier"] in REMAINDER_TIERS
-    ]
+    if not dry_run and sys.stdin.isatty() and sys.stdout.isatty():
+        from apps.weedeat.console import review
 
-    if dry_run:
-        print("Would prune:")
-        for entry in auto:
-            print(f"- worktree `{entry['branch'] or '(detached)'}` at {entry['path']}")
-        for entry in auto_branches:
-            print(f"- branch `{entry['branch']}` after its worktree is removed")
-        print_remainder(remainder)
-        return 0
-
-    for entry in auto:
-        success, message = prune_worktree(root, entry)
-        print_prune_result("worktree", entry["branch"] or entry["path"], success, message)
-
-    # Worktree removal changes branch eligibility. Re-check attachment after the
-    # safe pass so a branch that was checked out only there can now be deleted.
-    refreshed = run_survey(root, no_fetch=True)
-    refreshed_branches = {entry["branch"]: entry for entry in refreshed["branches"]}
-    for candidate in auto_branches:
-        refreshed_entry = refreshed_branches.get(candidate["branch"])
-        if refreshed_entry is None or refreshed_entry["checked_out"]:
-            continue
-        entry = {**candidate, "checked_out": False}
-        success, message = prune_branch(root, entry)
-        print_prune_result("branch", entry["branch"], success, message)
-
-    reviewable = [entry for entry in remainder if not entry.get("locked")]
-    if reviewable and sys.stdout.isatty():
-        from apps.weedeat.tui import review
-
-        review(root, reviewable)
+        review(root, result)
     else:
-        print_remainder(remainder)
+        print_survey(result, dry_run=dry_run)
     return 0
 
 
-def print_prune_result(kind: str, label: str, success: bool, message: str) -> None:
-    status = "pruned" if success else "failed"
-    print(f"{status}: {kind} `{label}` - {message}")
-
-
-def print_remainder(remainder: list[dict]) -> None:
-    print("\n# Worktree cleanup remainder")
-    print(f"\n{len(remainder)} worktrees need manual review.")
-    for tier in REMAINDER_TIERS:
-        rows = [entry for entry in remainder if entry["tier"] == tier]
-        if not rows:
-            continue
-        print(f"\n## {tier} ({len(rows)})")
-        for entry in rows:
-            label = entry["branch"] or "(detached)"
-            print(f"- `{label}` - {entry['reason']}")
-            print(f"    {entry['path']}")
-            if entry.get("dirty"):
-                shown = ", ".join(entry["dirty"][:4])
-                more = (
-                    f" +{len(entry['dirty']) - 4} more"
-                    if len(entry["dirty"]) > 4 else ""
-                )
-                print(f"    uncommitted: {shown}{more}")
+def print_survey(result: dict, *, dry_run: bool = False) -> None:
+    print("# weedeat")
+    if dry_run:
+        print("# dry run — nothing was removed")
+    print()
+    for row in sorted(result["branches"], key=lambda item: (item["level"], item["branch"])):
+        suffix = f" — {row['reason']}"
+        if row.get("path"):
+            suffix += f" [worktree: {row['path']}]"
+        if row.get("tag") is not None:
+            suffix += " [tagged]"
+        print(f"{row['level']}  {row['branch']}{suffix}")
+    for row in result["worktrees"]:
+        if not row.get("branch"):
+            print(f"{row['level']}  (detached: {row['path']}) — {row['reason']}")
+    if result.get("orphan_dirs"):
+        print("\nOrphan directories:")
+        for path in result["orphan_dirs"]:
+            print(f"- {path}")

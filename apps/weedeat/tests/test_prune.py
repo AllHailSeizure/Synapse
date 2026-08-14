@@ -3,43 +3,35 @@ from __future__ import annotations
 import unittest
 from unittest.mock import patch
 
-from apps.weedeat.prune import (
-    prune_branch,
-    prune_reviewed_worktree,
-    prune_worktree,
-)
+from apps.weedeat.prune import prune_branch, prune_worktree
 
 
 class PruneGuardsTest(unittest.TestCase):
     @patch("apps.weedeat.prune.subprocess.run")
-    def test_worktree_rejects_every_non_safe_tier(self, run) -> None:
-        for tier in ("STALE", "REVIEW", "HOLD", "FOREIGN", "MAIN", "UNKNOWN"):
-            with self.subTest(tier=tier), self.assertRaises(AssertionError):
-                prune_worktree("repo", {"tier": tier, "path": "tree"})
-        run.assert_not_called()
-
-    @patch("apps.weedeat.prune.subprocess.run")
-    def test_manual_review_rejects_locked_and_non_remainder_entries(self, run) -> None:
+    def test_worktree_rejects_protected_or_out_of_threshold_entries(self, run) -> None:
         cases = [
-            {"tier": "HOLD", "locked": True, "path": "tree"},
-            {"tier": "SAFE", "locked": False, "path": "tree"},
-            {"tier": "FOREIGN", "locked": False, "path": "tree"},
+            {"level": 0, "path": "tree"},
+            {"level": 2, "path": "tree"},
+            {"level": 1, "path": "tree", "system_protected": True},
+            {"level": 1, "path": "tree", "locked": True},
         ]
         for entry in cases:
             with self.subTest(entry=entry), self.assertRaises(AssertionError):
-                prune_reviewed_worktree("repo", entry)
+                prune_worktree("repo", entry, threshold=1)
         run.assert_not_called()
 
     @patch("apps.weedeat.prune.subprocess.run")
-    def test_branch_rejects_ineligible_state(self, run) -> None:
+    def test_branch_rejects_protected_checked_out_or_out_of_threshold_entries(self, run) -> None:
         cases = [
-            {"branch": "topic", "merged": False, "unpushed": 0, "checked_out": False},
-            {"branch": "topic", "merged": True, "unpushed": 1, "checked_out": False},
-            {"branch": "topic", "merged": True, "unpushed": 0, "checked_out": True},
+            {"branch": "topic", "level": 0, "checked_out": False},
+            {"branch": "topic", "level": 3, "checked_out": False},
+            {"branch": "topic", "level": 1, "checked_out": True},
+            {"branch": "topic", "level": 1, "checked_out": False,
+             "system_protected": True},
         ]
         for entry in cases:
             with self.subTest(entry=entry), self.assertRaises(AssertionError):
-                prune_branch("repo", entry)
+                prune_branch("repo", entry, threshold=2)
         run.assert_not_called()
 
 

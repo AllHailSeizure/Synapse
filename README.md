@@ -63,6 +63,7 @@ else — no skills, no scripts. Each tool reads only the files it needs:
 .synapse/bandaids.md    Secrets, Verify, Repro,    the bandaids
                         Protected, Ignore
 .synapse/weedeat.md     Assets, Worktrees          the /weedeat surveys
+.synapse/weedeat-tags.json                       weedeat CLI overrides
 ```
 
 The bandaids stop at Gate 0 on a missing section. The `/weedeat` surveys degrade
@@ -77,6 +78,26 @@ a root `SYNAPSE.md` is still lying around, delete it.
 
 Schema: [`docs/TEMPLATES/synapse/`](docs/TEMPLATES/synapse/). Worked example:
 [`docs/EXAMPLES/synapse.hotel-kline-game.md`](docs/EXAMPLES/synapse.hotel-kline-game.md).
+
+## Weedeat command interface
+
+Install the standalone package with `pip install -e apps/weedeat`, then run
+`weedeat run` from a Git repository. The prompt lists branches by numeric risk:
+
+```text
+0  protected — never trimmed
+1  safe — merged and clean
+2  stale — no merged or open PR
+3  review — merged but carrying local changes
+4  hold — active, unknown, or carrying unmerged work
+```
+
+Nothing is removed on launch. `trim 1` removes confirmed level-1 entries;
+`trim 2` includes levels 1 and 2, and so on. Every trim previews its work and
+requires confirmation. Use `branch <name> tag <0-4>` or
+`worktree <path> tag <0-4>` for a persistent override. A level-0 entry cannot
+be removed by any trim command. Tags are written to
+`.synapse/weedeat-tags.json`; attached branches and worktrees share one tag.
 
 ## Codex plugin installation
 
