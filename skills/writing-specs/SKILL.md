@@ -4,15 +4,40 @@ description: >-
   Capture feature intent in a concise, approved specification document. Use
   when the user explicitly asks to write, capture, or document a feature spec,
   whether the intent comes from thinking, a selected issue, or an existing
-  discussion. Do not trigger automatically after thinking, use for broad
-  exploratory conversation, implement the feature, or write an implementation
-  plan.
+  discussion. Always run the thinking skill first to establish shared,
+  plain-language understanding before writing. Do not trigger automatically
+  after thinking, implement the feature, or write an implementation plan.
 ---
 
 # Writing Specs
 
 Produce one reviewable document that defines what a feature means without
 dictating how to implement it.
+
+## Mandatory thinking handoff
+
+Invoke `thinking` before drafting, creating a file, or inventorying product
+decisions. Do not satisfy this instruction by merely reading the thinking
+skill, reasoning privately, or announcing that intent matters. Run its
+conversational process with the user.
+
+Use thinking to establish, in plain language:
+
+- what the issue or feature is;
+- why it matters;
+- what currently happens;
+- what the user is trying to change;
+- which parts remain genuinely unsettled.
+
+Let repository evidence ground that conversation, but translate technical
+facts into effects the user can recognize. Do not make code structure or the
+issue's existing vocabulary the premise of questions the user must answer.
+
+Stay in thinking until the user can recognize and correct the working
+understanding. If the feature was already clear, this may be one brief
+synthesis and an opportunity to correct it; do not manufacture an interview.
+An explicit request to write a spec counts as the requested capture once that
+understanding settles. Only then begin the document workflow.
 
 ## Input and output
 
@@ -26,11 +51,12 @@ reversible technical choices, and later implementation mechanics.
 
 ## Process
 
-### 1. Establish the feature boundary
+### 1. Receive the thinking synthesis
 
-Collect the source intent from the conversation, issue, and supplied notes.
-Restate the desired outcome in one sentence. Preserve decisions already made;
-do not reopen them without contradictory evidence.
+Carry forward the plain-language understanding, settled decisions, remaining
+questions, and relevant evidence developed through `thinking`. Restate the
+desired outcome in one sentence. Preserve decisions already made; do not
+reopen them without contradictory evidence.
 
 If the request contains independent features that cannot share one coherent
 success condition, list the split and ask which feature to specify first. Do
@@ -66,24 +92,18 @@ File placement, internal types, algorithms, and code structure are normally
 technical. Actors, permissions, triggers, visible results, failure behavior,
 and product boundaries are normally feature-defining.
 
-### 4. Resolve feature-defining decisions
+### 4. Return feature-defining decisions to thinking
 
-Resolve evidence and technical questions without involving the user. For each
-remaining feature-defining question, present:
+Resolve evidence and technical questions without involving the user. When a
+feature-defining question remains, resume `thinking`; do not turn this step
+into a requirements interview owned by `writing-specs`.
 
-1. the decision;
-2. why it changes the feature;
-3. viable options and their tradeoffs, when alternatives are real;
-4. a recommendation;
-5. the focused question the user must answer.
+Explain the affected part of the feature in ordinary language before asking
+for a decision. Explore the user's problem and observable consequences, then
+carry the resulting synthesis back into the decision inventory.
 
-Group up to three independent decisions. Ask sequentially when one answer
-changes the next decision. Update the inventory after each response.
-
-If fundamental intent still needs open-ended exploration, stop drafting and
-return to `thinking`. Resume this process when the user asks to capture the
-result. Begin drafting only when no unresolved feature-defining decision would
-force an implementer to invent product behavior.
+Begin drafting only when thinking has resolved enough feature meaning that an
+implementer would not be forced to invent product behavior.
 
 ### 5. Create the pending document
 
@@ -139,8 +159,8 @@ Read the complete document once and apply every check:
 - **Reviewability:** Are there placeholders, hidden open product questions, or
   success criteria that cannot be observed?
 
-Fix evidence-answerable and technical defects directly. Return to step 4 when
-a correction requires product authority.
+Fix evidence-answerable and technical defects directly. Return to step 4 and
+resume `thinking` when a correction requires product authority.
 
 ### 8. Deliver for approval
 
