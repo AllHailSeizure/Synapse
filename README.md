@@ -38,12 +38,12 @@ Root `skills/` and `commands/` are discovered by convention, so a new skill
 directory or command file ships with the next release — no manifest edit.
 Publishing means landing it on the branch the marketplace tracks.
 
-Skills and commands can still be copied into the local configuration
-directories instead, for a checkout you're actively editing:
+The plugin is the only supported install path. There is no copy step.
 
-```powershell
-powershell -Command "'.claude','.cursor' | % { Copy-Item 'D:\Libraries\Synapse\skills\*' \"$env:USERPROFILE\$_\skills\" -Recurse -Force; Copy-Item 'D:\Libraries\Synapse\commands\*.md' \"$env:USERPROFILE\$_\commands\" -Force }"
-```
+Output styles ship the same way, from `output-styles/`. Installing the plugin
+makes `Succinct` available; activate it with `"outputStyle": "Succinct"` in a
+settings file. It is read once at session start, so it applies after `/clear`
+or a new session.
 
 The Claude root guidance is in [`CLAUDE.md`](CLAUDE.md), and the Claude agent
 adapters are in `agents/`.
