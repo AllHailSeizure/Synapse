@@ -87,7 +87,7 @@ force an implementer to invent product behavior.
 
 ### 5. Create the pending document
 
-Store every specification under `././synapse/specs/` from the repository root.
+Store every specification under `./.synapse/specs/` from the repository root.
 Create the directory when it does not exist.
 
 Use these names:
