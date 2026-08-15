@@ -136,6 +136,20 @@ See `skills/` and `skills/README.md`.
 
 - `/skill-creator` for authoring/editing skills — not a runtime skill in this suite.
 
+### Response Style
+
+Tone and verbosity belong in an output style, not here. CLAUDE.md is injected
+as a user message *after* the system prompt, so instructions about how to
+respond compete with the system prompt and lose over a long session. Output
+styles modify the system prompt directly and re-assert themselves each turn.
+
+Synapse ships `output-styles/terse.md` (style name: `Terse`). Enable it with
+`"outputStyle": "Terse"` in a settings file; it takes effect on `/clear` or a
+new session. It sets `keep-coding-instructions: true`, so the built-in
+engineering behavior stays — only the narration goes.
+
+Do not re-add verbosity instructions to this file. They will not work.
+
 ---
 
 ## Per-Project Setup
@@ -148,4 +162,4 @@ For Claude, Synapse is also a plugin: `.claude-plugin/marketplace.json` publishe
 
 ---
 
-**Last updated:** 2026-08-06
+**Last updated:** 2026-08-15
