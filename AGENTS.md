@@ -101,12 +101,12 @@ built-in coding instructions via `keep-coding-instructions: true`, this key
 that baseline. Synapse does not set it; enabling it is a deliberate,
 user-approved change, not a default.
 
-Claude's equivalent, which Synapse does ship, is `output-styles/terse.md`.
+Claude's equivalent, which Synapse does ship, is `output-styles/succinct.md`.
 
 ## Repository layout
 
 ```text
-output-styles/                  Claude output styles (Terse)
+output-styles/                  Claude output styles (Succinct)
 skills/                         shared Synapse skills
 .codex-plugin/plugin.json       Codex plugin manifest
 .codex/agents/synapse/          Codex agent registrations

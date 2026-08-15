@@ -41,9 +41,9 @@ Publishing means landing it on the branch the marketplace tracks.
 The plugin is the only supported install path. There is no copy step.
 
 Output styles ship the same way, from `output-styles/`. Installing the plugin
-makes `Terse` available; activate it with `"outputStyle": "Terse"` in a settings
-file. It is read once at session start, so it applies after `/clear` or a new
-session.
+makes `Succinct` available; activate it with `"outputStyle": "Succinct"` in a
+settings file. It is read once at session start, so it applies after `/clear`
+or a new session.
 
 The Claude root guidance is in [`CLAUDE.md`](CLAUDE.md), and the Claude agent
 adapters are in `agents/`.

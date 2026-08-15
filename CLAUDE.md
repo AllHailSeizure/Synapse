@@ -143,10 +143,11 @@ as a user message *after* the system prompt, so instructions about how to
 respond compete with the system prompt and lose over a long session. Output
 styles modify the system prompt directly and re-assert themselves each turn.
 
-Synapse ships `output-styles/terse.md` (style name: `Terse`). Enable it with
-`"outputStyle": "Terse"` in a settings file; it takes effect on `/clear` or a
-new session. It sets `keep-coding-instructions: true`, so the built-in
-engineering behavior stays — only the narration goes.
+Synapse ships `output-styles/succinct.md` (style name: `Succinct`). Enable it
+with `"outputStyle": "Succinct"` in a settings file; it takes effect on
+`/clear` or a new session. It sets `keep-coding-instructions: true`, so the
+built-in engineering behavior stays — what goes is the report register:
+headers as transitions, bolded lead-ins, and re-explaining shared context.
 
 Do not re-add verbosity instructions to this file. They will not work.
 
