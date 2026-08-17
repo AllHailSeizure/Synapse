@@ -53,6 +53,21 @@ delegates to the capture-only `bug-capture` skill. The command index is in
 [`docs/COMMANDS.md`](docs/COMMANDS.md) — kept out of `commands/`, since every
 `.md` in that directory ships as a slash command.
 
+## Session briefing hook
+
+[`hooks/hooks.json`](hooks/hooks.json) registers a `SessionStart` hook that
+injects the Synapse operating briefing — skill routing, standing rules, and the
+`.synapse/` layout — into every session, so a session knows how to use the suite
+without being told. The prose lives in
+[`hooks/synapse-briefing.md`](hooks/synapse-briefing.md); edit that file, not
+the script. [`hooks/session-briefing.mjs`](hooks/session-briefing.mjs) reads it,
+appends which of the target repo's `.synapse/` files actually exist, and prints
+the `additionalContext` payload.
+
+Like the skills and output styles, the hook ships with the plugin — landing it
+on the branch the marketplace tracks is what publishes it. It is read at session
+start, so it applies to the next session after the plugin updates.
+
 ## Per-repo configuration and artifacts
 
 A repo that Synapse operates on stores configuration in one `.synapse/`
@@ -131,6 +146,7 @@ registrations are loaded.
 
 ```text
 skills/                         shared skills
+hooks/                          SessionStart briefing hook
 .codex-plugin/plugin.json       Codex plugin manifest
 .codex/agents/synapse/          Codex agent registrations
 agents/                         Claude-compatible agent adapters

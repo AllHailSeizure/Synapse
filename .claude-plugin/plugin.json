@@ -12,5 +12,6 @@
   "skills": [
     "./skills/",
     "./automations/claude/skills/"
-  ]
+  ],
+  "hooks": "./hooks/hooks.json"
 }
