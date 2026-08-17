@@ -63,12 +63,16 @@ separately in `synapse/specs/`. Each tool reads only the files it needs:
 .synapse/identity.md    repo, base, stack          every tool
 .synapse/bandaids.md    Secrets, Verify, Repro,    the bandaids
                         Protected, Ignore
+.synapse/verification.md commands, scope mapping,  verification
+                         environment, completion
 .synapse/weedeat.md     Assets, Worktrees          the /weedeat surveys
 .synapse/weedeat-tags.json                       weedeat CLI overrides
 ```
 
-The bandaids stop at Gate 0 on a missing section. The `/weedeat` surveys degrade
-to documented defaults instead and say so in their own output.
+The bandaids stop at Gate 0 on a missing section. Verification uses its local
+file for the claims it covers and falls back to repository discovery when the
+file or a relevant entry is absent. The `/weedeat` surveys degrade to documented
+defaults instead and say so in their own output.
 
 There is **no fallback** to the old root `SYNAPSE.md`. That single file was a
 contention point — every workstream edited it, and an uncommitted edit was once

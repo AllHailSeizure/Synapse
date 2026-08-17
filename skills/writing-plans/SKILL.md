@@ -12,7 +12,7 @@ Turn an agreed approach into executable tasks an agent (or you) can follow
 without guessing. DRY. YAGNI. Prefer TDD steps when behavior is being designed;
 prefer verification-first when behavior is already clear (`testing` skill).
 
-Save plans where the project prefers them. Default if none: `docs/plans/YYYY-MM-DD-<feature>.md`.
+Save plans where the project prefers them. Default if none: `./.synapse/plans/YYYY-MM-DD-<feature>.md`.
 
 ## Scope
 

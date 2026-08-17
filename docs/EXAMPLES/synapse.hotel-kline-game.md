@@ -7,9 +7,10 @@ The blank templates are in `docs/TEMPLATES/synapse/`.
 Most of this was extracted verbatim from the three bandaid prompts as they ran
 before generalization, so behaviour should be unchanged on the first run.
 
-Three files, not one, and each tool reads only what it needs: the bandaids read
-`identity.md` + `bandaids.md`, the `/weedeat` surveys read `identity.md` +
-`weedeat.md`, and neither loads the other's file.
+Four files, not one, and each tool reads only what it needs: the bandaids read
+`identity.md` + `bandaids.md`, interactive verification reads
+`verification.md`, and the `/weedeat` surveys read `identity.md` +
+`weedeat.md`. None loads another tool's file.
 
 ---
 
@@ -76,6 +77,48 @@ benign: Godot shutdown noise involving ObjectDB instances, live resources, or
 leaked RIDs.
 ```
 
+## `.synapse/verification.md`
+
+```markdown
+# Verification
+
+Project-specific verification instructions for interactive Synapse work. See
+docs/TEMPLATES/synapse/verification.md in the Synapse repo.
+
+## Standard checks
+
+- Focused tests: `"$GODOT_EXE" --headless -s addons/gut/gut_cmdln.gd -gdir=res://Tests -gexit --path "$WORKTREE"`
+- Full test suite: `"$GODOT_EXE" --headless -s addons/gut/gut_cmdln.gd -gdir=res://Tests -gexit --path "$WORKTREE"`
+- Build/import: `"$GODOT_EXE" --headless --import --path "$WORKTREE"`
+- Smoke: `pwsh -File Tests/smoke_boot.ps1`
+- Architecture lint: `python3 Tools/lint/check_architecture_rules.py`
+
+## Scope mapping
+
+- GDScript changes: run the focused tests covering the behavior, the full test
+  suite, and the build/import check.
+- Scene or resource changes: run the build/import check and the smoke check;
+  inspect the changed behavior in Godot when the claim is visual or interactive.
+- Architecture-rule changes: run the architecture lint and
+  `python3 -m unittest Tests.test_check_architecture_rules`.
+- Documentation-only changes: inspect the rendered Markdown and verify links;
+  no Godot runtime check is required.
+
+## Environment requirements
+
+- Required runtime/version: Godot 4.6.3-stable.
+- Required applications: `GODOT_EXE` must resolve to that Godot executable.
+- Visual or interactive checks require a display and cannot be claimed from a
+  headless-only environment.
+
+## Completion rules
+
+- “Tests pass” requires a zero exit code from the applicable GUT command.
+- “Build/import succeeds” requires a zero exit code and no script parse errors.
+- “Feature works” requires the applicable automated checks plus direct
+  observation when the behavior is visual or interactive.
+```
+
 ## `.synapse/weedeat.md`
 
 ```markdown
@@ -123,7 +166,7 @@ Two things moved position rather than content:
 `Assets` and `Worktrees` came from two skills that had lived in the game repo's
 own `.claude/skills/` with this knowledge hard-coded in their scripts.
 
-## Why three files instead of one
+## Why separate files instead of one
 
 This started as a single root `SYNAPSE.md`. Every workstream edited that one
 file, and while the weedeat sections were being added an uncommitted edit was

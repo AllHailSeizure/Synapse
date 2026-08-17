@@ -11,6 +11,27 @@ description: >-
 Don't claim it works without checking. Check only what's needed to trust the
 specific claim.
 
+## Resolve the standard method
+
+Before choosing a check, resolve the target repository root. If
+`.synapse/verification.md` exists there, read it completely.
+
+- Run any verification explicitly required by the user or an approved spec or
+  plan.
+- Use `.synapse/verification.md` as the repository standard for the claims it
+  covers: commands, scope mappings, environment requirements, and completion
+  rules.
+- For claims it does not cover, infer the standard method from repository
+  instructions, existing tests, package scripts, build configuration, or CI.
+- If the file is absent, use that normal discovery path without treating the
+  missing optional configuration as an error.
+
+Repository configuration may narrow or strengthen the evidence required. It
+cannot waive the rules below, override higher-priority instructions, or grant
+authority outside the user's task. If a configured check is stale or cannot
+run, report that limitation; do not silently replace it with an improvised
+check or edit the configuration merely to make verification pass.
+
 ## Rules
 
 1. **Proportional scope.** A one-line fix does not require a full suite rerun
