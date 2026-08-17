@@ -24,6 +24,11 @@ Lean, directive skills. Noun-phrase names. Proportional judgment over ceremony.
 | `asset-churn-audit` | Which assets the branch needs vs churn (`/weedeat`) |
 | `worktree-cleanup` | Worktree/branch sprawl, tiered by removal safety (`/weedeat`) |
 
+`verification` reads repo-specific standard checks, scope mappings, environment
+requirements, and completion rules from `.synapse/verification.md` when it is
+present. Claims not covered there use the repository's normal documented test,
+build, app, or CI path.
+
 The two `/weedeat` skills ship a script under `scripts/` and read repo-specific
 configuration from the `## Assets` and `## Worktrees` sections of the target
 repo's `.synapse/weedeat.md`, plus `.synapse/identity.md` for the baseline

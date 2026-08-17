@@ -57,10 +57,15 @@ Classify every uncertainty that would affect the spec:
   source.
 - **Reversible technical** — choose it using project conventions; normally
   omit it from the spec.
-- **Feature-defining** — ask the human because it changes user-visible
-  behavior, experience, scope, exclusions, or a meaningful product tradeoff.
+- **Feature-defining** — ask the human when the source permits materially
+  different interpretations of the requested outcome and implementation
+  cannot preserve intent without choosing one.
 - **Out of scope** — record it as a non-goal when an implementer might
   otherwise reasonably include it.
+
+Do not inventory every conceivable decision. Omit optional embellishments,
+speculative extensions, and future possibilities that are not required to
+define the requested feature.
 
 File placement, internal types, algorithms, and code structure are normally
 technical. Actors, permissions, triggers, visible results, failure behavior,
@@ -132,6 +137,10 @@ Read the complete document once and apply every check:
   failures defined?
 - **Ambiguity:** Could two reasonable readings create materially different
   features?
+- **Pressure:** Under the single most plausible invalid, empty, unavailable,
+  or impossible state, do requirements conflict or force an implementer to
+  invent user-visible behavior? Resolve that state; do not enumerate remote
+  edge cases.
 - **Consistency:** Do sections or success criteria contradict one another?
 - **Scope:** Did the draft add attractive but unauthorized behavior?
 - **Technical freedom:** Did it prescribe implementation without a product

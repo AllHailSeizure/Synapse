@@ -12,7 +12,7 @@ executable directives with visible outputs and proportional gates.
 - Protect the selected scope. If a new implementation idea is outside it,
   surface the pivot before writing code.
 - Verify the exact claim before saying work is complete.
-- Store feature specs in `synapse/specs/` with `PENDING`, `APPROVED`, or
+- Store feature specs in `.synapse/specs/` with `PENDING`, `APPROVED`, or
   `IMPLEMENTED` in both the filename and title.
 - When implementation is governed by an approved spec, mark it `IMPLEMENTED`
   only after verifying its success criteria.
