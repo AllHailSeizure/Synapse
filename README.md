@@ -56,8 +56,9 @@ delegates to the capture-only `bug-capture` skill. The command index is in
 ## Per-repo configuration and artifacts
 
 A repo that Synapse operates on stores configuration in one `.synapse/`
-directory — no skills or scripts. Feature specification artifacts live
-separately in `synapse/specs/`. Each tool reads only the files it needs:
+directory — no skills or scripts. Artifacts live beside that configuration:
+feature specifications in `.synapse/specs/`, implementation plans in
+`.synapse/plans/`. Each tool reads only the files it needs:
 
 ```text
 .synapse/identity.md    repo, base, stack          every tool
