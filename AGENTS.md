@@ -87,9 +87,26 @@ Nothing is removed on launch; `trim N` previews levels `1..N` and requires
 confirmation, while level `0` is never deletable. Agents do not launch that
 human-invoked path on the user's behalf.
 
+## Response style
+
+Tone and verbosity do not belong in this file. AGENTS.md is context layered on
+top of Codex's built-in instructions, so directives about how to respond
+compete with them and lose over a long session — the same reason Claude's
+CLAUDE.md is the wrong channel for it.
+
+Codex's system-prompt-level lever is `model_instructions_file` in
+`config.toml`. Unlike Claude's output styles, which append and can retain the
+built-in coding instructions via `keep-coding-instructions: true`, this key
+**replaces** Codex's built-in instructions outright. Adopting it means owning
+that baseline. Synapse does not set it; enabling it is a deliberate,
+user-approved change, not a default.
+
+Claude's equivalent, which Synapse does ship, is `output-styles/succinct.md`.
+
 ## Repository layout
 
 ```text
+output-styles/                  Claude output styles (Succinct)
 skills/                         shared Synapse skills
 .codex-plugin/plugin.json       Codex plugin manifest
 .codex/agents/synapse/          Codex agent registrations

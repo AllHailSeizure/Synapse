@@ -136,16 +136,31 @@ See `skills/` and `skills/README.md`.
 
 - `/skill-creator` for authoring/editing skills — not a runtime skill in this suite.
 
+### Response Style
+
+Tone and verbosity belong in an output style, not here. CLAUDE.md is injected
+as a user message *after* the system prompt, so instructions about how to
+respond compete with the system prompt and lose over a long session. Output
+styles modify the system prompt directly and re-assert themselves each turn.
+
+Synapse ships `output-styles/succinct.md` (style name: `Succinct`). Enable it
+with `"outputStyle": "Succinct"` in a settings file; it takes effect on
+`/clear` or a new session. It sets `keep-coding-instructions: true`, so the
+built-in engineering behavior stays — what goes is the report register:
+headers as transitions, bolded lead-ins, and re-explaining shared context.
+
+Do not re-add verbosity instructions to this file. They will not work.
+
 ---
 
 ## Per-Project Setup
 
 Each project gets its own `CLAUDE.md` that inherits from this root and specifies local boundaries. See `docs/TEMPLATES/project-claude-template.md` for the template.
 
-Synapse installs by copying `skills/` and `commands/` into each agent's config directory — see README. Re-run the copy after changing a skill.
+Synapse installs as a plugin — see README. Changes ship when they land on the branch the marketplace tracks; there is no copy step.
 
 For Claude, Synapse is also a plugin: `.claude-plugin/marketplace.json` publishes this repo as the `synapse` marketplace, and the bandaid automations install from it in CI with no copy step. See `automations/README.md`.
 
 ---
 
-**Last updated:** 2026-08-06
+**Last updated:** 2026-08-15
