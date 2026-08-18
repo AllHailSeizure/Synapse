@@ -58,7 +58,7 @@ Per-repo configuration and artifacts live under `.synapse/`:
 | `.synapse/verification.md` | `verification` — commands, scope, completion |
 | `.synapse/bandaids.md` | the GitHub Actions bandaids |
 | `.synapse/weedeat.md` | the `/weedeat` surveys |
-| `.synapse/specs/` | feature specs — `PENDING`/`APPROVED`/`IMPLEMENTED` in both filename and title |
+| `.synapse/specs/` | feature specs — `PENDING`/`APPROVED`/`IMPLEMENTED`/`CLOSED` in both filename and title |
 | `.synapse/plans/` | implementation plans |
 
 A missing file is not an error for the skills: `verification` falls back to the

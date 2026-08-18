@@ -126,9 +126,10 @@ Synapse skills are hard directives. Judgment over ceremony — no fixed intervie
 - `finishing-branches` — Verify → push → PR; merge stays user-initiated
 - `asset-churn-audit` / `worktree-cleanup` — Report what accumulated on its own; never delete (`/weedeat`)
 
-Feature specs live in `.synapse/specs/`. Keep `PENDING`, `APPROVED`, or
-`IMPLEMENTED` synchronized in the filename and title; use `IMPLEMENTED` only
-after the approved spec's success criteria are verified.
+Feature specs live in `.synapse/specs/`. Keep `PENDING`, `APPROVED`,
+`IMPLEMENTED`, or `CLOSED` synchronized in the filename and title; use
+`IMPLEMENTED` only after the approved spec's success criteria are verified,
+and `CLOSED` only when the user says the spec is no longer being pursued.
 
 See `skills/` and `skills/README.md`.
 
