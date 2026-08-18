@@ -206,6 +206,9 @@ Keep the filename and document title synchronized:
   statement of the feature.
 - `IMPLEMENTED` — implementation governed by the approved spec has completed
   and its success criteria have been verified.
+- `CLOSED` — the spec will not be implemented, for whatever reason: the user
+  no longer wants it, the need was met another way, or a later spec supersedes
+  it.
 
 `BLOCKED` is an additional marker, not a replacement status: append it after
 `PENDING` or `APPROVED` when something outside this spec's control prevents
@@ -216,8 +219,18 @@ in — another spec's filename, an issue number, or the code path that doesn't
 exist yet; a bare `(BLOCKED)` with no named cause is not a valid state. Drop
 the marker as soon as the named blocker clears rather than leaving it stale.
 
-`writing-specs` owns `PENDING → APPROVED` and applying or clearing `BLOCKED`.
-The later implementation workflow owns `APPROVED → IMPLEMENTED`; it must not
-make that transition for partial or unverified work, or for a spec still
-marked `BLOCKED`. Preserve the date and issue or feature identifier when
-renaming.
+`IMPLEMENTED` and `CLOSED` are both terminal, and a spec reaches one or the
+other, never both. Close a spec only when the user says to — the point of the
+status is to record a decision they made, so the skill deciding on its own that
+a spec looks dead would be inventing that decision. No stated reason is
+required: change the status, rename the file, and drop any `BLOCKED` marker,
+since a closed spec is no longer waiting on anything. Leave the document body
+as it stands so the record of what was once intended stays readable. Reopening
+is ordinary — return the spec to `PENDING` or `APPROVED` if the user wants it
+back.
+
+`writing-specs` owns `PENDING → APPROVED`, applying or clearing `BLOCKED`, and
+closing a spec at the user's direction. The later implementation workflow owns
+`APPROVED → IMPLEMENTED`; it must not make that transition for partial or
+unverified work, or for a spec still marked `BLOCKED`. Preserve the date and
+issue or feature identifier when renaming.
