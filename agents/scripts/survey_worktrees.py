@@ -31,6 +31,18 @@ if str(REPO_ROOT) not in sys.path:
 
 from apps.weedeat.scan import git, repo_root, run_survey
 
+# The survey classifies on evidence and reports a numeric risk level; these
+# are the names for a human reading the report. Another tool's worktree is not
+# a level of its own - it is classified like any other and labeled with its
+# owner, so a Cursor or Codex checkout nobody is using shows up as removable.
+LEVEL_NAMES = {
+    0: "PROTECTED - never proposed for removal",
+    1: "SAFE - merged PR, clean tree, nothing unpushed",
+    2: "STALE - no merged PR, no open PR, nothing uncommitted",
+    3: "REVIEW - merged PR but the tree still has changes",
+    4: "HOLD - work that exists only here",
+}
+
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
@@ -61,9 +73,9 @@ def main() -> int:
         ).splitlines() if branch
     ])
 
-    tiers: dict[str, list[dict]] = {}
+    by_level: dict[int, list[dict]] = {}
     for entry in surveyed:
-        tiers.setdefault(entry["tier"], []).append(entry)
+        by_level.setdefault(entry["level"], []).append(entry)
 
     print("\n# Worktree cleanup survey\n")
     print(f"{len(surveyed)} worktrees, {local_count} local branches, "
@@ -76,14 +88,15 @@ def main() -> int:
         print("\n> `gh` unavailable - merge status could not be checked, so nothing "
               "is classified SAFE. Everything needs manual review.")
 
-    for tier in ("SAFE", "STALE", "REVIEW", "HOLD", "FOREIGN", "UNKNOWN", "MAIN"):
-        rows = tiers.get(tier, [])
+    for level in (1, 2, 3, 4, 0):
+        rows = by_level.get(level, [])
         if not rows:
             continue
-        print(f"\n## {tier} ({len(rows)})")
+        print(f"\n## {level} {LEVEL_NAMES[level]} ({len(rows)})")
         for row in rows:
             label = row["branch"] or "(detached)"
-            print(f"- `{label}` - {row['reason']}")
+            owner = f" [created by {row['foreign']}]" if row.get("foreign") else ""
+            print(f"- `{label}`{owner} - {row['reason']}")
             print(f"    {row['path']}")
             if row["dirty"]:
                 shown = ", ".join(row["dirty"][:4])

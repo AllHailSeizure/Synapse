@@ -62,14 +62,22 @@ flag: .aup3 | REVIEW | Audacity project (LFS, ~100MB) — a recording session, n
 ## Worktrees
 
 ```
-containers: <dirs this repo creates worktrees under, relative to root>
-foreign: <path fragments marking another tool's worktree>
+containers: <dirs any tool creates worktrees under, relative to root>
+foreign: <path fragments marking another tool's worktree — labels it, does not exempt it>
 noise-suffixes: <uncommitted suffixes that carry no work>
 noise-dirs: <uncommitted path prefixes that carry no work>
 protected: <branches never proposed for deletion>
 ```
 
 Read by the `worktree-cleanup` skill.
+
+`foreign` names the tools, not an exemption. Cursor and Codex worktrees are
+classified on the same evidence as ours and are eligible for the same removals;
+the marker only makes the report say who created each one, so a removal that
+would interrupt a live session is visible before it is proposed. Park a
+genuinely mid-session entry with `tag 0` instead. Listing the tools' containers
+under `containers` is what lets orphan detection see the directories they leave
+behind.
 
 The noise lines are the ones that matter. Without them, a repo whose engine
 rewrites sidecars on every editor open reports every worktree as holding real
@@ -78,10 +86,10 @@ work, and the survey stops meaning anything.
 Example:
 
 ```
-containers: .claude/worktrees, .worktrees
+containers: .claude/worktrees, .worktrees, .cursor/worktrees, .codex/worktrees
 foreign: .cursor, .codex, .vscode
 noise-suffixes: .import, .uid
-noise-dirs: .godot/, .worktrees/, .claude/worktrees/
+noise-dirs: .godot/, .worktrees/, .claude/worktrees/, .cursor/worktrees/, .codex/worktrees/
 protected: master, main
 ```
 
@@ -100,5 +108,7 @@ worktree <path> untag
 
 Level `0` is protected and is never eligible for `trim`. Levels `1` through
 `4` increase in risk. Tagging an attached branch or worktree updates their
-shared branch tag. Primary, configured-protected, locked, and foreign-tool
-entries are system-protected and cannot be retagged into a deletable level.
+shared branch tag. Primary, configured-protected, and locked entries are
+system-protected and cannot be retagged into a deletable level. Another tool's
+worktree is not system-protected — tag it `0` yourself for as long as that tool
+is using it.

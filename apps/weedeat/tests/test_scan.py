@@ -36,13 +36,30 @@ class NumericClassificationTest(unittest.TestCase):
             ({"path": "repo", "branch": "main"}, ()),
             ({"path": "tree", "branch": "release"}, ("release",)),
             ({"path": "tree", "branch": "topic", "locked": True}, ()),
-            ({"path": "repo/.codex/tree", "branch": "topic"}, ()),
         )
         for tree, protected in cases:
             with self.subTest(tree=tree):
                 row = self.classify(tree=tree, protected=protected)
                 self.assertEqual(row["level"], 0)
                 self.assertTrue(row["system_protected"])
+
+    def test_another_tools_worktree_is_classified_on_the_same_evidence(self) -> None:
+        codex = {"path": "repo/.codex/tree", "branch": "topic"}
+        merged = self.classify(tree=codex, merged=True)
+        self.assertEqual(merged["level"], 1)
+        self.assertFalse(merged["system_protected"])
+        self.assertEqual(merged["foreign"], ".codex")
+        self.assertIn(".codex", merged["reason"])
+
+        holding = self.classify(tree=codex, dirt=["scene.tscn"])
+        self.assertEqual(holding["level"], 4)
+
+    def test_another_tools_worktree_can_be_tagged_out_of_reach(self) -> None:
+        codex = self.classify(tree={"path": "repo/.codex/tree", "branch": "topic"},
+                              merged=True)
+        parked = apply_tag(codex, {"branches": {"topic": 0}}, "repo")
+        self.assertEqual(parked["level"], 0)
+        self.assertEqual(parked["tag"], 0)
 
     def test_manual_tag_overrides_ordinary_entry_but_not_system_protection(self) -> None:
         ordinary = self.classify()

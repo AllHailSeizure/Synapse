@@ -32,26 +32,27 @@ uncommitted tileset rework you cannot.
 So the deal is: you do the classification work, which is tedious and error-prone
 by hand, and the user makes every destructive call. Present findings and
 commands, then stop and wait. If they say "go ahead and delete the safe ones,"
-that's your authorization for that tier only — not for REVIEW or HOLD.
+that's your authorization for that level only — not for REVIEW or HOLD.
 
 ## Run the survey
 
 ```bash
-python <skill-dir>/scripts/survey_worktrees.py --json survey.json
+python <synapse>/agents/scripts/survey_worktrees.py --json survey.json
 ```
 
-`<skill-dir>` is wherever this skill is installed — the directory holding this
-`SKILL.md`. Write the JSON somewhere scratch, not into the repo.
+`<synapse>` is this Synapse install — `$CLAUDE_PLUGIN_ROOT` when installed as a
+plugin. Write the JSON somewhere scratch, not into the repo.
 
-It fetches and prunes first (pass `--no-fetch` to skip), then prints a tiered
-markdown report. It takes a couple of minutes on a large repo because it runs
+It fetches and prunes first (pass `--no-fetch` to skip), then prints a markdown
+report grouped by risk level. It takes a couple of minutes on a large repo because it runs
 `git status` inside every worktree. That's expected — let it finish rather than
 reaching for a faster approximation.
 
 ## Repo configuration
 
 The `## Worktrees` section of the target repo's `.synapse/weedeat.md` supplies
-where this repo creates worktrees and which uncommitted paths carry no work.
+where worktrees get created — by any tool, not just ours — and which uncommitted
+paths carry no work.
 That one file is all this survey reads. Schema and example:
 `docs/TEMPLATES/synapse/weedeat.md` in the Synapse repo.
 
@@ -81,20 +82,40 @@ Also: don't try to measure worktree sizes with `du`. On Windows especially it
 takes longer than the entire rest of the survey and adds nothing to the
 decision.
 
-## Reading the tiers
+## Reading the levels
 
-| Tier | Meaning | What to propose |
+Every worktree and branch gets a numeric risk level. The number is what the
+interactive `trim` acts on; the name is for reading the report.
+
+| Level | Meaning | What to propose |
 |---|---|---|
-| `SAFE` | Merged PR, clean tree, nothing unpushed | Removal, listed together as one batch |
-| `STALE` | No merged PR, no open PR, but nothing uncommitted | Removal, flagged as "abandoned, nothing lost" |
-| `REVIEW` | Merged PR but the tree still has changes | Show the file list; the work is probably leftovers, but confirm each |
-| `HOLD` | Unmerged with real uncommitted or unpushed work | Do not propose removal. Suggest committing or pushing it first |
-| `FOREIGN` | Lives under another tool's directory | Report only. That tool may be mid-session |
-| `MAIN` | The primary checkout | Never touch |
+| `1` SAFE | Merged PR, clean tree, nothing unpushed | Removal, listed together as one batch |
+| `2` STALE | No merged PR, no open PR, but nothing uncommitted | Removal, flagged as "abandoned, nothing lost" |
+| `3` REVIEW | Merged PR but the tree still has changes | Show the file list; the work is probably leftovers, but confirm each |
+| `4` HOLD | Unmerged with real uncommitted or unpushed work | Do not propose removal. Suggest committing or pushing it first |
+| `0` PROTECTED | The primary checkout, a configured protected branch, or a locked worktree | Never touch |
 
 Orphaned directories are reported separately: full checkouts on disk that git no
 longer registers. They're usually safe, but check them for uncommitted files the
 same way before proposing `rm -rf`, since git won't warn you about them at all.
+
+## Worktrees other tools made
+
+Cursor, Codex, and hand-made sibling checkouts are surveyed and classified on
+exactly the same evidence as our own. They are not a level of their own and
+they get no exemption: an abandoned `.codex/` worktree is the same clutter as
+an abandoned `.claude/` one, and exempting them meant the tools generating the
+most sprawl were the ones this survey never touched.
+
+What the `foreign` markers buy is a label, not immunity — the report names the
+owning tool on each row, so a removal that would land in someone's live session
+is visible before you propose it. Name the owner when you propose it. If the
+user says a tool is mid-session, park that entry with `branch <name> tag 0` in
+`weedeat run` rather than reasoning about it again next survey.
+
+The protection that matters was never tool-specific: uncommitted files,
+unpushed commits, and an open PR each push an entry to HOLD regardless of who
+created it.
 
 ## Presenting findings
 
