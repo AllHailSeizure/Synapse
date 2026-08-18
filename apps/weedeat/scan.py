@@ -8,11 +8,18 @@ from pathlib import Path
 
 from apps.weedeat.tags import read_tags, worktree_key
 
-DEFAULT_CONTAINERS = [".claude/worktrees", ".worktrees", "worktrees"]
+DEFAULT_CONTAINERS = [
+    ".claude/worktrees", ".worktrees", "worktrees",
+    ".cursor/worktrees", ".codex/worktrees",
+]
 
-# Worktrees other tools create and may be actively using. Reported, never
-# proposed for removal. Tool-level rather than repo-level, so it holds up as a
-# default anywhere.
+# Path fragments marking a worktree some other tool created. These name the
+# owner in the report so a human can tell whose session a removal would
+# interrupt, but they do not exempt anything: another tool's abandoned checkout
+# is still this repo's clutter, and the evidence that protects real work —
+# uncommitted files, unpushed commits, an open PR — is the same either way. A
+# tool that really is mid-session gets `tag 0` for as long as that lasts.
+# Tool-level rather than repo-level, so it holds up as a default anywhere.
 DEFAULT_FOREIGN = [".cursor", ".codex", ".vscode"]
 
 DEFAULT_PROTECTED = ["master", "main"]
@@ -192,7 +199,7 @@ def classify(tree: dict, root: str, merged: set[str], open_heads: set[str],
     branch = tree.get("branch", "")
     norm = path.replace("\\", "/")
     is_main = os.path.normcase(os.path.abspath(path)) == os.path.normcase(os.path.abspath(root))
-    foreign = any(m in norm for m in foreign_markers)
+    foreign = next((m for m in foreign_markers if m in norm), None)
 
     dirt = real_dirt(path, noise_suffixes, noise_dirs)
     unpushed = unpushed_count(root, branch or tree.get("head", ""))
@@ -206,8 +213,6 @@ def classify(tree: dict, root: str, merged: set[str], open_heads: set[str],
         level, why, system_protected = 0, "configured protected branch", True
     elif tree.get("locked"):
         level, why, system_protected = 0, "worktree is locked", True
-    elif foreign:
-        level, why, system_protected = 0, "owned by another tool", True
     elif is_open:
         level, why = 4, "branch has an open PR"
     elif dirt or unpushed:
@@ -225,8 +230,11 @@ def classify(tree: dict, root: str, merged: set[str], open_heads: set[str],
     else:
         level, why = 2, "no merged PR, no open PR, nothing uncommitted"
 
+    if foreign:
+        why = f"{why} ({foreign} worktree)"
+
     return {
-        "path": path, "branch": branch, "level": level,
+        "path": path, "branch": branch, "level": level, "foreign": foreign,
         "automatic_level": level, "tag": None, "reason": why,
         "dirty": dirt, "unpushed": unpushed, "merged": is_merged,
         "detached": tree.get("detached", False), "locked": tree.get("locked", False),
@@ -263,6 +271,7 @@ def classify_branch(branch: str, *, merged: set[str], open_heads: set[str],
             "automatic_level": worktree["automatic_level"],
             "tag": worktree["tag"],
             "reason": worktree["reason"],
+            "foreign": worktree.get("foreign"),
             "merged": worktree["merged"],
             "open_pr": branch in open_heads,
             "unpushed": worktree["unpushed"],
@@ -290,6 +299,7 @@ def classify_branch(branch: str, *, merged: set[str], open_heads: set[str],
         "automatic_level": level,
         "tag": None,
         "reason": reason,
+        "foreign": None,
         "merged": branch in merged,
         "open_pr": branch in open_heads,
         "unpushed": unpushed,

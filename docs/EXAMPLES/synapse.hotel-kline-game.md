@@ -139,10 +139,10 @@ flag: .aup3 | REVIEW | Audacity project (LFS, ~100MB) — a source recording ses
 
 ## Worktrees
 
-containers: .claude/worktrees, .worktrees
+containers: .claude/worktrees, .worktrees, .cursor/worktrees, .codex/worktrees
 foreign: .cursor, .codex, .vscode
 noise-suffixes: .import, .uid
-noise-dirs: .godot/, .worktrees/, .claude/worktrees/
+noise-dirs: .godot/, .worktrees/, .claude/worktrees/, .cursor/worktrees/, .codex/worktrees/
 protected: master, main
 ```
 
