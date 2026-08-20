@@ -22,7 +22,7 @@ executable directives with visible outputs and proportional gates.
 The active suite lives in `skills/`:
 
 - `thinking` — read-only collaborative exploration of intent and tradeoffs.
-- `writing-specs` — capture feature intent in an approved document.
+- `writing-specs` — draft a grounded `PENDING` spec and terminal questions.
 - `verification` — claim only what was checked.
 - `worktrees` — isolate work when the checkout or project workflow requires it.
 - `parallel-agents` and `subagent-team-execution` — bounded delegation.
@@ -43,9 +43,11 @@ They intentionally avoid ceremony for trivial, reversible work.
 
 When the user names an issue or asks to work from issues, inspect the relevant
 issue and milestone context. Do not infer the next goal from the repository.
-The Codex research agents are registered under `.codex/agents/synapse/`:
+The Codex agents are registered under `.codex/agents/synapse/`:
 
 - `codebase-explorer` answers focused repository questions.
+- `spec-writer` drafts one named feature as a `PENDING` spec and questions
+  file, then stops for the operator's `TODO` interview.
 - `goal-writer` drafts an evidence-based issue after the user commits to the
   outcome.
 - `goal-surveyor` assesses a broad direction when the user explicitly asks for

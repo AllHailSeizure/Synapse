@@ -85,6 +85,14 @@ feature specifications in `.synapse/specs/`, implementation plans in
 .synapse/weedeat-tags.json                       weedeat CLI overrides
 ```
 
+Pending feature specs can have a sibling `.questions.json` file produced by
+the `writing-specs` skill or registered Codex `spec-writer`. Install the
+script-only interviewer with `pip install -e apps/todo`, then run `TODO` from
+the target repository. It lists only `PENDING` specs as `SPEC:` rows; selecting
+one asks the recorded questions plus a required approval closer, appends the
+answers, and changes the spec to `APPROVED`. Use `TODO --list` for a
+non-interactive inventory. The CLI makes no model calls.
+
 The bandaids stop at Gate 0 on a missing section. Verification uses its local
 file for the claims it covers and falls back to repository discovery when the
 file or a relevant entry is absent. The `/weedeat` surveys degrade to documented
@@ -125,6 +133,10 @@ be removed by any trim command. Tags are written to
 The repository also contains the Codex package manifest at
 `.codex-plugin/plugin.json` and Codex root guidance in `AGENTS.md`. The
 registered Codex agents live under `.codex/agents/synapse/`.
+
+Use the registered `spec-writer` for a named feature when you want a grounded
+`PENDING` spec plus terminal-interview questions. It stops after drafting; the
+operator completes approval separately with `TODO`.
 
 Codex plugin manifests expose skills rather than Claude-style slash-command
 files, so use the `bug-capture` skill for the same bug-report workflow in

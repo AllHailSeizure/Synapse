@@ -1,7 +1,8 @@
 ---
 name: writing-specs
 description: >-
-  Capture feature intent in a concise, approved specification document. Use
+  Capture feature intent in a concise pending specification and terminal
+  interview file. Use
   when the user explicitly asks to write, capture, or document a feature spec,
   whether the intent comes from thinking, a selected issue, or an existing
   discussion. Do not trigger automatically after thinking, use for broad
@@ -17,8 +18,9 @@ dictating how to implement it.
 ## Input and output
 
 Input is one feature idea or selected feature issue plus any conversation,
-notes, or decisions the user wants captured. Output is one specification whose
-product meaning the user can approve.
+notes, or decisions the user wants captured. Output is one `PENDING`
+specification plus a sibling machine-readable questions file for the operator's
+later `TODO` terminal interview.
 
 The human owns purpose, user-visible behavior, experience, scope, exclusions,
 and meaningful product tradeoffs. The agent owns repository investigation,
@@ -78,10 +80,10 @@ File placement, internal types, algorithms, and code structure are normally
 technical. Actors, permissions, triggers, visible results, failure behavior,
 and product boundaries are normally feature-defining.
 
-### 4. Resolve feature-defining decisions
+### 4. Record feature-defining decisions
 
 Resolve evidence and technical questions without involving the user. For each
-remaining feature-defining question, present:
+remaining feature-defining question, record:
 
 1. the decision;
 2. why it changes the feature;
@@ -89,15 +91,17 @@ remaining feature-defining question, present:
 4. a recommendation;
 5. the focused question the user must answer.
 
-Group up to three independent decisions. Ask sequentially when one answer
-changes the next decision. Update the inventory after each response.
+Record only independent questions that the terminal interview can answer in
+one pass. If one answer would change which question comes next, draft the
+stable portion and explain that a rare second spec-writer call may be needed
+after the operator's remarks. Do not ask these questions in chat.
 
-If fundamental intent still needs open-ended exploration, stop drafting and
-return to `thinking`. Resume this process when the user asks to capture the
-result. Begin drafting only when no unresolved feature-defining decision would
-force an implementer to invent product behavior.
+If fundamental intent is too incomplete to draft or express in the questions
+file, stop without creating a false artifact and give the operator the focused
+reason. Normal feature-defining gaps belong in the questions file, not a chat
+interview.
 
-### 5. Create the pending document
+### 5. Create the pending artifacts
 
 Store every specification under `./.synapse/specs/` from the repository root.
 Create the directory when it does not exist.
@@ -118,6 +122,34 @@ Use the creation date and preserve it through later status changes. Sanitize
 feature names for the filesystem. The title may use a colon; the filename must
 use a hyphen because Windows filenames cannot contain colons. Do not commit
 automatically.
+
+Create a sibling file by replacing the spec's `.md` suffix with
+`.questions.json`, for example:
+
+```json
+{
+  "version": 1,
+  "spec": "2026-08-19 - Short Feature Name (PENDING).md",
+  "questions": [
+    {
+      "id": "stable-short-id",
+      "prompt": "The focused feature-defining question",
+      "options": [
+        {"label": "Option A", "description": "Its meaningful tradeoff"}
+      ],
+      "recommendation": "Option A"
+    }
+  ]
+}
+```
+
+`version` must be `1`; `spec` must exactly match the sibling Markdown filename;
+and `questions` must be an array. Each question requires a unique non-empty
+`id` and `prompt`. `options` and `recommendation` are optional. When options
+are present, each has a unique non-empty `label`, an optional `description`,
+and the recommendation must match one label. Write an empty `questions` array
+when there are no feature-defining gaps. The CLI always supplies the required
+closer, so never add it to this file.
 
 ### 6. Write the specification
 
@@ -178,23 +210,20 @@ Read the complete document once and apply every check:
   blocker and the file it lives in, rather than a bare marker?
 - **Reviewability:** Are there placeholders, hidden open product questions, or
   success criteria that cannot be observed?
+- **Interview contract:** Does the sibling `.questions.json` parse as version
+  1, reference the exact spec filename, and contain only feature-defining gaps?
 
 Fix evidence-answerable and technical defects directly. Return to step 4 when
 a correction requires product authority.
 
-### 8. Deliver for approval
+### 8. Deliver for terminal interview
 
-Tell the user the document path and summarize the feature-defining decisions
-captured. Ask for one overall judgment: whether the document adequately states
-the feature.
+Tell the user the paths of the `PENDING` spec and questions file, and say to run
+`TODO` in the repository to complete the interview. Then stop.
 
-If the user changes the meaning, keep or return the status to `PENDING`, edit
-the document, and repeat step 7. When the user explicitly approves it, change
-the title status to `APPROVED` and rename the file to match.
-
-Approval permits later technical work within the spec; it does not authorize
-implementation in this workflow. Stop after approval. Do not commit,
-transition into `writing-plans`, or implement unless the user separately asks.
+Do not conduct the interview in chat. Do not mark the spec `APPROVED`; the
+script owns that transition after the operator completes the closer.
+Do not start a plan or implementation. Do not commit automatically.
 
 ## Status lifecycle
 
@@ -229,8 +258,9 @@ as it stands so the record of what was once intended stays readable. Reopening
 is ordinary — return the spec to `PENDING` or `APPROVED` if the user wants it
 back.
 
-`writing-specs` owns `PENDING → APPROVED`, applying or clearing `BLOCKED`, and
-closing a spec at the user's direction. The later implementation workflow owns
-`APPROVED → IMPLEMENTED`; it must not make that transition for partial or
-unverified work, or for a spec still marked `BLOCKED`. Preserve the date and
-issue or feature identifier when renaming.
+`writing-specs` owns creating or revising `PENDING` artifacts, applying or
+clearing `BLOCKED`, and closing a spec at the user's direction. `TODO` owns
+`PENDING → APPROVED` after a completed terminal interview. The later
+implementation workflow owns `APPROVED → IMPLEMENTED`; it must not make that
+transition for partial or unverified work, or for a spec still marked
+`BLOCKED`. Preserve the date and issue or feature identifier when renaming.
