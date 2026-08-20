@@ -15,7 +15,7 @@ Match the situation, then invoke the skill with the Skill tool.
 | Situation | Skill |
 |---|---|
 | Explore intent/tradeoffs without changing anything | `thinking` |
-| Capture settled feature intent as a document (only when asked) | `writing-specs` |
+| Draft a pending feature spec and terminal questions (only when asked) | `writing-specs` |
 | Break agreed work into tasks before touching code | `writing-plans` |
 | Work through an existing plan inline | `executing-plans` |
 | Work through a plan with one subagent per task | `subagent-team-execution` |
@@ -31,6 +31,9 @@ Match the situation, then invoke the skill with the Skill tool.
 | Delegated work, and you are unsure whether to pause | `autonomous-work-boundaries` |
 | Assets look dirty or a PR diff is larger than the work | `asset-churn-audit` (`/weedeat`) |
 | Worktree or branch sprawl, "what is safe to delete" | `worktree-cleanup` (`/weedeat`) |
+
+For a bounded drafting call, use the registered `spec-writer`; it writes the
+pending artifacts and stops before the operator's `TODO` interview.
 
 ## Standing rules
 
@@ -58,7 +61,7 @@ Per-repo configuration and artifacts live under `.synapse/`:
 | `.synapse/verification.md` | `verification` — commands, scope, completion |
 | `.synapse/bandaids.md` | the GitHub Actions bandaids |
 | `.synapse/weedeat.md` | the `/weedeat` surveys |
-| `.synapse/specs/` | feature specs — `PENDING`/`APPROVED`/`IMPLEMENTED`/`CLOSED` in both filename and title |
+| `.synapse/specs/` | feature specs and sibling `.questions.json` interviews — status stays synchronized in the spec filename and title |
 | `.synapse/plans/` | implementation plans |
 
 A missing file is not an error for the skills: `verification` falls back to the

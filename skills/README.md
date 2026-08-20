@@ -7,7 +7,7 @@ Lean, directive skills. Noun-phrase names. Proportional judgment over ceremony.
 | Skill | Role |
 |-------|------|
 | `thinking` | Read-only collaborative exploration |
-| `writing-specs` | Capture feature intent in a document |
+| `writing-specs` | Draft a `PENDING` spec and terminal interview questions |
 | `verification` | Claim only what you checked |
 | `worktrees` | Isolated workspaces |
 | `parallel-agents` | When/how to fan out subagents |
@@ -59,6 +59,7 @@ a bandaid, a missing section degrades to generic defaults instead of stopping.
 ## Suite-wide rules
 
 - `thinking` is read-only conversation; authorization to change ends it
-- `writing-specs` captures intent only when explicitly requested
+- `writing-specs` captures intent only when explicitly requested; `TODO`
+  conducts the later operator interview and records approval
 - Neither skill automatically invokes the other
 - Keep mechanics, cut ritual
