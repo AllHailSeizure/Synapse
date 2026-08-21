@@ -39,6 +39,8 @@ When the user has chosen an outcome to track, spawn a `goal-writer` agent
 an evidence-based draft. Present it for confirmation before creating the
 GitHub issue.
 
+When spawning, create a compact task artifact (scripts/agent-utils.py create-task) that includes `spawn_budget_tokens` and `spawn_limit`. Spawned agents must not themselves spawn workers unless they are explicitly the leader recorded on the artifact and validate/reserve budget via the helper.
+
 A useful issue carries:
 
 - **User intent** — outcome or problem they chose to track

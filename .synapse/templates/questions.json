@@ -1,0 +1,15 @@
+{
+  "version": 1,
+  "spec": "2026-08-19 - Short Feature Name (PENDING).md",
+  "questions": [
+    {
+      "id": "q1",
+      "prompt": "Focused feature-defining question",
+      "options": [
+        {"label": "A", "description": "Option A"},
+        {"label": "B", "description": "Option B"}
+      ],
+      "recommendation": "A"
+    }
+  ]
+}

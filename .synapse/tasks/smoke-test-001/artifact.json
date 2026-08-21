@@ -1,0 +1,27 @@
+{
+  "task_id": "smoke-test-001",
+  "leader": "test-leader",
+  "status": "pending",
+  "spawn_budget_tokens": 800,
+  "spawn_limit": 2,
+  "worker_ids": [
+    "w1"
+  ],
+  "log": [
+    {
+      "ts": "2026-08-21T04:42:01.246302Z",
+      "event": "reserve_spawn",
+      "tokens": 200,
+      "workers": [
+        "w1"
+      ]
+    },
+    {
+      "ts": "2026-08-21T04:42:01.975373Z",
+      "event": "worker_result",
+      "worker": "w1",
+      "summary": "ok"
+    }
+  ],
+  "metadata": {}
+}
