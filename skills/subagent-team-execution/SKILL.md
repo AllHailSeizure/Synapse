@@ -13,6 +13,8 @@ Dispatch a fresh implementer per plan task. You coordinate; they implement.
 Keep your context clean — hand requirements as files or tight prompts, not
 session history dumps.
 
+Use scripts/agent-utils.py to record a task artifact and enforce leader-only spawning and spawn budgets. Workers must not spawn subagents; they should write results under `.synapse/tasks/<task-id>/workers/` and append cost entries via the helper.
+
 **Narration:** at most one short line between tool calls.
 
 **Continuous execution:** do not ask "should I continue?" between tasks.

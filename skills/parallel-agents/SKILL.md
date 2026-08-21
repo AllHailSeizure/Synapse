@@ -11,6 +11,8 @@ description: >-
 Dispatch one focused subagent per independent problem domain. They must not
 inherit session history — give each exactly the context it needs.
 
+For safety, prefer creating a compact task artifact (use scripts/agent-utils.py) and pass the task_id and brief snippets or file paths to workers. Workers must be single-purpose and must not spawn further subagents; only the leader may reserve spawn budget and initiate parallel dispatch.
+
 ## Decision tree
 
 1. Multiple distinct problems?

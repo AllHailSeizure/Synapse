@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "task_id": "example-task-0001",
+  "leader": "agent-id",
+  "status": "pending",
+  "spawn_budget_tokens": 2000,
+  "spawn_limit": 3,
+  "worker_ids": [],
+  "log": [],
+  "metadata": {"brief": "Short human summary of the task"}
+}
