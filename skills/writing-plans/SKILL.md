@@ -19,28 +19,18 @@ Save plans where the project prefers them. Default if none: `./.synapse/plans/YY
 One plan = one coherent deliverable that can ship and be tested on its own.
 Independent subsystems → separate plans.
 
-## Patterns before tasks
+## When tasks repeat
 
-A plan with more than a handful of tasks is rarely that many distinct problems.
-Most large plans are a few mechanical changes applied to several targets — the
-same conversion done per chapter, per module, per endpoint. Group the tasks that
-way before ordering them, because it decides what execution costs: understanding
-is paid once per pattern, not once per task.
+If the plan contains one change applied to several targets — the same
+conversion per chapter, per module, per endpoint — say so, and name which
+instance runs first. Pick the hardest or best-documented target; its diff is
+what every other instance gets handed, so understanding is paid once instead of
+once per target. State that the rest run only after it lands, and never
+alongside it.
 
-Per pattern, name three things:
-
-- **The pattern** — one line on what the change actually is.
-- **The setter** — the instance that runs first. Pick the hardest or the
-  best-documented target; it produces the worked example the rest consume.
-- **The siblings** — the remaining instances.
-
-Then state, per group: *siblings run only after the setter has landed, and a
-setter never runs concurrently with its own siblings.*
-
-**"Parallel-safe" is a claim about file conflicts, not about cost.** Say which
-you mean. Two siblings of an unsettled pattern touch disjoint files and still
-cost three times what they should, because each re-derives the same pattern from
-the codebase.
+**"Parallel-safe" is a claim about file conflicts, not about cost.** Two
+repeats of an unsettled change touch disjoint files and still cost three times
+what they should, because each re-derives the same change from the codebase.
 
 ## Executable by whom
 
@@ -48,18 +38,30 @@ Mark every task **mechanical** or **judgment**.
 
 | | Done-condition | Runs as |
 |---|---|---|
-| Mechanical | A command — a test, a lint, a grep | A cheap subagent, from a diff-grade brief |
-| Judgment | "indistinguishable", "feels the same", "decide and record" | Inline, or handed to the user |
+| Mechanical | A command — a test, a lint, a grep | A cheap subagent, from a brief carrying the diff |
+| Judgment | An open design question — "decide and record", "check whether X, else file the gap" | Inline, by you |
 
 A task is mechanical only if its done-condition is checkable by running
-something. "Replay the chapter and confirm the timing is unchanged" is never
-mechanical, however precise the steps are.
+something. If you cannot name that command, the task is carrying an unsettled
+design question — answer it in the plan rather than passing it down.
 
 **Never defer a design question into a task marked mechanical.** "Check whether
 X supports arguments; if not, file the gap" and "settle the fade inside this
-task" are judgment. Left in a mechanical task they silently turn a cheap lane
-into a design lane at design-lane cost — either answer them in the plan or mark
+task" are judgment. Left in a mechanical task they silently turn a cheap agent
+into a design agent at design cost — either answer them in the plan or mark
 the task judgment.
+
+## No manual steps
+
+**A plan is written for an agent to execute. Never put a manual check in one.**
+No hand replays, no "play the chapter and confirm the timing", no "verify it
+feels the same", batched or otherwise. Every step in a plan is something the
+agent runs.
+
+Verification is whatever command would catch a wrong result — run it where it
+is cheap and once where it matters, not after every task. Anything a command
+cannot catch is left to surface in use and get fixed then; that is cheaper than
+a gate, and planning around it is not your call to make on the user's behalf.
 
 ## Before tasks: file map
 
@@ -129,12 +131,9 @@ Fix inline, then hand off.
 
 Plan saved. Offer execution:
 
-1. **Subagent team** (`subagent-team-execution`) — pattern setter inline, then
-   siblings fan out
+1. **Subagent team** (`subagent-team-execution`) — fresh agent per task,
+   continuous
 2. **This session** (`executing-plans`) — inline with checkpoints
-
-For a plan with more than one pattern, say what the first pattern will cost
-before anything starts, and stop at each pattern boundary.
 
 If the user already named a mode, start it. Don't force planning when the
 change is trivial — use `thinking` first.

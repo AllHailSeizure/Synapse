@@ -78,6 +78,7 @@ Short subject line, blank line, optional body with detail.
 
 1. **User-directed issues.** Surface open issues when useful; the user picks what to address. Do not auto-select "next."
 2. **Reflect between issues.** When an issue closes, ask whether another still makes sense before starting it.
+3. **Stack PRs; never wait on a merge.** When new work depends on an open PR, branch off that PR's branch and open the next PR against it. An unmerged PR is not a blocker — merging is user-initiated and may lag by hours or days, so keep moving rather than idling or asking whether to wait.
 
 ### Memory Scope
 

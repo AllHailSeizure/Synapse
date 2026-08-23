@@ -42,6 +42,11 @@ Keep the worktree if one exists — PR feedback lands there.
 
 ## 4. Stacked PRs
 
+An open PR is never a blocker. When the next piece of work depends on one that
+is still unmerged, branch off that PR's branch and open the next PR against it
+(`gh pr create --base <previous-branch>`). Do not idle, and do not ask whether
+to wait for the merge — merging is user-initiated and may lag by hours or days.
+
 Never auto-merge. Never merge a stack out of order. Push/PR only; the user
 owns merge timing.
 
