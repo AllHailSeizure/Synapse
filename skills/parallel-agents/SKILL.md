@@ -11,7 +11,15 @@ description: >-
 Dispatch one focused subagent per independent problem domain. They must not
 inherit session history — give each exactly the context it needs.
 
-For safety, prefer creating a compact task artifact (use scripts/agent-utils.py) and pass the task_id and brief snippets or file paths to workers. Workers must be single-purpose and must not spawn further subagents; only the leader may reserve spawn budget and initiate parallel dispatch.
+A subagent launch hook enforces this mechanically: briefs over 12,000 characters
+are refused as context forwarding, and more than two open lanes are refused
+until one closes. Every seventh launch in a session asks you for a checkpoint.
+Send a task packet — task text, base commit, allowed files, done condition, one
+verify command — not session history. Workers are single-purpose and do not
+spawn further subagents; only you open lanes.
+
+Tune the caps per repo in `.synapse/fanout.json`
+(`maxConcurrent`, `maxPromptChars`, `waveSize`).
 
 ## Decision tree
 
