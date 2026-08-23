@@ -19,6 +19,48 @@ Save plans where the project prefers them. Default if none: `./.synapse/plans/YY
 One plan = one coherent deliverable that can ship and be tested on its own.
 Independent subsystems → separate plans.
 
+## Patterns before tasks
+
+A plan with more than a handful of tasks is rarely that many distinct problems.
+Most large plans are a few mechanical changes applied to several targets — the
+same conversion done per chapter, per module, per endpoint. Group the tasks that
+way before ordering them, because it decides what execution costs: understanding
+is paid once per pattern, not once per task.
+
+Per pattern, name three things:
+
+- **The pattern** — one line on what the change actually is.
+- **The setter** — the instance that runs first. Pick the hardest or the
+  best-documented target; it produces the worked example the rest consume.
+- **The siblings** — the remaining instances.
+
+Then state, per group: *siblings run only after the setter has landed, and a
+setter never runs concurrently with its own siblings.*
+
+**"Parallel-safe" is a claim about file conflicts, not about cost.** Say which
+you mean. Two siblings of an unsettled pattern touch disjoint files and still
+cost three times what they should, because each re-derives the same pattern from
+the codebase.
+
+## Executable by whom
+
+Mark every task **mechanical** or **judgment**.
+
+| | Done-condition | Runs as |
+|---|---|---|
+| Mechanical | A command — a test, a lint, a grep | A cheap subagent, from a diff-grade brief |
+| Judgment | "indistinguishable", "feels the same", "decide and record" | Inline, or handed to the user |
+
+A task is mechanical only if its done-condition is checkable by running
+something. "Replay the chapter and confirm the timing is unchanged" is never
+mechanical, however precise the steps are.
+
+**Never defer a design question into a task marked mechanical.** "Check whether
+X supports arguments; if not, file the gap" and "settle the fade inside this
+task" are judgment. Left in a mechanical task they silently turn a cheap lane
+into a design lane at design-lane cost — either answer them in the plan or mark
+the task judgment.
+
 ## Before tasks: file map
 
 List files to create/modify and each one's responsibility. Prefer focused
@@ -87,8 +129,12 @@ Fix inline, then hand off.
 
 Plan saved. Offer execution:
 
-1. **Subagent team** (`subagent-team-execution`) — fresh agent per task, continuous
+1. **Subagent team** (`subagent-team-execution`) — pattern setter inline, then
+   siblings fan out
 2. **This session** (`executing-plans`) — inline with checkpoints
+
+For a plan with more than one pattern, say what the first pattern will cost
+before anything starts, and stop at each pattern boundary.
 
 If the user already named a mode, start it. Don't force planning when the
 change is trivial — use `thinking` first.

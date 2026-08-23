@@ -9,16 +9,21 @@ description: >-
 
 # Subagent Team Execution
 
-Dispatch a fresh implementer per plan task. You coordinate; they implement.
-Keep your context clean — hand requirements as files or tight prompts, not
-session history dumps.
+**You read the codebase. Implementers do not.** You hold the understanding and
+spend it writing briefs; they receive an edit, apply it, run one command, and
+return a line. Every lane that has to work out for itself what the code does
+pays the whole comprehension cost again from zero, and that — not test runs,
+not prompt size — is what makes a large plan expensive.
 
-Use scripts/agent-utils.py to record a task artifact and enforce leader-only spawning and spawn budgets. Workers must not spawn subagents; they should write results under `.synapse/tasks/<task-id>/workers/` and append cost entries via the helper.
+The subagent launch hook refuses briefs over 12,000 characters and more than two
+open lanes, and asks for a checkpoint every seventh launch. Workers do not spawn
+subagents. Adjacent findings get recorded in the handoff, not chased.
 
 **Narration:** at most one short line between tool calls.
 
-**Continuous execution:** do not ask "should I continue?" between tasks.
-Stop only for unresolved BLOCKED, genuine ambiguity, or completion.
+**Continuous within a pattern, stop at its boundary.** Do not ask "should I
+continue?" between siblings of a settled pattern. Do stop at the end of each
+pattern, and for unresolved BLOCKED or genuine ambiguity.
 
 ## When to use
 
@@ -31,6 +36,40 @@ Stop only for unresolved BLOCKED, genuine ambiguity, or completion.
 
 Never implement on `main`/`master` without explicit consent. Use `worktrees`
 when isolation is needed.
+
+## Pattern waves
+
+Work one pattern at a time, not one task at a time. If the plan named its
+patterns (`writing-plans`), use them; if it did not, group the tasks yourself
+before dispatching anything — a forty-task plan is usually five or six
+mechanical changes applied to several targets each.
+
+Per pattern:
+
+1. **Run the setter yourself**, or with one capable implementer you stay close
+   to. This is where the code gets read and the shape gets settled. Expensive
+   on purpose, once.
+2. **Turn its diff into the sibling brief.** The brief is the setter's actual
+   diff plus this target's files and one verify command — not prose about what
+   to do. If you cannot write that brief, the pattern is not settled and the
+   siblings are not ready.
+3. **Fan the siblings out**, cheap model, two lanes at a time.
+4. **Close the pattern**: batch every hand check to the user in one message,
+   report what landed and what the next pattern will cost, and stop there.
+
+**Never dispatch a setter alongside its own siblings.** Disjoint files make
+them look parallel-safe; each one still re-derives the same pattern, which is
+the single most expensive mistake available here.
+
+**Only mechanical tasks get an implementer.** If the done-condition is a
+judgment — "indistinguishable", "feels the same", "decide and record" — you do
+it inline or hand it to the user. A cheap lane cannot verify what it cannot
+comprehend.
+
+**No standing reviewer lane.** You wrote the brief from a diff you understand;
+reviewing the result is reading a small diff, not re-reading the subsystem.
+Spawn an independent reviewer only for a high-risk change, and only when the
+implementation lanes are idle.
 
 ## Setup
 
@@ -46,9 +85,13 @@ Pick the weakest model that can do the job; always set model explicitly.
 
 | Task shape | Model tier |
 |------------|------------|
-| 1–2 files, complete code in plan | Cheap / fast |
+| Sibling of a settled pattern, brief carries the diff | Cheap / fast |
 | Multi-file integration, debugging | Standard |
-| Design judgment, broad understanding | Most capable |
+| Pattern setter, design judgment, broad understanding | Most capable |
+
+If a task needs the most capable tier, ask whether it should be a subagent at
+all — that tier plus a fresh context means it is re-deriving what you already
+know.
 
 ## Per-task loop
 
@@ -60,13 +103,15 @@ Research-only agents may parallelize via `parallel-agents`.
 Give:
 
 1. One line on where this task fits
-2. Full task text (or path to a task brief) — exact values live here
-3. Interfaces/decisions from earlier tasks the brief can't know
+2. The setter's diff, or the exact edit — the brief carries the change itself,
+   not a description of it
+3. This target's files, and anything from earlier tasks the diff can't show
 4. Your resolution of any ambiguity you already noticed
-5. What to return: status, commits, one-line test summary, concerns
+5. One verify command, and what to return: status, commit, one-line result
 
-Do not paste accumulated prior-task histories. Do not make them read the
-whole plan file if a task extract exists.
+Do not paste accumulated prior-task histories, and do not send them to read the
+plan file or the subsystem. Compress each return to a line before continuing —
+your context holds understanding, not transcript.
 
 ### 2. Handle status
 
@@ -103,7 +148,9 @@ Mark complete and continue until the plan is done or blocked.
 
 ## Finish
 
-All tasks complete → `verification` on the relevant suite → `finishing-branches`.
+Pattern complete → batched hand checks to the user → report cost and what the
+next pattern needs → stop. All patterns complete → `verification` on the
+relevant suite → `finishing-branches`.
 
 ## Anti-patterns
 
@@ -114,4 +161,7 @@ All tasks complete → `verification` on the relevant suite → `finishing-branc
 | Progress ledger ceremony | Todos + git |
 | Final whole-branch reviewer always | Finish when green; review if user asks |
 | Parallel implementers on same tree | One implementer at a time |
+| Setter and siblings dispatched together | Setter lands, then siblings |
+| Prose briefs that make a lane re-read the code | The setter's diff as the brief |
+| Running the whole plan in one sitting | Stop at every pattern boundary |
 | Controller silently rewriting code | Keep coordination context clean; re-dispatch |
