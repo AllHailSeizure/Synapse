@@ -12,11 +12,11 @@ Dispatch one focused subagent per independent problem domain. They must not
 inherit session history — give each exactly the context it needs.
 
 A subagent launch hook enforces this mechanically: briefs over 12,000 characters
-are refused as context forwarding, and more than two open lanes are refused
-until one closes. Every seventh launch in a session asks you for a checkpoint.
+are refused as context forwarding, and more than two agents at once are
+refused until one finishes. Every seventh launch in a session asks you for a checkpoint.
 Send a task packet — task text, base commit, allowed files, done condition, one
 verify command — not session history. Workers are single-purpose and do not
-spawn further subagents; only you open lanes.
+spawn further subagents; only you dispatch them.
 
 Tune the caps per repo in `.synapse/fanout.json`
 (`maxConcurrent`, `maxPromptChars`, `waveSize`).
