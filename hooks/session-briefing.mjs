@@ -13,7 +13,6 @@ const SYNAPSE_FILES = [
   ".synapse/identity.md",
   ".synapse/verification.md",
   ".synapse/bandaids.md",
-  ".synapse/weedeat.md",
 ];
 
 const SYNAPSE_DIRS = [".synapse/specs", ".synapse/plans"];

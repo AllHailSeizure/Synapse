@@ -125,7 +125,7 @@ docs/TEMPLATES/synapse/verification.md in the Synapse repo.
 # Weedeat
 
 Repo configuration for the /weedeat survey skills. See
-docs/TEMPLATES/synapse/weedeat.md in the Synapse repo.
+docs/TEMPLATES/weedeat.md in the weedeat repo (github.com/AllHailSeizure/weedeat).
 
 ## Assets
 
