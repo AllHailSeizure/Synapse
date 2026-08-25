@@ -12,13 +12,15 @@ The shared skills live in `skills/` and cover:
 - testing, verification, debugging, and code review;
 - worktree isolation and bounded subagent delegation;
 - finishing branches with verification, push, and pull request creation;
-- user-directed GitHub issues and sticky-note bug capture;
-- autonomous-work boundaries between user intent and agent execution; and
-- report-only surveys of what a repo accumulates on its own — asset churn in a
-  branch, worktree and branch sprawl.
+- user-directed GitHub issues and sticky-note bug capture; and
+- autonomous-work boundaries between user intent and agent execution.
 
 See [`skills/README.md`](skills/README.md) for the complete inventory and the
 skills that were intentionally dropped or replaced.
+
+Report-only surveys of what a repo accumulates on its own — asset churn in a
+branch, worktree and branch sprawl — moved out to their own plugin:
+[`weedeat`](https://github.com/AllHailSeizure/weedeat).
 
 ## Claude installation
 
@@ -81,8 +83,6 @@ feature specifications in `.synapse/specs/`, implementation plans in
                         Protected, Ignore
 .synapse/verification.md commands, scope mapping,  verification
                          environment, completion
-.synapse/weedeat.md     Assets, Worktrees          the /weedeat surveys
-.synapse/weedeat-tags.json                       weedeat CLI overrides
 ```
 
 Pending feature specs can have a sibling `.questions.json` file produced by
@@ -95,8 +95,7 @@ non-interactive inventory. The CLI makes no model calls.
 
 The bandaids stop at Gate 0 on a missing section. Verification uses its local
 file for the claims it covers and falls back to repository discovery when the
-file or a relevant entry is absent. The `/weedeat` surveys degrade to documented
-defaults instead and say so in their own output.
+file or a relevant entry is absent.
 
 There is **no fallback** to the old root `SYNAPSE.md`. That single file was a
 contention point — every workstream edited it, and an uncommitted edit was once
@@ -107,26 +106,6 @@ a root `SYNAPSE.md` is still lying around, delete it.
 
 Schema: [`docs/TEMPLATES/synapse/`](docs/TEMPLATES/synapse/). Worked example:
 [`docs/EXAMPLES/synapse.hotel-kline-game.md`](docs/EXAMPLES/synapse.hotel-kline-game.md).
-
-## Weedeat command interface
-
-Install the standalone package with `pip install -e apps/weedeat`, then run
-`weedeat run` from a Git repository. The prompt lists branches by numeric risk:
-
-```text
-0  protected — never trimmed
-1  safe — merged and clean
-2  stale — no merged or open PR
-3  review — merged but carrying local changes
-4  hold — active, unknown, or carrying unmerged work
-```
-
-Nothing is removed on launch. `trim 1` removes confirmed level-1 entries;
-`trim 2` includes levels 1 and 2, and so on. Every trim previews its work and
-requires confirmation. Use `branch <name> tag <0-4>` or
-`worktree <path> tag <0-4>` for a persistent override. A level-0 entry cannot
-be removed by any trim command. Tags are written to
-`.synapse/weedeat-tags.json`; attached branches and worktrees share one tag.
 
 ## Codex plugin installation
 

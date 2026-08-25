@@ -29,11 +29,13 @@ Match the situation, then invoke the skill with the Skill tool.
 | Implementation is complete and verified | `finishing-branches` |
 | Create, pick, or work inside a GitHub issue | `goal-oriented-development` |
 | Delegated work, and you are unsure whether to pause | `autonomous-work-boundaries` |
-| Assets look dirty or a PR diff is larger than the work | `asset-churn-audit` (`/weedeat`) |
-| Worktree or branch sprawl, "what is safe to delete" | `worktree-cleanup` (`/weedeat`) |
 
 For a bounded drafting call, use the registered `spec-writer`; it writes the
 pending artifacts and stops before the operator's `TODO` interview.
+
+Asset-churn and worktree/branch-sprawl surveys (`/weedeat`) moved to their own
+plugin: [`weedeat`](https://github.com/AllHailSeizure/weedeat). Install it
+separately if you want those skills available in this session.
 
 ## Standing rules
 
@@ -60,10 +62,9 @@ Per-repo configuration and artifacts live under `.synapse/`:
 | `.synapse/identity.md` | every tool — repo, base branch, stack |
 | `.synapse/verification.md` | `verification` — commands, scope, completion |
 | `.synapse/bandaids.md` | the GitHub Actions bandaids |
-| `.synapse/weedeat.md` | the `/weedeat` surveys |
 | `.synapse/specs/` | feature specs and sibling `.questions.json` interviews — status stays synchronized in the spec filename and title |
 | `.synapse/plans/` | implementation plans |
 
 A missing file is not an error for the skills: `verification` falls back to the
-repository's documented test/build path, and `/weedeat` degrades to documented
-defaults and says so. There is no fallback to a root `SYNAPSE.md`.
+repository's documented test/build path. There is no fallback to a root
+`SYNAPSE.md`.

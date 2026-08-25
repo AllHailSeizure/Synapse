@@ -58,36 +58,9 @@ mutations. The current suite does not dispatch a goal-fulfiller agent.
 
 ## Weeds (`/weedeat` equivalent)
 
-Two more agents under `.codex/agents/synapse/` survey what a repo accumulates
-on its own - Claude's `/weedeat` command triggers these by name; Codex has no
-slash commands, so dispatch on the same signals directly:
-
-- `asset-churn-audit` - dispatch before opening or merging a PR that touches
-  assets, when `git status` shows dirty art nobody remembers editing, or when
-  a PR diff looks larger than the work done.
-- `worktree-cleanup` - dispatch when the user mentions worktree sprawl, stale
-  or dead branches, running out of disk, or asks what is safe to delete.
-
-Both ship a script at `agents/scripts/<name>.py` in this Synapse install.
-Resolve its absolute path before dispatching (the agent's own instructions
-expect it as an input, not something it discovers itself) and pass it along
-with the repository path. Both read repo-specific configuration from
-`.synapse/weedeat.md` - `## Assets` and `## Worktrees` - plus
-`.synapse/identity.md` for the baseline branch; a missing section degrades to
-generic defaults rather than stopping.
-
-Both are report-only. Present findings and the exact commands, then stop - do
-not run a removal, revert, or stage anything yourself. If the user authorizes
-one tier ("drop the churn", "remove the safe ones"), that authorizes only that
-tier for that run, not REVIEW or HOLD, and it does not carry to the next
-invocation.
-
-That boundary applies to the agent-dispatched report path. If the standalone
-`weedeat` CLI is installed, a human in an interactive terminal may run
-`weedeat run` directly to review numeric risk levels in a command prompt.
-Nothing is removed on launch; `trim N` previews levels `1..N` and requires
-confirmation, while level `0` is never deletable. Agents do not launch that
-human-invoked path on the user's behalf.
+Asset-churn and worktree/branch-sprawl surveys moved out of this repo into
+their own plugin: [`weedeat`](https://github.com/AllHailSeizure/weedeat).
+Install it separately if you want those agents available under Codex.
 
 ## Response style
 
