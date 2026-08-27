@@ -118,14 +118,14 @@ Synapse skills are hard directives. Judgment over ceremony — no fixed intervie
 - `verification` — Claim only what you checked; proportional; no substitute harnesses
 - `testing` — TDD when exploring; verification-first when behavior is clear
 - `goal-oriented-development` — User-directed issues (intent + evidence); no goal-fulfiller
-- `debugging` — Hypotheses fast, instrument, one repro, fix, PR (`/debug`)
-- `bug-capture` — Sticky-note capture (`/bug`); record for later, don't fix
+- `debugging` — Hypotheses fast, instrument, one repro, fix, PR (`/debug` or `$debug`)
+- `bug-capture` — Sticky-note capture (`/bug` or `$bug`); record for later, don't fix
 - `autonomous-work-boundaries` — What the agent owns vs what needs Nate
 - `writing-plans` / `executing-plans` — Plan when the work needs it; execute without endless loops
 - `worktrees` / `parallel-agents` / `subagent-team-execution` — Isolation and delegation
 - `code-review` — Receive feedback rigorously; no performative agreement
 - `finishing-branches` — Verify → push → PR; merge stays user-initiated
-- `asset-churn-audit` / `worktree-cleanup` — Report what accumulated on its own; never delete (`/weedeat`)
+- `asset-churn-audit` / `worktree-cleanup` — Report what accumulated on its own; never delete (`/weedeat` or `$weedeat`)
 
 Feature specs live in `.synapse/specs/`. Keep `PENDING`, `APPROVED`,
 `IMPLEMENTED`, or `CLOSED` synchronized in the filename and title; use
@@ -137,21 +137,6 @@ See `skills/` and `skills/README.md`.
 ### Tooling
 
 - `/skill-creator` for authoring/editing skills — not a runtime skill in this suite.
-
-### Response Style
-
-Tone and verbosity belong in an output style, not here. CLAUDE.md is injected
-as a user message *after* the system prompt, so instructions about how to
-respond compete with the system prompt and lose over a long session. Output
-styles modify the system prompt directly and re-assert themselves each turn.
-
-Synapse ships `output-styles/succinct.md` (style name: `Succinct`). Enable it
-with `"outputStyle": "Succinct"` in a settings file; it takes effect on
-`/clear` or a new session. It sets `keep-coding-instructions: true`, so the
-built-in engineering behavior stays — what goes is the report register:
-headers as transitions, bolded lead-ins, and re-explaining shared context.
-
-Do not re-add verbosity instructions to this file. They will not work.
 
 ---
 
@@ -165,4 +150,4 @@ For Claude, Synapse is also a plugin: `.claude-plugin/marketplace.json` publishe
 
 ---
 
-**Last updated:** 2026-08-15
+**Last updated:** 2026-08-26

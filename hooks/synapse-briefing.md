@@ -21,16 +21,16 @@ Match the situation, then invoke the skill with the Skill tool.
 | Work through a plan with one subagent per task | `subagent-team-execution` |
 | 2+ tasks sharing no state, no ordering between them | `parallel-agents` |
 | Implementing a feature or fixing a bug | `testing` |
-| Bug report, stack trace, failing test, "this is wrong" | `debugging` (`/debug`) |
-| Noticed a bug, not fixing it now | `bug-capture` (`/bug`) |
+| Bug report, stack trace, failing test, "this is wrong" | `debugging` (`/debug` or `$debug`) |
+| Noticed a bug, not fixing it now | `bug-capture` (`/bug` or `$bug`) |
 | About to claim something works, is fixed, or is done | `verification` |
 | Review feedback arrived (human or bot) | `code-review` |
 | Work needs isolation from the current checkout | `worktrees` |
 | Implementation is complete and verified | `finishing-branches` |
 | Create, pick, or work inside a GitHub issue | `goal-oriented-development` |
 | Delegated work, and you are unsure whether to pause | `autonomous-work-boundaries` |
-| Assets look dirty or a PR diff is larger than the work | `asset-churn-audit` (`/weedeat`) |
-| Worktree or branch sprawl, "what is safe to delete" | `worktree-cleanup` (`/weedeat`) |
+| Assets look dirty or a PR diff is larger than the work | `asset-churn-audit` (`/weedeat` or `$weedeat`) |
+| Worktree or branch sprawl, "what is safe to delete" | `worktree-cleanup` (`/weedeat` or `$weedeat`) |
 
 For a bounded drafting call, use the registered `spec-writer`; it writes the
 pending artifacts and stops before the operator's `TODO` interview.

@@ -36,6 +36,9 @@ The active suite lives in `skills/`:
 - `bug-capture` — record bugs for later without investigating them in-session.
 - `autonomous-work-boundaries` — user intent versus agent execution.
 
+Explicit command skills (invoke with `$name`; do not auto-fire): `bug`,
+`debug`, `weedeat`.
+
 Use the skill instructions as the source of truth for when a workflow applies.
 They intentionally avoid ceremony for trivial, reversible work.
 
@@ -56,65 +59,47 @@ The Codex agents are registered under `.codex/agents/synapse/`:
 The primary Codex session remains responsible for user confirmation and GitHub
 mutations. The current suite does not dispatch a goal-fulfiller agent.
 
-## Weeds (`/weedeat` equivalent)
+## Weeds (`$weedeat`)
 
-Two more agents under `.codex/agents/synapse/` survey what a repo accumulates
-on its own - Claude's `/weedeat` command triggers these by name; Codex has no
-slash commands, so dispatch on the same signals directly:
+`$weedeat` (or the `weedeat` skill) surveys what a repo accumulates on its own.
+Follow `commands/weedeat.md` for routing:
 
-- `asset-churn-audit` - dispatch before opening or merging a PR that touches
-  assets, when `git status` shows dirty art nobody remembers editing, or when
-  a PR diff looks larger than the work done.
-- `worktree-cleanup` - dispatch when the user mentions worktree sprawl, stale
-  or dead branches, running out of disk, or asks what is safe to delete.
+- `asset-churn-audit` — before opening or merging a PR that touches assets, when
+  `git status` shows dirty art nobody remembers editing, or when a PR diff looks
+  larger than the work done.
+- `worktree-cleanup` — worktree sprawl, stale or dead branches, running out of
+  disk, or "what is safe to delete."
 
-Both ship a script at `agents/scripts/<name>.py` in this Synapse install.
-Resolve its absolute path before dispatching (the agent's own instructions
-expect it as an input, not something it discovers itself) and pass it along
-with the repository path. Both read repo-specific configuration from
-`.synapse/weedeat.md` - `## Assets` and `## Worktrees` - plus
-`.synapse/identity.md` for the baseline branch; a missing section degrades to
-generic defaults rather than stopping.
+Resolve the script path from this Synapse install (`$PLUGIN_ROOT` or
+`$CLAUDE_PLUGIN_ROOT`) before dispatching. Both read `.synapse/weedeat.md` plus
+`.synapse/identity.md`; a missing section degrades to generic defaults.
 
-Both are report-only. Present findings and the exact commands, then stop - do
-not run a removal, revert, or stage anything yourself. If the user authorizes
-one tier ("drop the churn", "remove the safe ones"), that authorizes only that
-tier for that run, not REVIEW or HOLD, and it does not carry to the next
-invocation.
-
-That boundary applies to the agent-dispatched report path. If the standalone
-`weedeat` CLI is installed, a human in an interactive terminal may run
-`weedeat run` directly to review numeric risk levels in a command prompt.
-Nothing is removed on launch; `trim N` previews levels `1..N` and requires
-confirmation, while level `0` is never deletable. Agents do not launch that
-human-invoked path on the user's behalf.
+Report-only. Present findings and the exact commands, then stop. If the user
+authorizes one tier ("drop the churn", "remove the safe ones"), that authorizes
+only that tier for that run. The standalone weedeat trim CLI lives in its own
+repo; agents do not launch it.
 
 ## Response style
 
 Tone and verbosity do not belong in this file. AGENTS.md is context layered on
 top of Codex's built-in instructions, so directives about how to respond
-compete with them and lose over a long session — the same reason Claude's
-CLAUDE.md is the wrong channel for it.
+compete with them and lose over a long session.
 
 Codex's system-prompt-level lever is `model_instructions_file` in
-`config.toml`. Unlike Claude's output styles, which append and can retain the
-built-in coding instructions via `keep-coding-instructions: true`, this key
-**replaces** Codex's built-in instructions outright. Adopting it means owning
-that baseline. Synapse does not set it; enabling it is a deliberate,
-user-approved change, not a default.
-
-Claude's equivalent, which Synapse does ship, is `output-styles/succinct.md`.
+`config.toml`. That key **replaces** Codex's built-in instructions outright.
+Synapse does not set it.
 
 ## Repository layout
 
 ```text
-output-styles/                  Claude output styles (Succinct)
 skills/                         shared Synapse skills
+hooks/                          plugin hooks (Claude/Codex schema in hooks.json)
+.cursor-plugin/plugin.json      Cursor plugin manifest
 .codex-plugin/plugin.json       Codex plugin manifest
 .codex/agents/synapse/          Codex agent registrations
 agents/                         Claude-compatible agent adapters
-commands/                       Claude-compatible commands
-automations/                    Bandaid automations (claude/ live, cursor/ frozen)
+commands/                       slash-command files
+automations/                    Bandaid automations (special case)
 docs/                           templates and design history
 AGENTS.md                       Codex root guidance
 CLAUDE.md                       Claude-compatible root guidance

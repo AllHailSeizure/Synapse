@@ -21,10 +21,12 @@ genuinely ambiguous, dispatch both; they don't interfere.
 ## Dispatching
 
 Before spawning an agent, resolve the absolute path to its script so the agent
-doesn't have to guess: `agents/scripts/audit_assets.py` for the audit,
-`agents/scripts/survey_worktrees.py` for the cleanup, both relative to this
-Synapse install (`$CLAUDE_PLUGIN_ROOT` when installed as a plugin). Pass that
-resolved path, plus the target repository path, in the agent's prompt.
+doesn't have to guess: `skills/asset-churn-audit/scripts/audit_assets.py` for
+the audit, `agents/scripts/survey_worktrees.py` (or
+`skills/worktree-cleanup/scripts/survey_worktrees.py`) for the cleanup, both
+relative to this Synapse install (`$CURSOR_PLUGIN_ROOT`, `$PLUGIN_ROOT`, or
+`$CLAUDE_PLUGIN_ROOT`). Pass that resolved path, plus the target repository
+path, in the agent's prompt.
 
 Both agents read repo-specific configuration from `.synapse/weedeat.md` —
 `## Assets` and `## Worktrees` — plus `.synapse/identity.md` for the baseline

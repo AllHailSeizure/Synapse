@@ -40,8 +40,9 @@ that's your authorization for that level only — not for REVIEW or HOLD.
 python <synapse>/agents/scripts/survey_worktrees.py --json survey.json
 ```
 
-`<synapse>` is this Synapse install — `$CLAUDE_PLUGIN_ROOT` when installed as a
-plugin. Write the JSON somewhere scratch, not into the repo.
+`<synapse>` is this Synapse install — `$CURSOR_PLUGIN_ROOT`, `$PLUGIN_ROOT`, or
+`$CLAUDE_PLUGIN_ROOT` when installed as a plugin. Write the JSON somewhere
+scratch, not into the repo.
 
 It fetches and prunes first (pass `--no-fetch` to skip), then prints a markdown
 report grouped by risk level. It takes a couple of minutes on a large repo because it runs

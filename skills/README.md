@@ -15,14 +15,17 @@ Lean, directive skills. Noun-phrase names. Proportional judgment over ceremony.
 | `executing-plans` | Inline plan execution + checkpoints |
 | `subagent-team-execution` | Fresh subagent per plan task |
 | `testing` | TDD default / verification-first when clear |
-| `debugging` | Hypotheses → instrument → repro → fix → PR (`/debug`) |
+| `debugging` | Hypotheses → instrument → repro → fix → PR |
 | `code-review` | Receiving review feedback rigorously |
 | `finishing-branches` | Verify → push → PR |
 | `goal-oriented-development` | User-directed issues; no fulfiller |
 | `bug-capture` | Sticky-note bug → GitHub issue; no fix |
 | `autonomous-work-boundaries` | User intent vs agent execution |
-| `asset-churn-audit` | Which assets the branch needs vs churn (`/weedeat`) |
-| `worktree-cleanup` | Worktree/branch sprawl, tiered by removal safety (`/weedeat`) |
+| `asset-churn-audit` | Which assets the branch needs vs churn |
+| `worktree-cleanup` | Worktree/branch sprawl, tiered by removal safety |
+| `bug` | Explicit `/bug` or `$bug` → `bug-capture` |
+| `debug` | Explicit `/debug` or `$debug` → `debugging` (Codex; Cursor already has `/debug`) |
+| `weedeat` | Explicit `/weedeat` or `$weedeat` → asset + worktree surveys |
 
 `verification` reads repo-specific standard checks, scope mappings, environment
 requirements, and completion rules from `.synapse/verification.md` when it is
@@ -37,11 +40,11 @@ a bandaid, a missing section degrades to generic defaults instead of stopping.
 
 ## Commands
 
-| Command | Skill |
-|---------|-------|
-| `/debug` | `debugging` |
-| `/bug` | `bug-capture` |
-| `/weedeat` | `asset-churn-audit` + `worktree-cleanup` |
+| Command | Skill | Cursor | Codex | Claude |
+|---------|-------|--------|-------|--------|
+| `/bug` | `bug-capture` | yes | `$bug` | yes |
+| `/weedeat` | `asset-churn-audit` + `worktree-cleanup` | yes | `$weedeat` | yes |
+| `/debug` | `debugging` | built-in | `$debug` | yes (`commands/debug.md`) |
 
 ## Dropped / not ported
 
