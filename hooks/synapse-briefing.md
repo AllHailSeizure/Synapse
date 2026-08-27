@@ -21,8 +21,8 @@ Match the situation, then invoke the skill with the Skill tool.
 | Work through a plan with one subagent per task | `subagent-team-execution` |
 | 2+ tasks sharing no state, no ordering between them | `parallel-agents` |
 | Implementing a feature or fixing a bug | `testing` |
-| Bug report, stack trace, failing test, "this is wrong" | `debugging` (`/debug`) |
-| Noticed a bug, not fixing it now | `bug-capture` (`/bug`) |
+| Bug report, stack trace, failing test, "this is wrong" | `debugging` (`/debug` or `$debug`) |
+| Noticed a bug, not fixing it now | `bug-capture` (`/bug` or `$bug`) |
 | About to claim something works, is fixed, or is done | `verification` |
 | Review feedback arrived (human or bot) | `code-review` |
 | Work needs isolation from the current checkout | `worktrees` |

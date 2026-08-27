@@ -1,7 +1,7 @@
 {
   "name": "synapse",
-  "version": "0.2.0",
-  "description": "Personal workflow skills for deliberate, goal-oriented Codex development.",
+  "version": "0.3.0",
+  "description": "Personal workflow skills, commands, and hooks for deliberate Codex development.",
   "author": {
     "name": "AllHailSeizure",
     "email": "natebosma@gmail.com",
@@ -20,6 +20,7 @@
     "bug-capture"
   ],
   "skills": "./skills/",
+  "hooks": "./hooks/hooks.json",
   "interface": {
     "displayName": "Synapse",
     "shortDescription": "Deliberate, goal-oriented workflows for Codex.",

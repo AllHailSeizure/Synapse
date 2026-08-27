@@ -1,8 +1,8 @@
 # Synapse
 
-Synapse is a personal workflow system for Claude Code and Codex. It keeps
-software work deliberate with concise skills, visible evidence, and gates that
-scale with risk instead of ceremony.
+Synapse is a personal workflow system for Cursor, Codex, and Claude Code. It
+keeps software work deliberate with concise skills, visible evidence, and gates
+that scale with risk instead of ceremony.
 
 ## Current skill suite
 
@@ -22,11 +22,45 @@ Report-only surveys of what a repo accumulates on its own — asset churn in a
 branch, worktree and branch sprawl — moved out to their own plugin:
 [`weedeat`](https://github.com/AllHailSeizure/weedeat).
 
+## Cursor installation
+
+The Cursor plugin manifest is
+[`.cursor-plugin/plugin.json`](.cursor-plugin/plugin.json). It ships `skills/`,
+`/bug` (not `/debug` — Cursor already has one), and hooks from
+[`hooks/cursor.json`](hooks/cursor.json).
+
+Install from a local checkout or a marketplace that points at this repo. After
+install, start a new agent chat so skills, commands, and hooks load.
+
+## Codex plugin installation
+
+The Codex package manifest is [`.codex-plugin/plugin.json`](.codex-plugin/plugin.json)
+and Codex root guidance is in [`AGENTS.md`](AGENTS.md). Registered Codex agents
+live under `.codex/agents/synapse/`. Hooks use the Claude-compatible
+[`hooks/hooks.json`](hooks/hooks.json) (Codex sets `CLAUDE_PLUGIN_ROOT` for
+compatibility). Codex custom prompts are gone; `/bug` and `/debug` are explicit
+skills (`$bug`, `$debug`).
+
+Use the registered `spec-writer` for a named feature when you want a grounded
+`PENDING` spec plus terminal-interview questions. It stops after drafting; the
+operator completes approval separately with `TODO`.
+
+For a personal local checkout, place the repository at
+`C:\Users\nateb\plugins\synapse`, then refresh and install it from the personal
+marketplace:
+
+```powershell
+python C:\Users\nateb\.codex\skills\.system\plugin-creator\scripts\update_plugin_cachebuster.py C:\Users\nateb\plugins\synapse
+codex plugin add synapse@personal
+```
+
+Start a new Codex task after reinstalling so the updated skills, commands, and
+agent registrations are loaded.
+
 ## Claude installation
 
-Synapse publishes itself as a marketplace via
-[`.claude-plugin/marketplace.json`](.claude-plugin/marketplace.json), so the
-skills, commands, and bandaids install as one plugin rather than being copied:
+Synapse still publishes a Claude marketplace via
+[`.claude-plugin/marketplace.json`](.claude-plugin/marketplace.json):
 
 ```bash
 claude plugin marketplace add AllHailSeizure/Synapse
@@ -36,39 +70,31 @@ claude plugin marketplace add AllHailSeizure/Synapse
 claude plugin install synapse@synapse
 ```
 
-Root `skills/` and `commands/` are discovered by convention, so a new skill
-directory or command file ships with the next release — no manifest edit.
-Publishing means landing it on the branch the marketplace tracks.
+Root `skills/` and `commands/` are discovered by convention. Claude also loads
+`/debug` from `commands/debug.md`. The Claude root guidance is in
+[`CLAUDE.md`](CLAUDE.md), and the Claude agent adapters are in `agents/`.
 
-The plugin is the only supported install path. There is no copy step.
+The command index is in [`docs/COMMANDS.md`](docs/COMMANDS.md) — kept out of
+`commands/`, since every extra `.md` in that directory would ship as a slash
+command.
 
-Output styles ship the same way, from `output-styles/`. Installing the plugin
-makes `Succinct` available; activate it with `"outputStyle": "Succinct"` in a
-settings file. It is read once at session start, so it applies after `/clear`
-or a new session.
+## Session briefing and other hooks
 
-The Claude root guidance is in [`CLAUDE.md`](CLAUDE.md), and the Claude agent
-adapters are in `agents/`.
+[`hooks/session-briefing.mjs`](hooks/session-briefing.mjs) injects the Synapse
+operating briefing — skill routing, standing rules, and the `.synapse/` layout —
+plus the scope reminder. Edit [`hooks/synapse-briefing.md`](hooks/synapse-briefing.md),
+not the script.
 
-The `/bug` command is defined in [`commands/bug.md`](commands/bug.md) and
-delegates to the capture-only `bug-capture` skill. The command index is in
-[`docs/COMMANDS.md`](docs/COMMANDS.md) — kept out of `commands/`, since every
-`.md` in that directory ships as a slash command.
+The same scripts serve every host; JSON output includes both Cursor fields
+(`additional_context`, `permission`) and Claude/Codex `hookSpecificOutput`.
 
-## Session briefing hook
+| Host | Config |
+|------|--------|
+| Cursor | [`hooks/cursor.json`](hooks/cursor.json) — `sessionStart`, `subagentStart`/`Stop`, `beforeShellExecution` |
+| Codex / Claude | [`hooks/hooks.json`](hooks/hooks.json) — `SessionStart`, `UserPromptSubmit`, `PreToolUse`/`PostToolUse` |
 
-[`hooks/hooks.json`](hooks/hooks.json) registers a `SessionStart` hook that
-injects the Synapse operating briefing — skill routing, standing rules, and the
-`.synapse/` layout — into every session, so a session knows how to use the suite
-without being told. The prose lives in
-[`hooks/synapse-briefing.md`](hooks/synapse-briefing.md); edit that file, not
-the script. [`hooks/session-briefing.mjs`](hooks/session-briefing.mjs) reads it,
-appends which of the target repo's `.synapse/` files actually exist, and prints
-the `additionalContext` payload.
-
-Like the skills and output styles, the hook ships with the plugin — landing it
-on the branch the marketplace tracks is what publishes it. It is read at session
-start, so it applies to the next session after the plugin updates.
+Fan-out state lives under `~/.synapse/fanout/`. Verification gating still
+requires `.synapse/verification-budget.json` in the target repo.
 
 ## Per-repo configuration and artifacts
 
@@ -86,12 +112,13 @@ feature specifications in `.synapse/specs/`, implementation plans in
 ```
 
 Pending feature specs can have a sibling `.questions.json` file produced by
-the `writing-specs` skill or registered Codex `spec-writer`. Install the
-script-only interviewer with `pip install -e apps/todo`, then run `TODO` from
-the target repository. It lists only `PENDING` specs as `SPEC:` rows; selecting
-one asks the recorded questions plus a required approval closer, appends the
-answers, and changes the spec to `APPROVED`. Use `TODO --list` for a
-non-interactive inventory. The CLI makes no model calls.
+the `writing-specs` skill or registered Codex `spec-writer`. The interviewer
+is a separate package (`D:/libraries/TODO`). Install it with
+`pip install -e D:/libraries/TODO`, then run `TODO` from the target
+repository. It lists only `PENDING` specs as `SPEC:` rows; selecting one asks
+the recorded questions plus a required approval closer, appends the answers,
+and changes the spec to `APPROVED`. Use `TODO --list` for a non-interactive
+inventory. The CLI makes no model calls.
 
 The bandaids stop at Gate 0 on a missing section. Verification uses its local
 file for the claims it covers and falls back to repository discovery when the
@@ -107,42 +134,18 @@ a root `SYNAPSE.md` is still lying around, delete it.
 Schema: [`docs/TEMPLATES/synapse/`](docs/TEMPLATES/synapse/). Worked example:
 [`docs/EXAMPLES/synapse.hotel-kline-game.md`](docs/EXAMPLES/synapse.hotel-kline-game.md).
 
-## Codex plugin installation
-
-The repository also contains the Codex package manifest at
-`.codex-plugin/plugin.json` and Codex root guidance in `AGENTS.md`. The
-registered Codex agents live under `.codex/agents/synapse/`.
-
-Use the registered `spec-writer` for a named feature when you want a grounded
-`PENDING` spec plus terminal-interview questions. It stops after drafting; the
-operator completes approval separately with `TODO`.
-
-Codex plugin manifests expose skills rather than Claude-style slash-command
-files, so use the `bug-capture` skill for the same bug-report workflow in
-Codex.
-
-For a personal local checkout, place the repository at
-`C:\Users\nateb\plugins\synapse`, then refresh and install it from the personal
-marketplace:
-
-```powershell
-python C:\Users\nateb\.codex\skills\.system\plugin-creator\scripts\update_plugin_cachebuster.py C:\Users\nateb\plugins\synapse
-codex plugin add synapse@personal
-```
-
-Start a new Codex task after reinstalling so the updated skills and agent
-registrations are loaded.
-
 ## Repository structure
 
 ```text
-skills/                         shared skills
-hooks/                          SessionStart briefing hook
+skills/                         shared skills (including $bug/$debug)
+hooks/                          briefing, scope, fan-out, verification gates
+.cursor-plugin/plugin.json      Cursor plugin manifest
 .codex-plugin/plugin.json       Codex plugin manifest
+.claude-plugin/                 Claude marketplace + plugin
 .codex/agents/synapse/          Codex agent registrations
 agents/                         Claude-compatible agent adapters
-commands/                       Claude-compatible commands
-automations/                    Bandaid automations (claude/ live, cursor/ frozen)
+commands/                       /bug; /debug for Claude only
+automations/                    Bandaid automations (special case)
 docs/                           templates and design history
 AGENTS.md                       Codex root guidance
 CLAUDE.md                       Claude-compatible root guidance

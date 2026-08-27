@@ -219,7 +219,8 @@ a correction requires product authority.
 ### 8. Deliver for terminal interview
 
 Tell the user the paths of the `PENDING` spec and questions file, and say to run
-`TODO` in the repository to complete the interview. Then stop.
+`TODO` in the repository to complete the interview (separate install:
+`pip install -e D:/libraries/TODO`). Then stop.
 
 Do not conduct the interview in chat. Do not mark the spec `APPROVED`; the
 script owns that transition after the operator completes the closer.

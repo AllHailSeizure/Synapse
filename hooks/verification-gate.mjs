@@ -1,31 +1,24 @@
 #!/usr/bin/env node
-// PreToolUse gate on Bash: deny unrequested broad verification runs.
+// Gate on shell: deny unrequested broad verification runs.
 //
-// Prompted by a 2026-08-24 incident (.synapse/retrospectives/): a session ran
-// a project's full GUT suite three times unprompted, on top of fixing a bug
-// the user had deliberately deferred, and burned a full session's budget on
-// self-directed prep before touching the assigned task.
+// Claude: PreToolUse Bash. Cursor: beforeShellExecution. Codex: PreToolUse Bash.
 //
-// What counts as "the full suite" vs. "a targeted debug run" is project-
-// specific, so this only fires where a repo has opted in via
-// .synapse/verification-budget.json ({ broad: [...], scoped: [...] }, both
-// regex or substring). No config in the repo means no gate at all.
+// Fires only where a repo has opted in via .synapse/verification-budget.json
+// ({ broad: [...], scoped: [...] }). No config means no gate.
 //
 // Fails open. Any error here allows the command.
 
 import { readFileSync, existsSync } from "node:fs";
 import { join } from "node:path";
-
-function readStdin() {
-  try {
-    return JSON.parse(readFileSync(0, "utf8"));
-  } catch {
-    return {};
-  }
-}
+import {
+  commandOf,
+  cwdOf,
+  emitPermission,
+  readPayload,
+} from "./protocol.mjs";
 
 function loadConfig(cwd) {
-  const path = join(cwd || process.cwd(), ".synapse", "verification-budget.json");
+  const path = join(cwd, ".synapse", "verification-budget.json");
   if (!existsSync(path)) return null;
   try {
     return JSON.parse(readFileSync(path, "utf8"));
@@ -44,36 +37,26 @@ function matchesAny(command, patterns) {
   });
 }
 
-function deny(reason) {
-  process.stdout.write(
-    JSON.stringify({
-      hookSpecificOutput: {
-        hookEventName: "PreToolUse",
-        permissionDecision: "deny",
-        permissionDecisionReason: reason,
-      },
-    })
-  );
-  process.exit(0);
-}
-
 function main() {
-  const payload = readStdin();
-  const command = payload?.tool_input?.command;
-  if (typeof command !== "string") process.exit(0);
+  const payload = readPayload();
+  const command = commandOf(payload);
+  if (!command) process.exit(0);
 
-  const cfg = loadConfig(payload.cwd);
+  const cfg = loadConfig(cwdOf(payload));
   if (!cfg) process.exit(0);
 
   if (matchesAny(command, cfg.scoped)) process.exit(0);
 
   if (matchesAny(command, cfg.broad)) {
-    deny(
+    emitPermission(
+      "PreToolUse",
+      "deny",
       cfg.reason ||
         "Synapse verification-budget gate: this reads as a full verification run, not a targeted " +
           "debug run. The user runs these themselves and CI covers the rest. Scope the command to " +
-          "one file/test if you're actually debugging, or stop and continue the assigned task."
+          "one file/test if you're actually debugging, or stop and continue the assigned task.",
     );
+    process.exit(0);
   }
 
   process.exit(0);

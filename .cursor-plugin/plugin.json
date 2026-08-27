@@ -1,0 +1,22 @@
+{
+  "name": "synapse",
+  "version": "0.3.0",
+  "description": "Personal workflow skills, commands, and hooks for deliberate Cursor development.",
+  "author": {
+    "name": "AllHailSeizure",
+    "email": "natebosma@gmail.com"
+  },
+  "homepage": "https://github.com/AllHailSeizure/synapse",
+  "repository": "https://github.com/AllHailSeizure/synapse",
+  "license": "MIT",
+  "keywords": [
+    "skills",
+    "workflow",
+    "verification",
+    "bug-capture"
+  ],
+  "skills": "./skills/",
+  "commands": ["./commands/bug.md"],
+  "hooks": "./hooks/cursor.json",
+  "agents": []
+}

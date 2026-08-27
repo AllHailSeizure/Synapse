@@ -36,6 +36,9 @@ The active suite lives in `skills/`:
 - `bug-capture` — record bugs for later without investigating them in-session.
 - `autonomous-work-boundaries` — user intent versus agent execution.
 
+Explicit command skills (invoke with `$name`; do not auto-fire): `bug`,
+`debug`.
+
 Use the skill instructions as the source of truth for when a workflow applies.
 They intentionally avoid ceremony for trivial, reversible work.
 
@@ -56,7 +59,7 @@ The Codex agents are registered under `.codex/agents/synapse/`:
 The primary Codex session remains responsible for user confirmation and GitHub
 mutations. The current suite does not dispatch a goal-fulfiller agent.
 
-## Weeds (`/weedeat` equivalent)
+## Weeds
 
 Asset-churn and worktree/branch-sprawl surveys moved out of this repo into
 their own plugin: [`weedeat`](https://github.com/AllHailSeizure/weedeat).
@@ -66,28 +69,23 @@ Install it separately if you want those agents available under Codex.
 
 Tone and verbosity do not belong in this file. AGENTS.md is context layered on
 top of Codex's built-in instructions, so directives about how to respond
-compete with them and lose over a long session — the same reason Claude's
-CLAUDE.md is the wrong channel for it.
+compete with them and lose over a long session.
 
 Codex's system-prompt-level lever is `model_instructions_file` in
-`config.toml`. Unlike Claude's output styles, which append and can retain the
-built-in coding instructions via `keep-coding-instructions: true`, this key
-**replaces** Codex's built-in instructions outright. Adopting it means owning
-that baseline. Synapse does not set it; enabling it is a deliberate,
-user-approved change, not a default.
-
-Claude's equivalent, which Synapse does ship, is `output-styles/succinct.md`.
+`config.toml`. That key **replaces** Codex's built-in instructions outright.
+Synapse does not set it.
 
 ## Repository layout
 
 ```text
-output-styles/                  Claude output styles (Succinct)
 skills/                         shared Synapse skills
+hooks/                          plugin hooks (Claude/Codex schema in hooks.json)
+.cursor-plugin/plugin.json      Cursor plugin manifest
 .codex-plugin/plugin.json       Codex plugin manifest
 .codex/agents/synapse/          Codex agent registrations
 agents/                         Claude-compatible agent adapters
-commands/                       Claude-compatible commands
-automations/                    Bandaid automations (claude/ live, cursor/ frozen)
+commands/                       slash-command files
+automations/                    Bandaid automations (special case)
 docs/                           templates and design history
 AGENTS.md                       Codex root guidance
 CLAUDE.md                       Claude-compatible root guidance
