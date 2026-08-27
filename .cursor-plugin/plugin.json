@@ -13,11 +13,10 @@
     "skills",
     "workflow",
     "verification",
-    "bug-capture",
-    "weedeat"
+    "bug-capture"
   ],
   "skills": "./skills/",
-  "commands": ["./commands/bug.md", "./commands/weedeat.md"],
+  "commands": ["./commands/bug.md"],
   "hooks": "./hooks/cursor.json",
   "agents": []
 }

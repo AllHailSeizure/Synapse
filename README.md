@@ -12,19 +12,21 @@ The shared skills live in `skills/` and cover:
 - testing, verification, debugging, and code review;
 - worktree isolation and bounded subagent delegation;
 - finishing branches with verification, push, and pull request creation;
-- user-directed GitHub issues and sticky-note bug capture;
-- autonomous-work boundaries between user intent and agent execution; and
-- report-only surveys of what a repo accumulates on its own — asset churn in a
-  branch, worktree and branch sprawl.
+- user-directed GitHub issues and sticky-note bug capture; and
+- autonomous-work boundaries between user intent and agent execution.
 
 See [`skills/README.md`](skills/README.md) for the complete inventory and the
 skills that were intentionally dropped or replaced.
+
+Report-only surveys of what a repo accumulates on its own — asset churn in a
+branch, worktree and branch sprawl — moved out to their own plugin:
+[`weedeat`](https://github.com/AllHailSeizure/weedeat).
 
 ## Cursor installation
 
 The Cursor plugin manifest is
 [`.cursor-plugin/plugin.json`](.cursor-plugin/plugin.json). It ships `skills/`,
-`/bug` and `/weedeat` (not `/debug` — Cursor already has one), and hooks from
+`/bug` (not `/debug` — Cursor already has one), and hooks from
 [`hooks/cursor.json`](hooks/cursor.json).
 
 Install from a local checkout or a marketplace that points at this repo. After
@@ -36,8 +38,8 @@ The Codex package manifest is [`.codex-plugin/plugin.json`](.codex-plugin/plugin
 and Codex root guidance is in [`AGENTS.md`](AGENTS.md). Registered Codex agents
 live under `.codex/agents/synapse/`. Hooks use the Claude-compatible
 [`hooks/hooks.json`](hooks/hooks.json) (Codex sets `CLAUDE_PLUGIN_ROOT` for
-compatibility). Codex custom prompts are gone; `/bug`, `/weedeat`, and `/debug`
-are explicit skills (`$bug`, `$weedeat`, `$debug`).
+compatibility). Codex custom prompts are gone; `/bug` and `/debug` are explicit
+skills (`$bug`, `$debug`).
 
 Use the registered `spec-writer` for a named feature when you want a grounded
 `PENDING` spec plus terminal-interview questions. It stops after drafting; the
@@ -107,8 +109,6 @@ feature specifications in `.synapse/specs/`, implementation plans in
                         Protected, Ignore
 .synapse/verification.md commands, scope mapping,  verification
                          environment, completion
-.synapse/weedeat.md     Assets, Worktrees          the /weedeat surveys
-.synapse/weedeat-tags.json                       weedeat CLI overrides
 ```
 
 Pending feature specs can have a sibling `.questions.json` file produced by
@@ -122,8 +122,7 @@ inventory. The CLI makes no model calls.
 
 The bandaids stop at Gate 0 on a missing section. Verification uses its local
 file for the claims it covers and falls back to repository discovery when the
-file or a relevant entry is absent. The `/weedeat` surveys degrade to documented
-defaults instead and say so in their own output.
+file or a relevant entry is absent.
 
 There is **no fallback** to the old root `SYNAPSE.md`. That single file was a
 contention point — every workstream edited it, and an uncommitted edit was once
@@ -135,27 +134,17 @@ a root `SYNAPSE.md` is still lying around, delete it.
 Schema: [`docs/TEMPLATES/synapse/`](docs/TEMPLATES/synapse/). Worked example:
 [`docs/EXAMPLES/synapse.hotel-kline-game.md`](docs/EXAMPLES/synapse.hotel-kline-game.md).
 
-## Weedeat
-
-The `/weedeat` (or `$weedeat`) command in this plugin is report-only: it runs
-`asset-churn-audit` and `worktree-cleanup`. The interactive trim CLI is a
-separate repository; agents never launch `weedeat run` on the user's behalf.
-
-If that CLI is installed, a human in an interactive terminal may run it
-directly. Nothing is removed on launch; `trim N` previews levels `1..N` and
-requires confirmation. Level `0` is never deletable.
-
 ## Repository structure
 
 ```text
-skills/                         shared skills (including $bug/$debug/$weedeat)
+skills/                         shared skills (including $bug/$debug)
 hooks/                          briefing, scope, fan-out, verification gates
 .cursor-plugin/plugin.json      Cursor plugin manifest
 .codex-plugin/plugin.json       Codex plugin manifest
 .claude-plugin/                 Claude marketplace + plugin
 .codex/agents/synapse/          Codex agent registrations
 agents/                         Claude-compatible agent adapters
-commands/                       /bug, /weedeat; /debug for Claude only
+commands/                       /bug; /debug for Claude only
 automations/                    Bandaid automations (special case)
 docs/                           templates and design history
 AGENTS.md                       Codex root guidance

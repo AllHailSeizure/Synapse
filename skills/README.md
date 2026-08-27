@@ -21,29 +21,22 @@ Lean, directive skills. Noun-phrase names. Proportional judgment over ceremony.
 | `goal-oriented-development` | User-directed issues; no fulfiller |
 | `bug-capture` | Sticky-note bug → GitHub issue; no fix |
 | `autonomous-work-boundaries` | User intent vs agent execution |
-| `asset-churn-audit` | Which assets the branch needs vs churn |
-| `worktree-cleanup` | Worktree/branch sprawl, tiered by removal safety |
 | `bug` | Explicit `/bug` or `$bug` → `bug-capture` |
 | `debug` | Explicit `/debug` or `$debug` → `debugging` (Codex; Cursor already has `/debug`) |
-| `weedeat` | Explicit `/weedeat` or `$weedeat` → asset + worktree surveys |
 
 `verification` reads repo-specific standard checks, scope mappings, environment
 requirements, and completion rules from `.synapse/verification.md` when it is
 present. Claims not covered there use the repository's normal documented test,
 build, app, or CI path.
 
-The two `/weedeat` skills ship a script under `scripts/` and read repo-specific
-configuration from the `## Assets` and `## Worktrees` sections of the target
-repo's `.synapse/weedeat.md`, plus `.synapse/identity.md` for the baseline
-branch. Schema: [`docs/TEMPLATES/synapse/`](../docs/TEMPLATES/synapse/). Unlike
-a bandaid, a missing section degrades to generic defaults instead of stopping.
+`asset-churn-audit` and `worktree-cleanup` (the `/weedeat` skills) moved to
+their own plugin: [`weedeat`](https://github.com/AllHailSeizure/weedeat).
 
 ## Commands
 
 | Command | Skill | Cursor | Codex | Claude |
 |---------|-------|--------|-------|--------|
 | `/bug` | `bug-capture` | yes | `$bug` | yes |
-| `/weedeat` | `asset-churn-audit` + `worktree-cleanup` | yes | `$weedeat` | yes |
 | `/debug` | `debugging` | built-in | `$debug` | yes (`commands/debug.md`) |
 
 ## Dropped / not ported

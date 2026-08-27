@@ -37,7 +37,7 @@ The active suite lives in `skills/`:
 - `autonomous-work-boundaries` — user intent versus agent execution.
 
 Explicit command skills (invoke with `$name`; do not auto-fire): `bug`,
-`debug`, `weedeat`.
+`debug`.
 
 Use the skill instructions as the source of truth for when a workflow applies.
 They intentionally avoid ceremony for trivial, reversible work.
@@ -59,25 +59,11 @@ The Codex agents are registered under `.codex/agents/synapse/`:
 The primary Codex session remains responsible for user confirmation and GitHub
 mutations. The current suite does not dispatch a goal-fulfiller agent.
 
-## Weeds (`$weedeat`)
+## Weeds
 
-`$weedeat` (or the `weedeat` skill) surveys what a repo accumulates on its own.
-Follow `commands/weedeat.md` for routing:
-
-- `asset-churn-audit` — before opening or merging a PR that touches assets, when
-  `git status` shows dirty art nobody remembers editing, or when a PR diff looks
-  larger than the work done.
-- `worktree-cleanup` — worktree sprawl, stale or dead branches, running out of
-  disk, or "what is safe to delete."
-
-Resolve the script path from this Synapse install (`$PLUGIN_ROOT` or
-`$CLAUDE_PLUGIN_ROOT`) before dispatching. Both read `.synapse/weedeat.md` plus
-`.synapse/identity.md`; a missing section degrades to generic defaults.
-
-Report-only. Present findings and the exact commands, then stop. If the user
-authorizes one tier ("drop the churn", "remove the safe ones"), that authorizes
-only that tier for that run. The standalone weedeat trim CLI lives in its own
-repo; agents do not launch it.
+Asset-churn and worktree/branch-sprawl surveys moved out of this repo into
+their own plugin: [`weedeat`](https://github.com/AllHailSeizure/weedeat).
+Install it separately if you want those agents available under Codex.
 
 ## Response style
 
