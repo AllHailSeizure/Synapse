@@ -1,0 +1,18 @@
+{
+  "name": "synapse",
+  "owner": {
+    "name": "AllHailSeizure",
+    "email": "natebosma@gmail.com"
+  },
+  "metadata": {
+    "description": "Personal workflow skills, commands, and hooks for deliberate Cursor development.",
+    "version": "0.3.0"
+  },
+  "plugins": [
+    {
+      "name": "synapse",
+      "source": ".",
+      "description": "Personal workflow skills, commands, and hooks for deliberate Cursor development."
+    }
+  ]
+}
