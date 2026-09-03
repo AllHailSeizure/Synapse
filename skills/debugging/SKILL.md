@@ -5,9 +5,10 @@ description: >-
   error message, failing test, or "this isn't behaving right" — including when
   the user runs /debug. Cursory look first, up to four competing hypotheses,
   instrumentation that tells them apart, one repro from the user, then
-  diagnose → fix → PR. Use this instead of reading the whole codebase before
-  guessing, and instead of multi-agent investigation pipelines. Not for filing
-  a bug to look at later (use bug-capture).
+  diagnose → fix → PR. For multiple independent bugs, use parallel diagnostic
+  lanes and batch their tooling in one session; this is not subagent dispatch.
+  Use this instead of reading the whole codebase before guessing. Not for
+  filing a bug to look at later (use bug-capture).
 ---
 
 # Debugging
@@ -50,6 +51,34 @@ or sharpen one until they diverge.
 Show the list to the user. Don't ask for approval — it's a heads-up, and it
 lets them kill a wrong one before you spend instrumentation on it.
 
+## Multiple independent bugs: parallel diagnostic lanes
+
+Use lanes when the reported failures have separate symptoms, entry points, and
+likely ownership. A lane is a small, independently diagnosable bug record —
+not an agent and not a shared theory.
+
+1. **Split before instrumenting.** Give every lane an ID, symptom, failing
+   surface, and 2–4 hypotheses. If two lanes share an entry point, recent
+   change, or predicted observation, keep them together until evidence splits
+   them.
+2. **Keep evidence namespaced.** Give each log, temp repro, fixture, or trace
+   a lane-specific tag and path (for example, `[dbg:checkout]` and
+   `tmp/repro-checkout.*`). Never use one lane's observation to confirm another.
+3. **Batch only safe independent probes.** Run independent, read-only tests,
+   scripts, requests, or trace captures concurrently when they do not write
+   shared state or contend for a resource. Otherwise run them in a deliberate
+   order. Parallel means the tooling overlaps; the diagnosis remains separate.
+4. **Report a compact lane board.** Before the repro, show each lane's
+   hypothesis count, instrument, and expected observation. Ask for one repro
+   per manual lane, or a single scripted run that captures every lane.
+5. **Fix and verify per lane.** A change that resolves one symptom does not
+   close the others. Remove every lane's instrumentation before integrating
+   fixes, then run a combined regression check for their union.
+
+Do not create lanes merely because a test command reports many failures. First
+group failures that could share one cause. Do not use `parallel-agents` unless
+the user explicitly asks for subagent work or that is independently warranted.
+
 ## 3. Set up tooling
 
 Instrument the points where the hypotheses disagree, so a **single** repro
@@ -67,7 +96,9 @@ Log the *values that discriminate*, not "here 1", "here 2". If a hypothesis has
 no instrument that could kill it, say so out loud — an untestable hypothesis is
 a note, not a candidate.
 
-Never ask the user to repro something you can trigger yourself.
+Never ask the user to repro something you can trigger yourself. With multiple
+lanes, prefer one bounded capture that labels the evidence for each lane over
+separate, repetitive user requests.
 
 ## 4. Prompt for repro
 
@@ -77,8 +108,10 @@ One round trip. Give them:
 - What you need back (console output, log file path, screenshot, what they saw)
 - What you'll do with it
 
-Keep it to one repro. If you need a second, you instrumented badly — say what
-you missed and what you added, so it's a correction, not a fishing expedition.
+Keep it to one repro per lane, or one combined repro when it captures all
+lanes. If you need a second for a lane, you instrumented that lane badly — say
+what you missed and what you added, so it's a correction, not a fishing
+expedition.
 
 ## 5. Diagnose
 
@@ -92,6 +125,8 @@ H3: killed — <evidence>
 
 State the root cause and the line of evidence that establishes it. Not "likely"
 — if it's still likely, you're missing an instrument, so add it and repro again.
+Close or restart lanes independently; do not let a confirmed lane end the
+investigation for a still-open lane.
 
 **All four killed** is a good outcome, not a failure: you now know four things
 it isn't. Generate a fresh set informed by what the evidence *did* show, and go
@@ -143,7 +178,9 @@ so. Do not tick it, and do not merge on their behalf.
 - Carry one hypothesis into instrumentation
 - Ask for a repro you could run yourself
 - Ask for repeated repros to compensate for thin instrumentation
-- Spawn an investigation pipeline of subagents for this
+- Treat a batch of failures as independent before evidence supports that split
+- Let tooling for one bug overwrite, untag, or stand in for another bug's evidence
+- Spawn an investigation pipeline of subagents merely to debug multiple lanes
 - Claim fixed without the repro evidence
 - Leave debug logging in the diff
 - Tick the manual-confirmation box or merge the PR
