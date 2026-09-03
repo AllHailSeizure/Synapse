@@ -1,6 +1,6 @@
 # Synapse
 
-Synapse is a personal workflow system for Cursor, Codex, and Claude Code. It
+Synapse is a personal workflow system for Cursor and Codex. It
 keeps software work deliberate with concise skills, visible evidence, and gates
 that scale with risk instead of ceremony.
 
@@ -36,10 +36,9 @@ install, start a new agent chat so skills, commands, and hooks load.
 
 The Codex package manifest is [`.codex-plugin/plugin.json`](.codex-plugin/plugin.json)
 and Codex root guidance is in [`AGENTS.md`](AGENTS.md). Registered Codex agents
-live under `.codex/agents/synapse/`. Hooks use the Claude-compatible
-[`hooks/hooks.json`](hooks/hooks.json) (Codex sets `CLAUDE_PLUGIN_ROOT` for
-compatibility). Codex custom prompts are gone; `/bug` and `/debug` are explicit
-skills (`$bug`, `$debug`).
+live under `.codex/agents/synapse/`. Hooks use
+[`hooks/hooks.json`](hooks/hooks.json). Codex custom prompts are gone; `/bug`
+and `/debug` are explicit skills (`$bug`, `$debug`).
 
 Use the registered `spec-writer` for a named feature when you want a grounded
 `PENDING` spec plus terminal-interview questions. It stops after drafting; the
@@ -57,26 +56,8 @@ codex plugin add synapse@personal
 Start a new Codex task after reinstalling so the updated skills, commands, and
 agent registrations are loaded.
 
-## Claude installation
-
-Synapse still publishes a Claude marketplace via
-[`.claude-plugin/marketplace.json`](.claude-plugin/marketplace.json):
-
-```bash
-claude plugin marketplace add AllHailSeizure/Synapse
-```
-
-```bash
-claude plugin install synapse@synapse
-```
-
-Root `skills/` and `commands/` are discovered by convention. Claude also loads
-`/debug` from `commands/debug.md`. The Claude root guidance is in
-[`CLAUDE.md`](CLAUDE.md), and the Claude agent adapters are in `agents/`.
-
-The command index is in [`docs/COMMANDS.md`](docs/COMMANDS.md) — kept out of
-`commands/`, since every extra `.md` in that directory would ship as a slash
-command.
+The command index is in [`docs/COMMANDS.md`](docs/COMMANDS.md), leaving
+`commands/` focused on Cursor's `/bug` command.
 
 ## Session briefing and other hooks
 
@@ -85,13 +66,13 @@ operating briefing — skill routing, standing rules, and the `.synapse/` layout
 plus the scope reminder. Edit [`hooks/synapse-briefing.md`](hooks/synapse-briefing.md),
 not the script.
 
-The same scripts serve every host; JSON output includes both Cursor fields
-(`additional_context`, `permission`) and Claude/Codex `hookSpecificOutput`.
+The same scripts serve both hosts; JSON output includes Cursor fields
+(`additional_context`, `permission`) and Codex `hookSpecificOutput`.
 
 | Host | Config |
 |------|--------|
 | Cursor | [`hooks/cursor.json`](hooks/cursor.json) — `sessionStart`, `subagentStart`/`Stop`, `beforeShellExecution` |
-| Codex / Claude | [`hooks/hooks.json`](hooks/hooks.json) — `SessionStart`, `UserPromptSubmit`, `PreToolUse`/`PostToolUse` |
+| Codex | [`hooks/hooks.json`](hooks/hooks.json) — `SessionStart`, `UserPromptSubmit`, `PreToolUse`/`PostToolUse` |
 
 Fan-out state lives under `~/.synapse/fanout/`. Verification gating still
 requires `.synapse/verification-budget.json` in the target repo.
@@ -141,12 +122,9 @@ skills/                         shared skills (including $bug/$debug)
 hooks/                          briefing, scope, fan-out, verification gates
 .cursor-plugin/plugin.json      Cursor plugin manifest
 .codex-plugin/plugin.json       Codex plugin manifest
-.claude-plugin/                 Claude marketplace + plugin
 .codex/agents/synapse/          Codex agent registrations
-agents/                         Claude-compatible agent adapters
-commands/                       /bug; /debug for Claude only
+commands/                       /bug for Cursor
 automations/                    Bandaid automations (special case)
 docs/                           templates and design history
 AGENTS.md                       Codex root guidance
-CLAUDE.md                       Claude-compatible root guidance
 ```

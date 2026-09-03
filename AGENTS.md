@@ -79,14 +79,12 @@ Synapse does not set it.
 
 ```text
 skills/                         shared Synapse skills
-hooks/                          plugin hooks (Claude/Codex schema in hooks.json)
+hooks/                          plugin hooks for Codex and Cursor
 .cursor-plugin/plugin.json      Cursor plugin manifest
 .codex-plugin/plugin.json       Codex plugin manifest
 .codex/agents/synapse/          Codex agent registrations
-agents/                         Claude-compatible agent adapters
-commands/                       slash-command files
+commands/                       Cursor slash-command files
 automations/                    Bandaid automations (special case)
 docs/                           templates and design history
 AGENTS.md                       Codex root guidance
-CLAUDE.md                       Claude-compatible root guidance
 ```

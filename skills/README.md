@@ -34,10 +34,10 @@ their own plugin: [`weedeat`](https://github.com/AllHailSeizure/weedeat).
 
 ## Commands
 
-| Command | Skill | Cursor | Codex | Claude |
-|---------|-------|--------|-------|--------|
-| `/bug` | `bug-capture` | yes | `$bug` | yes |
-| `/debug` | `debugging` | built-in | `$debug` | yes (`commands/debug.md`) |
+| Command | Skill | Cursor | Codex |
+|---------|-------|--------|-------|
+| `/bug` | `bug-capture` | yes | `$bug` |
+| `/debug` | `debugging` | built-in | `$debug` |
 
 ## Dropped / not ported
 

@@ -201,7 +201,7 @@ If the PR is closed, targets another base, comes from a fork, or cannot be pushe
 
 GATE 1 — INSTRUCTIONS AND ISOLATION
 
-Read committed repository instructions before changing anything: AGENTS.md, CLAUDE.md, applicable worktree rules under `.cursor/rules/`, and relevant git/worktree sections of CONTRIBUTING.md.
+Read committed repository instructions before changing anything: AGENTS.md, applicable worktree rules under `.cursor/rules/`, and relevant git/worktree sections of CONTRIBUTING.md.
 
 Then:
 
@@ -295,7 +295,7 @@ After resolving:
 5. Inspect the staged resolution.
 6. Confirm every manual edit belongs to a previously recorded conflict hunk.
 7. Confirm no protected content changed.
-8. Run every applicable CLAUDE.md self-check.
+8. Run every applicable AGENTS.md self-check.
 
 If a marker remains, a new problem appears, or the proposed resolution needs revision, STOP. Do not edit again.
 

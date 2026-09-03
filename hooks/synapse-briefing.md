@@ -61,7 +61,7 @@ Per-repo configuration and artifacts live under `.synapse/`:
 |---|---|
 | `.synapse/identity.md` | every tool — repo, base branch, stack |
 | `.synapse/verification.md` | `verification` — commands, scope, completion |
-| `.synapse/bandaids.md` | the GitHub Actions bandaids |
+| `.synapse/bandaids.md` | optional Cursor Bandaid automation settings |
 | `.synapse/specs/` | feature specs and sibling `.questions.json` interviews — status stays synchronized in the spec filename and title |
 | `.synapse/plans/` | implementation plans |
 

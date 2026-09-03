@@ -71,7 +71,7 @@ permission for every step, which defeats the point.
 A worker starts cold. Everything it needs must be in the brief. What consistently mattered:
 
 - **State the authority.** Which file is the source of truth, and that it *is* the source of truth.
-- **Restate the project's hard rules inline.** Workers do not reliably absorb a root `CLAUDE.md`.
+- **Restate the project's hard rules inline.** Workers do not reliably absorb a root `AGENTS.md`.
   The rules that were restated got followed; assume the ones that aren't, won't be.
 - **Name the anti-goal.** "Do not invent dialogue" prevented the single worst possible outcome in a
   creative project. Say what must not happen, not just what must.

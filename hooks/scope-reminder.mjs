@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // UserPromptSubmit hook: re-asserts the scope boundary every turn on hosts
-// that inject additionalContext here (Claude, Codex). Cursor gets the same
+// that inject additionalContext here (Codex). Cursor gets the same
 // text from session-briefing instead.
 //
 // Fails silent: any problem here means no injection, never a per-turn error.

@@ -9,7 +9,7 @@ a chaotic project decomposed into 10+ well-formed issues across two
 milestones, with essentially no hand-holding.
 
 This spec applies the same investment to debugging. `systematic-debugging` is
-named in root `CLAUDE.md` and tracked as issue #11, but no implementation
+named in root `AGENTS.md` and tracked as issue #11, but no implementation
 exists yet — this is a from-scratch build in the goal-oriented-development
 style, not a refactor.
 
@@ -156,7 +156,7 @@ where it fell short, anything the External Researcher found even if it
 didn't pass skepticism (a weak lead is still useful context), and an
 explicit ask: keep digging, apply a workaround if one exists, or change
 approach entirely. **No default action is taken** — this is a hard stop for
-the user's judgment, consistent with how root `CLAUDE.md` already scopes
+the user's judgment, consistent with how root `AGENTS.md` already scopes
 autonomy (strategic pivots need approval).
 
 Persisted as a **GitHub issue**: milestone-less by default (it's an

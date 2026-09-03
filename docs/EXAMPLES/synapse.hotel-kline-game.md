@@ -67,7 +67,7 @@ note: Animation .tres wiring may be edited. Dialogue JSON is the source of
 truth for dialogue and is structurally editable, but its creative text —
 wording, story beats, character voice — is protected unless the issue
 explicitly supplies the intended change. Never infer dialogue contents from
-filenames. Follow every hard gate in CLAUDE.md, including nodes-not-numbers,
+filenames. Follow every hard gate in AGENTS.md, including nodes-not-numbers,
 dialogue-as-data, reusable-content ownership, comments, inherited scene
 ownership, and generic chapter-state access.
 
@@ -139,10 +139,10 @@ flag: .aup3 | REVIEW | Audacity project (LFS, ~100MB) — a source recording ses
 
 ## Worktrees
 
-containers: .claude/worktrees, .worktrees, .cursor/worktrees, .codex/worktrees
+containers: .worktrees, .cursor/worktrees, .codex/worktrees
 foreign: .cursor, .codex, .vscode
 noise-suffixes: .import, .uid
-noise-dirs: .godot/, .worktrees/, .claude/worktrees/, .cursor/worktrees/, .codex/worktrees/
+noise-dirs: .godot/, .worktrees/, .cursor/worktrees/, .codex/worktrees/
 protected: master, main
 ```
 
@@ -160,11 +160,11 @@ Two things moved position rather than content:
   for all three — bug-bandaid and review-bandaid previously could have edited
   one. That looks like the intent rather than a deliberate asymmetry, but it is
   a behaviour change worth knowing about.
-- The CLAUDE.md hard-gate list was inline in two prompts and referenced
+- The AGENTS.md hard-gate list was inline in two prompts and referenced
   generically in the third. It now lives in `note`, so all three get it.
 
 `Assets` and `Worktrees` came from two skills that had lived in the game repo's
-own `.claude/skills/` with this knowledge hard-coded in their scripts.
+own local skill directory with this knowledge hard-coded in their scripts.
 
 ## Why separate files instead of one
 

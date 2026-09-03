@@ -237,7 +237,7 @@ An outdated thread may still be evaluated against current code. Outdated status 
 
 GATE 1 — INSTRUCTIONS AND ISOLATION
 
-Read committed repository instructions first: AGENTS.md, CLAUDE.md, applicable worktree rules under `.cursor/rules/`, relevant git/worktree sections of CONTRIBUTING.md.
+Read committed repository instructions first: AGENTS.md, applicable worktree rules under `.cursor/rules/`, relevant git/worktree sections of CONTRIBUTING.md.
 
 Then:
 
@@ -360,7 +360,7 @@ PROTECTED CONTENT
 
 Without direct, explicit permission for the exact change, treat everything listed under Protected in `SYNAPSE.md` as off limits — both the `read-only` globs and the `no-edit` descriptions. Do not invent or rewrite authored content, and do not infer authored content from filenames.
 
-Follow every hard gate in the repo's own CLAUDE.md.
+Follow every hard gate in the repo's own AGENTS.md.
 
 If the finding is valid but fixing it requires broader scope, creative judgment, protected content, another causal approach, or an author decision: do not resolve the thread, and follow the YES-BLOCKED stop procedure.
 
@@ -370,7 +370,7 @@ First run exactly one post-fix confirmation equivalent to the claim check used i
 
 Then run each command under Verify in `SYNAPSE.md` once, in the order listed. Run the `import` entry, if present, first.
 
-Also run `git diff --check`, inspect the complete final diff, confirm no protected content changed, confirm every changed line traces to the target finding, and complete applicable CLAUDE.md self-checks.
+Also run `git diff --check`, inspect the complete final diff, confirm no protected content changed, confirm every changed line traces to the target finding, and complete applicable AGENTS.md self-checks.
 
 Ignore only the output signatures named under Ignore in `SYNAPSE.md`.
 

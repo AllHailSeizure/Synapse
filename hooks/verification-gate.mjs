@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // Gate on shell: deny unrequested broad verification runs.
 //
-// Claude: PreToolUse Bash. Cursor: beforeShellExecution. Codex: PreToolUse Bash.
+// Codex: PreToolUse Bash. Cursor: beforeShellExecution.
 //
 // Fires only where a repo has opted in via .synapse/verification-budget.json
 // ({ broad: [...], scoped: [...] }). No config means no gate.

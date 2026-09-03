@@ -7,9 +7,9 @@ and stop if either is missing.
 Only the bandaids read this file. Identity lives in `identity.md` because more
 than one tool needs it; the `/weedeat` surveys never load this one.
 
-It is deliberately *not* CLAUDE.md. CLAUDE.md is prose for an agent you're
+It is deliberately *not* AGENTS.md. AGENTS.md is prose for an agent you're
 talking to; this is machine-actionable configuration — commands to run, paths
-not to touch, secrets to use. Mixing them makes CLAUDE.md unreadable and makes
+not to touch, secrets to use. Mixing them makes AGENTS.md unreadable and makes
 this unparseable.
 
 Keep every value literal. An automation reading this cannot ask you what you
@@ -24,11 +24,8 @@ issues: <ENV_VAR_NAME>
 pull-requests: <ENV_VAR_NAME>
 ```
 
-Cursor-only, and only for the frozen automations under `automations/cursor/`.
-The GitHub Actions bandaids authenticate `gh` through the workflow, so a repo
-running only those can omit this section entirely.
-
-Names only — never values. Omit a line if that surface isn't used.
+Use this only with a Cursor automation that needs an authenticated GitHub
+surface. Names only — never values. Omit a line if that surface isn't used.
 
 ## Verify
 
@@ -68,8 +65,8 @@ Describe a mechanism, not a wish. "Write the request to `user://x.cfg`, run
 `timeout` bounds the single repro launch. 300 is a sensible default; omitting
 the line means 300. Set it to a value the repro comfortably fits inside — the
 bandaid gets one launch, and hitting the bound is a stop, not a prompt to try
-again with a bigger number. The whole job has 30 minutes, so a repro allowed to
-run for ten of them leaves little room for the fix and verification that follow.
+again with a bigger number. Keep the repro bounded so it leaves time for the
+fix and verification that follow.
 
 ## Protected
 
@@ -122,14 +119,9 @@ There is no fallback to a root `SYNAPSE.md`. If one is still lying around from
 the old single-file layout, delete it: leaving it invites a future reader —
 human or agent — to treat forgotten standards as current.
 
-## Runner
+## Execution environment
 
-The Verify and Repro commands run on a GitHub Actions runner, which starts
-bare. Anything they invoke — an engine binary, a language toolchain, a linter —
-has to be installed by the repo's own workflow before the bandaid job, or every
-run stops at the verification gate.
-
-The job is capped at 30 minutes, and that budget covers toolchain setup, the
-repro, the fix, and every Verify command — on a cold runner with no caches. If
-the commands here take minutes rather than seconds, say so in the entry, so a
-bandaid reading them knows it cannot afford a second attempt at anything.
+Cursor automations run in the environment available to the user. Document any
+required engine binary, language toolchain, linter, or authentication surface in
+the relevant command or secret entry. If a command takes minutes rather than
+seconds, say so in the entry so the automation can budget its work.

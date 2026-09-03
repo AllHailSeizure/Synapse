@@ -53,19 +53,19 @@ export function commandOf(payload) {
   return "";
 }
 
-export function emitContext(claudeEvent, text) {
+export function emitContext(eventName, text) {
   process.stdout.write(
     JSON.stringify({
       additional_context: text,
       hookSpecificOutput: {
-        hookEventName: claudeEvent,
+        hookEventName: eventName,
         additionalContext: text,
       },
     }),
   );
 }
 
-export function emitPermission(claudeEvent, decision, reason) {
+export function emitPermission(eventName, decision, reason) {
   const cursorDecision = decision === "ask" ? "deny" : decision;
   process.stdout.write(
     JSON.stringify({
@@ -73,7 +73,7 @@ export function emitPermission(claudeEvent, decision, reason) {
       agent_message: reason,
       user_message: reason,
       hookSpecificOutput: {
-        hookEventName: claudeEvent,
+        hookEventName: eventName,
         permissionDecision: decision,
         permissionDecisionReason: reason,
       },

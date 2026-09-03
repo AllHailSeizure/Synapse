@@ -122,7 +122,7 @@ Allowed actions:
 3. Fetch the issue exactly once, including title, body, and labels.
 4. Read committed repository instructions:
    - AGENTS.md
-   - CLAUDE.md
+   - AGENTS.md
    - applicable worktree rules under `.cursor/rules/`
    - the relevant git/worktree sections of CONTRIBUTING.md
 5. Fetch `origin/$BASE`.
@@ -222,7 +222,7 @@ Unless the issue contains direct, explicit permission for the exact change, trea
 
 Beyond the listed entries: do not invent or rewrite authored content of any kind, and do not infer authored content from filenames. Where a data file is the source of truth for authored text, the file is editable but its authored text is not, unless the issue explicitly supplies the intended change.
 
-Follow every hard gate in the repo's own CLAUDE.md.
+Follow every hard gate in the repo's own AGENTS.md.
 
 Gate passes only if one minimal patch implementing the declared hypothesis is ready.
 

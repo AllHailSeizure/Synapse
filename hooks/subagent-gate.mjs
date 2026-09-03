@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Gate on subagent launches (Claude PreToolUse Task/Agent, Cursor
+// Gate on subagent launches (Codex PreToolUse Task/Agent, Cursor
 // subagentStart/Stop, Codex PreToolUse).
 //
 // Bounded concurrency, task packets instead of forwarded session history,
