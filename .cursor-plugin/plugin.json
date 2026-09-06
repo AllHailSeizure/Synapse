@@ -13,10 +13,10 @@
     "skills",
     "workflow",
     "verification",
-    "bug-capture"
+    "bug"
   ],
   "skills": "./skills/",
-  "commands": ["./commands/bug.md"],
+  "commands": ["./commands/bug.md", "./commands/patch.md"],
   "hooks": "./hooks/cursor.json",
   "agents": []
 }

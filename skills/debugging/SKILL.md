@@ -8,7 +8,7 @@ description: >-
   diagnose → fix → PR. For multiple independent bugs, use parallel diagnostic
   lanes and batch their tooling in one session; this is not subagent dispatch.
   Use this instead of reading the whole codebase before guessing. Not for
-  filing a bug to look at later (use bug-capture).
+  filing a bug to look at later (Cursor `/bug`, `/patch`, or the capture scripts).
 ---
 
 # Debugging

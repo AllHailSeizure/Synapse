@@ -33,11 +33,12 @@ The active suite lives in `skills/`:
 - `finishing-branches` — verify, push, and open a PR; merging stays user-owned.
 - `goal-oriented-development` — user-directed GitHub issues; no automatic goal
   selection and no goal-fulfiller dispatch.
-- `bug-capture` — record bugs for later without investigating them in-session.
 - `autonomous-work-boundaries` — user intent versus agent execution.
 
-Explicit command skills (invoke with `$name`; do not auto-fire): `bug`,
-`debug`.
+Explicit command skill (invoke with `$name`; do not auto-fire): `debug`.
+Cursor `/bug` / `/patch` and `commands/bug.mjs` / `commands/patch.mjs` capture
+a sticky-note issue (`@bug-bandaid` vs `@fastpatch`); Codex has no slash
+command for that.
 
 Use the skill instructions as the source of truth for when a workflow applies.
 They intentionally avoid ceremony for trivial, reversible work.
@@ -83,7 +84,7 @@ hooks/                          plugin hooks for Codex and Cursor
 .cursor-plugin/plugin.json      Cursor plugin manifest
 .codex-plugin/plugin.json       Codex plugin manifest
 .codex/agents/synapse/          Codex agent registrations
-commands/                       Cursor slash-command files
+commands/                       Cursor /bug and /patch plus capture scripts
 automations/                    Bandaid automations (special case)
 docs/                           templates and design history
 AGENTS.md                       Codex root guidance
