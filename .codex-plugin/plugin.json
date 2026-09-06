@@ -17,7 +17,7 @@
     "testing",
     "verification",
     "goal-oriented-development",
-    "bug-capture"
+    "bug"
   ],
   "skills": "./skills/",
   "hooks": "./hooks/hooks.json",

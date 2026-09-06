@@ -12,7 +12,7 @@ The shared skills live in `skills/` and cover:
 - testing, verification, debugging, and code review;
 - worktree isolation and bounded subagent delegation;
 - finishing branches with verification, push, and pull request creation;
-- user-directed GitHub issues and sticky-note bug capture; and
+- user-directed GitHub issues; and
 - autonomous-work boundaries between user intent and agent execution.
 
 See [`skills/README.md`](skills/README.md) for the complete inventory and the
@@ -26,7 +26,8 @@ branch, worktree and branch sprawl — moved out to their own plugin:
 
 The Cursor plugin manifest is
 [`.cursor-plugin/plugin.json`](.cursor-plugin/plugin.json). It ships `skills/`,
-`/bug` (not `/debug` — Cursor already has one), and hooks from
+`/bug` and `/patch` (Cursor-only commands that run `commands/bug.mjs` and
+`commands/patch.mjs`; Cursor already has `/debug`), and hooks from
 [`hooks/cursor.json`](hooks/cursor.json).
 
 Install from a local checkout or a marketplace that points at this repo. After
@@ -37,8 +38,10 @@ install, start a new agent chat so skills, commands, and hooks load.
 The Codex package manifest is [`.codex-plugin/plugin.json`](.codex-plugin/plugin.json)
 and Codex root guidance is in [`AGENTS.md`](AGENTS.md). Registered Codex agents
 live under `.codex/agents/synapse/`. Hooks use
-[`hooks/hooks.json`](hooks/hooks.json). Codex custom prompts are gone; `/bug`
-and `/debug` are explicit skills (`$bug`, `$debug`).
+[`hooks/hooks.json`](hooks/hooks.json). Codex custom prompts are gone.
+`$debug` is an explicit skill; Codex has no `/bug` or `/patch` command. Run
+`node commands/bug.mjs` or `node commands/patch.mjs` from this checkout to
+capture a sticky-note issue (`@bug-bandaid` vs `@fastpatch`).
 
 Use the registered `spec-writer` for a named feature when you want a grounded
 `PENDING` spec plus terminal-interview questions. It stops after drafting; the
@@ -57,7 +60,7 @@ Start a new Codex task after reinstalling so the updated skills, commands, and
 agent registrations are loaded.
 
 The command index is in [`docs/COMMANDS.md`](docs/COMMANDS.md), leaving
-`commands/` focused on Cursor's `/bug` command.
+`commands/` focused on Cursor's `/bug` and `/patch` commands.
 
 ## Session briefing and other hooks
 
@@ -118,12 +121,12 @@ Schema: [`docs/TEMPLATES/synapse/`](docs/TEMPLATES/synapse/). Worked example:
 ## Repository structure
 
 ```text
-skills/                         shared skills (including $bug/$debug)
+skills/                         shared skills (including $debug)
 hooks/                          briefing, scope, fan-out, verification gates
 .cursor-plugin/plugin.json      Cursor plugin manifest
 .codex-plugin/plugin.json       Codex plugin manifest
 .codex/agents/synapse/          Codex agent registrations
-commands/                       /bug for Cursor
+commands/                       Cursor /bug and /patch plus capture scripts
 automations/                    Bandaid automations (special case)
 docs/                           templates and design history
 AGENTS.md                       Codex root guidance
